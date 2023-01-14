@@ -13,6 +13,18 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+  // Joysticks enabled
+  public static final boolean ATTACK_THREE_ENABLE = false;
+  public static final boolean BUTTON_BOX_ENABLE = true;
+  public static final boolean KEYBOARD_BOX_ENABLE = false;
+  public static final boolean XBOX_CONTROLLER_DRIVER_ENABLE = true;
+  public static final boolean XBOX_CONTROLLER_OPERATOR_ENABLE = true;
+
+  // Xbox Deadband Limit
+  public static final double XBOX_DEADBAND_LIMIT = 0.1;
+
+
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
