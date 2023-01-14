@@ -24,6 +24,15 @@ public final class Constants {
   // Xbox Deadband Limit
   public static final double XBOX_DEADBAND_LIMIT = 0.1;
 
+  // Defines Drive constants
+  public static final double D_FWD_RATE_LIMIT = 2.8;
+  public static final double D_ROT_RATE_LIMIT = 3.2;
+
+  // Defines if systems are availible
+  public static final boolean HW_ENABLE_DRIVE = true;
+
+  // Subsystem periodic loops
+  public static final boolean DRIVE_PERIODIC_ENABLE = true;
 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
