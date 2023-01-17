@@ -1,7 +1,8 @@
 package frc.robot.input;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj2.command.button.Button;
+//import edu.wpi.first.wpilibj2.command.button.Button;
+import frc.robot.input.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
@@ -281,10 +282,10 @@ public class XboxController extends Joystick {
     /**
      * True if dpad is at an angle
      */
-		@Override
-		public boolean getAsBoolean() {
-			return getPOV() != -1;
-		}
+		//@Override
+		//public boolean getAsBoolean() {
+		//	return getPOV() != -1;
+		//}
 		
 		/**
 		 * Gets the up direction
@@ -371,10 +372,10 @@ public class XboxController extends Joystick {
       /**
        * True if dpad direction is this button
        */
-      @Override
-      public boolean getAsBoolean() {
-        return parent.getPOV() == direction.value;
-      }
+    //   @Override
+    //   public boolean getAsBoolean() {
+    //     return parent.getPOV() == direction.value;
+    //   }
     }
 	}
 }

@@ -7,10 +7,14 @@
 
 package frc.robot;
 
+import frc.robot.commands.Drive.ArcadeDrive;
+import frc.robot.commands.Drive.DriveDistance;
 import frc.robot.input.AttackThree;
 import frc.robot.input.ButtonBox;
 import frc.robot.input.XboxController;
 import frc.robot.input.KeyboardBox;
+
+import frc.robot.input.Button;;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -62,6 +66,7 @@ public class OI {
     // Now Mapping Commands to XBox
     ////////////////////////////////////////////////////
     if (Constants.XBOX_CONTROLLER_DRIVER_ENABLE) {
+      DriverXboxController.getButtonA().whileHeld(new DriveDistance(10, 0.3, 1, false));
     }
     if (Constants.XBOX_CONTROLLER_OPERATOR_ENABLE) {
     }
