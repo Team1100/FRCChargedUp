@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.AnalogInput;
 import frc.robot.Constants;
+import frc.robot.RoboRioAccelerometerHelper;
 import frc.robot.RobotMap;
 import frc.robot.testingdashboard.TestingDashboard;
 
@@ -38,12 +39,12 @@ public class Drive extends SubsystemBase {
   private RelativeEncoder m_frontRightEncoder;
   private DifferentialDrive drivetrain;
 
+  private BuiltInAccelerometer m_accelerometer;
+  private RoboRioAccelerometerHelper m_accelHelper;
   private boolean m_measureVelocity;
   private boolean m_measureDistance;
   private double accelIntCount = 0;
   private IdleMode m_currentIdleMode;
-
-  private AnalogInput potentiometer;
 
   private SlewRateLimiter fwdRateLimiter;
   private SlewRateLimiter rotRateLimiter;
@@ -69,10 +70,7 @@ public class Drive extends SubsystemBase {
   private static Drive m_drive;
 
   /** Creates a new Drive. */
-  public Drive() {
-
-    //Add Potentiometer
-    potentiometer = new AnalogInput(RobotMap.D_SPEED_POTENTIOMETER);
+  private Drive() {
 
     m_backLeft = new CANSparkMax(RobotMap.D_BACK_LEFT, MotorType.kBrushless);
     m_backRight = new CANSparkMax(RobotMap.D_BACK_RIGHT, MotorType.kBrushless);
@@ -102,6 +100,9 @@ public class Drive extends SubsystemBase {
     setIdleMode(IdleMode.kCoast);
     m_currentIdleMode = IdleMode.kCoast;
     setEncoderConversionFactor(CONVERSION_FACTOR);
+
+    m_accelerometer = new BuiltInAccelerometer(); // unit: g
+    m_accelHelper = new RoboRioAccelerometerHelper(m_accelerometer);
 
     fwdRateLimiter = new SlewRateLimiter(fwdRateLimit);
     rotRateLimiter = new SlewRateLimiter(rotRateLimit);
@@ -171,7 +172,6 @@ public class Drive extends SubsystemBase {
       TestingDashboard.getInstance().registerSubsystem(m_drive, "Drive");
       TestingDashboard.getInstance().registerNumber(m_drive, "Output", "InitialAngle", 0);
       TestingDashboard.getInstance().registerNumber(m_drive, "Input", "SpeedWhenTurning", 0.3);
-      TestingDashboard.getInstance().registerNumber(m_drive, "NAVX", "CurrentYawAngle", 0);
       TestingDashboard.getInstance().registerNumber(m_drive, "Input", "TurnAngleInDegrees", 0);
       TestingDashboard.getInstance().registerNumber(m_drive, "Encoders", "BackLeftMotorDistance", 0);
       TestingDashboard.getInstance().registerNumber(m_drive, "Encoders", "BackRightMotorDistance", 0);
@@ -223,11 +223,6 @@ public class Drive extends SubsystemBase {
 
   //Drive Methods:
 
-  public double getPercentPower() {
-    double percent = potentiometer.getVoltage() / 5;
-    return percent;
-  }
-
   public static double integrate(double tInitial, double tFinal, double vInitial, double vFinal) { // v for value
     double tInterval = tFinal - tInitial;
     double area = (tInterval * (vInitial + vFinal)) / 2;
@@ -251,6 +246,14 @@ public class Drive extends SubsystemBase {
   
   public void stopMeasuringDistance() {
     m_measureDistance = false;
+  }
+
+  public void setInitialVelocity(double velocity) {
+    m_accelHelper.initializeVelocity(velocity);
+  }
+
+  public void setInitialDistance(double distance) {
+    m_accelHelper.initializeDistance(distance);
   }
 
   public void arcadeDrive(double fwd, double rot, boolean sqInputs) {
@@ -314,13 +317,30 @@ public class Drive extends SubsystemBase {
     return sum / arrayList.size();
   }
 
-
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     if (Constants.DRIVE_PERIODIC_ENABLE) {
       // This method will be called once per scheduler run
+      m_accelHelper.captureTimeData();
+      m_accelHelper.captureAccelerometerData();
+      //accelIntCount += 1;
+
+      if (m_accelHelper.getAccelIntCount() > 2) {
+        m_measureVelocity = true;
+      }
+
+      if (m_accelHelper.getAccelIntCount() > 4) {
+        m_measureDistance = true;
+      }
+
+      if (m_measureVelocity) {
+        m_accelHelper.calculateVelocity();
+      }
+
+      if (m_measureDistance) {
+        m_accelHelper.calculateDistance();
+      }
 
       TestingDashboard.getInstance().updateNumber(m_drive, "BackLeftMotorDistance", m_backLeftEncoder.getPosition());
       TestingDashboard.getInstance().updateNumber(m_drive, "BackRightMotorDistance", m_backRightEncoder.getPosition());
@@ -330,6 +350,9 @@ public class Drive extends SubsystemBase {
       TestingDashboard.getInstance().updateNumber(m_drive, "BackRightMotorSpeed", m_backRightEncoder.getVelocity());
       TestingDashboard.getInstance().updateNumber(m_drive, "FrontLeftMotorSpeed", m_frontLeftEncoder.getVelocity());
       TestingDashboard.getInstance().updateNumber(m_drive, "FrontRightMotorSpeed", m_frontRightEncoder.getVelocity());
+      TestingDashboard.getInstance().updateNumber(m_drive, "currentTime", m_accelHelper.getCurrentTime());
+      TestingDashboard.getInstance().updateNumber(m_drive, "instantAccelMagnitudeInchesPerSecondSquared", m_accelHelper.getAccelerometerMagnitudeInchesPerSecondSquared());
+      TestingDashboard.getInstance().updateNumber(m_drive, "instantAccelMagnitudeInchesPerSecondSquared", m_accelHelper.getAccelerometerMagnitudeInchesPerSecondSquared());
 
       // This is just to be used for debugging
       double fwdLimit = SmartDashboard.getNumber("FWD Accel Limit", 3);
