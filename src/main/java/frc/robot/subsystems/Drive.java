@@ -46,8 +46,6 @@ public class Drive extends SubsystemBase {
   private double accelIntCount = 0;
   private IdleMode m_currentIdleMode;
 
-  private SlewRateLimiter fwdRateLimiter;
-  private SlewRateLimiter rotRateLimiter;
   public double fwdRateLimit = Constants.D_FWD_RATE_LIMIT; // limits rate change to a certain amount per second. Measured in units
   public  double rotRateLimit = Constants.D_ROT_RATE_LIMIT;
 
@@ -101,11 +99,14 @@ public class Drive extends SubsystemBase {
     m_currentIdleMode = IdleMode.kCoast;
     setEncoderConversionFactor(CONVERSION_FACTOR);
 
+    m_backLeft.setOpenLoopRampRate(2);
+    m_frontLeft.setOpenLoopRampRate(2);
+    m_backRight.setOpenLoopRampRate(2);
+    m_frontRight.setOpenLoopRampRate(2);
+
     m_accelerometer = new BuiltInAccelerometer(); // unit: g
     m_accelHelper = new RoboRioAccelerometerHelper(m_accelerometer);
 
-    fwdRateLimiter = new SlewRateLimiter(fwdRateLimit);
-    rotRateLimiter = new SlewRateLimiter(rotRateLimit);
     m_measureVelocity = false;
     m_measureDistance = false;
 
@@ -257,7 +258,7 @@ public class Drive extends SubsystemBase {
   }
 
   public void arcadeDrive(double fwd, double rot, boolean sqInputs) {
-    drivetrain.arcadeDrive(fwdRateLimiter.calculate(fwd), rot);
+    drivetrain.arcadeDrive(fwd, rot);
   }
 
   public void tankDrive(double leftSpeed, double rightSpeed) {
@@ -353,20 +354,6 @@ public class Drive extends SubsystemBase {
       TestingDashboard.getInstance().updateNumber(m_drive, "currentTime", m_accelHelper.getCurrentTime());
       TestingDashboard.getInstance().updateNumber(m_drive, "instantAccelMagnitudeInchesPerSecondSquared", m_accelHelper.getAccelerometerMagnitudeInchesPerSecondSquared());
       TestingDashboard.getInstance().updateNumber(m_drive, "instantAccelMagnitudeInchesPerSecondSquared", m_accelHelper.getAccelerometerMagnitudeInchesPerSecondSquared());
-
-      // This is just to be used for debugging
-      double fwdLimit = SmartDashboard.getNumber("FWD Accel Limit", 3);
-      double rotLimit = SmartDashboard.getNumber("ROT Accel Limit", 3);
-
-      if (fwdLimit != fwdRateLimit) {
-        fwdRateLimiter = new SlewRateLimiter(fwdLimit);
-        fwdRateLimit = fwdLimit;
-      }
-      if (rotLimit != rotRateLimit) {
-        rotRateLimiter = new SlewRateLimiter(rotLimit);
-        rotRateLimit = rotLimit;
-      }
-
 
       // Publish motor current values
       updateMotorCurrentAverages();
