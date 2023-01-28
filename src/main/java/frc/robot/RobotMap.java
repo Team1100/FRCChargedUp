@@ -159,78 +159,14 @@ public class RobotMap {
 	private static final int USB_2 = 2;
 	private static final int USB_3 = 3;
 
-	// Pneumatic Control Module (PCM) ports
-	private static final int PCM_0 = 0;
-	private static final int PCM_1 = 1;
-	private static final int PCM_2 = 2;
-	private static final int PCM_3 = 3;
-	private static final int PCM_4 = 4;
-	private static final int PCM_5 = 5;
-	private static final int PCM_6 = 6;
-	private static final int PCM_7 = 7;
-
-	//List of all PDP ports
-	private static final int PDP_0 = 0;
-	private static final int PDP_1 = 1;
-	private static final int PDP_2 = 2;
-	private static final int PDP_3 = 3;
-	private static final int PDP_4 = 4;
-	private static final int PDP_5 = 5;
-	private static final int PDP_6 = 6;
-	private static final int PDP_7 = 7;
-	private static final int PDP_8 = 8;
-	private static final int PDP_9 = 9;
-	private static final int PDP_10 = 10;
-	private static final int PDP_11 = 11;
-	private static final int PDP_12 = 12;
-	private static final int PDP_13 = 13;
-	private static final int PDP_14 = 14;
-	private static final int PDP_15 = 15;
-	private static final int PDP_16 = 16;
-
 	//[D]rive
-	public static final int D_FRONT_LEFT = CAN_3;
-	public static final int D_FRONT_RIGHT = CAN_4;
-	public static final int D_BACK_LEFT = CAN_24;
-	public static final int D_BACK_RIGHT = CAN_23;
-	public static final Port D_NAVX = SPI.Port.kMXP;
+	public static final int D_FRONT_LEFT = CAN_1;
+	public static final int D_FRONT_RIGHT = CAN_3;
 	public static final int D_LEFT_ENCODER_A = DIO_MXP_0;
 	public static final int D_LEFT_ENCODER_B = DIO_MXP_1;
 	public static final int D_RIGHT_ENCODER_A = DIO_MXP_2;
 	public static final int D_RIGHT_ENCODER_B = DIO_MXP_3;
 	public static final int D_SPEED_POTENTIOMETER = ANALOG_3;
-
-	//[CL]imber
-	public static final int CL_LEFT_MOTOR = CAN_22;
-	public static final int CL_RIGHT_MOTOR = CAN_21;
-	public static final int CL_LEFT_CANE_TURN_MOTOR = CAN_12;
-	public static final int CL_RIGHT_CANE_TURN_MOTOR = CAN_10;
-	public static final int CL_CANE_TURN_ENCODER_A = DIO_2;
-	public static final int CL_CANE_TURN_ENCODER_B = DIO_3;
-	public static final int CL_LEFT_LIMIT_SWITCH = DIO_0;
-	public static final int CL_RIGHT_LIMIT_SWITCH = DIO_1;
-	public static final int CL_POTENTIOMETER = ANALOG_0;
-
-
-	//[I]ntake
-	public static final int I_LEFT_ROLLER = CAN_27;
-	public static final int I_PISTON_PORT1 = PCM_2;
-	public static final int I_PISTON_PORT2 = PCM_3;
-
-
-	//[C]onveyor
-	public static final int C_LEFT_MOTOR = CAN_30;
-	public static final int C_RIGHT_MOTOR = CAN_31;
-	public static final int C_GATE_PISTON_PORT1 = PCM_0;
-	public static final int C_GATE_PISTON_PORT2 = PCM_1;
-
-	//[L]ights
-	public static final int L_LIGHT_POWER = PCM_7;
-	public static final int L_LIGHT_RED = PCM_6;
-	public static final int L_LIGHT_BLUE = PCM_4;
-	
-	//[S]hooter
-	public static final int S_MOTOR = CAN_28;
 	
 	//[U]ser Input
 	public static final int U_DRIVER_XBOX_CONTROLLER = 0;

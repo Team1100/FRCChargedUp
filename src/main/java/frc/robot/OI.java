@@ -66,7 +66,7 @@ public class OI {
     // Now Mapping Commands to XBox
     ////////////////////////////////////////////////////
     if (Constants.XBOX_CONTROLLER_DRIVER_ENABLE) {
-      DriverXboxController.getButtonA().whileHeld(new DriveDistance(10, 0.3, 1, false));
+      DriverXboxController.getButtonBack().toggleWhenPressed(new ArcadeDrive());
     }
     if (Constants.XBOX_CONTROLLER_OPERATOR_ENABLE) {
     }

@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import frc.robot.Constants;
 import frc.robot.OI;
 import frc.robot.RobotMap;
-import frc.robot.testingdashboard.TestingDashboard;
 import frc.robot.input.XboxController;
 import frc.robot.input.XboxController.XboxAxis;
 import frc.robot.subsystems.Drive;
@@ -33,7 +32,6 @@ public class ArcadeDrive extends CommandBase {
   public static void registerWithTestingDashboard() {
     Drive drive = Drive.getInstance();
     ArcadeDrive cmd = new ArcadeDrive();
-    TestingDashboard.getInstance().registerCommand(drive, "Basic", cmd);
   }
 
   // Called when the command is initially scheduled.
@@ -62,12 +60,6 @@ public class ArcadeDrive extends CommandBase {
         
         speed = speed * percentSpeed;
         rotation = rotation * percentSpeed;
-      
-
-      //Easter Egg
-      //if(GlobalValues.insaneMode) {
-      //  speed = speed * 2;
-      //}
       
       m_drive.arcadeDrive(-speed, rotation, squareInputs);
     }
