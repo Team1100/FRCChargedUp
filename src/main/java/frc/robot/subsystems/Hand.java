@@ -7,19 +7,19 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.testingdashboard.TestingDashboard;
 
-public class Claw extends SubsystemBase {
+public class Hand extends SubsystemBase {
 
-  private static Claw m_claw;
+  private static Hand m_hand;
 
   /** Creates a new Claw. */
-  private Claw() {}
+  private Hand() {}
 
-  public static Claw getInstance() {
-    if (m_claw == null) {
-      m_claw = new Claw();
-      TestingDashboard.getInstance().registerSubsystem(m_claw, "Claw");
+  public static Hand getInstance() {
+    if (m_hand == null) {
+      m_hand = new Hand();
+      TestingDashboard.getInstance().registerSubsystem(m_hand, "Hand");
     }
-    return m_claw;
+    return m_hand;
   }
 
   @Override
