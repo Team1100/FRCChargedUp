@@ -6,9 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.testingdashboard.TestingDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,7 +23,6 @@ import frc.robot.commands.Drive.ArcadeDrive;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
   SendableChooser<Command> m_chooser = new SendableChooser<>();
   private final Drive m_drive;
