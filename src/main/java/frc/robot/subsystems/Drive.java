@@ -15,7 +15,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.AnalogInput;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
-import frc.robot.commands.Drive.ArcadeDrive;
+import frc.robot.testingdashboard.TestingDashboard;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.CANSparkMax;
@@ -64,10 +65,7 @@ public class Drive extends SubsystemBase {
   private static Drive m_drive;
 
   /** Creates a new Drive. */
-  public Drive() {
-
-    //Add Potentiometer
-    potentiometer = new AnalogInput(RobotMap.D_SPEED_POTENTIOMETER);
+  private Drive() {
 
     m_frontLeft = new CANSparkMax(RobotMap.D_FRONT_LEFT, MotorType.kBrushless);
     m_frontRight = new CANSparkMax(RobotMap.D_FRONT_RIGHT, MotorType.kBrushless);
@@ -113,12 +111,12 @@ public class Drive extends SubsystemBase {
     
     if(m_frontLeft.setIdleMode(mode) != REVLibError.kOk){
       System.out.println("Could not set idle mode on front left motor");
-      //System.exit(1);
+      System.exit(1);
     }
   
     if(m_frontRight.setIdleMode(mode) != REVLibError.kOk){
       System.out.println("Could not set idle mode on front right motor");
-      //System.exit(1);
+      System.exit(1);
     }
   }
 
@@ -136,6 +134,42 @@ public class Drive extends SubsystemBase {
   public static Drive getInstance() {
     if (m_drive == null) {
       m_drive = new Drive();
+      TestingDashboard.getInstance().registerSubsystem(m_drive, "Drive");
+      TestingDashboard.getInstance().registerNumber(m_drive, "Output", "InitialAngle", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Input", "SpeedWhenTurning", 0.3);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Input", "TurnAngleInDegrees", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Encoders", "BackLeftMotorDistance", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Encoders", "BackRightMotorDistance", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Encoders", "FrontLeftMotorDistance", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Encoders", "FrontRightMotorDistance", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Encoders", "BackLeftMotorSpeed", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Encoders", "BackRightMotorSpeed", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Encoders", "FrontLeftMotorSpeed", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Encoders", "FrontRightMotorSpeed", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Accelerometer", "xInstantAccel", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Accelerometer", "yInstantAccel", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Accelerometer", "instantAccelMagnitudeInchesPerSecondSquared", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Accelerometer", "xInstantAccelRaw", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Accelerometer", "yInstantAccelRaw", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Accelerometer", "xInstantVel", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Accelerometer", "yInstantVel", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Accelerometer", "xInstantDist", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Accelerometer", "yInstantDist", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Accelerometer", "currentTime", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Motors", "BackLeftMotorCurrent", 0); // in Amps
+      TestingDashboard.getInstance().registerNumber(m_drive, "Motors", "BackRightMotorCurrent", 0); // in Amps
+      TestingDashboard.getInstance().registerNumber(m_drive, "Motors", "FrontLeftMotorCurrent", 0); // in Amps
+      TestingDashboard.getInstance().registerNumber(m_drive, "Motors", "FrontRightMotorCurrent", 0); // in Amps
+      TestingDashboard.getInstance().registerNumber(m_drive, "Robot", "BatteryVoltage", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Travel", "DistanceToTravelInInches", 12);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Travel", "SpeedToTravel", INITIAL_SPEED);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Travel", "SpeedOfTravel", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "MotorCurrent", "MaxNumCurrentValues", MOTOR_CURRENT_INITIAL_CAPACITY);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Motors", "FrontLeftMotorCurrentAverage", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Motors", "FrontRightMotorCurrentAverage", 0);
+      TestingDashboard.getInstance().registerString(m_drive, "Robot", "DriveIdleMode", "Coast");
+      TestingDashboard.getInstance().registerNumber(m_drive, "Motors", "RotCurrentFilteringLimit", Constants.D_ROT_RATE_LIMIT);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Motors", "FwdCurrentFilteringLimit", Constants.D_FWD_RATE_LIMIT);
     }
     return m_drive;
   }
@@ -144,18 +178,15 @@ public class Drive extends SubsystemBase {
     if (m_currentIdleMode == IdleMode.kCoast) {
       setIdleMode(IdleMode.kBrake);
       m_currentIdleMode = IdleMode.kBrake;
+      TestingDashboard.getInstance().updateString(m_drive, "DriveIdleMode", "Brake");
     } else if (m_currentIdleMode == IdleMode.kBrake) {
       setIdleMode(IdleMode.kCoast);
       m_currentIdleMode = IdleMode.kCoast;
+      TestingDashboard.getInstance().updateString(m_drive, "DriveIdleMode", "Coast");
     }
   }
 
   //Drive Methods:
-
-  public double getPercentPower() {
-    double percent = potentiometer.getVoltage() / 5;
-    return percent;
-  }
 
   public static double integrate(double tInitial, double tFinal, double vInitial, double vFinal) { // v for value
     double tInterval = tFinal - tInitial;
@@ -189,7 +220,8 @@ public class Drive extends SubsystemBase {
   public void tankDrive(double leftSpeed, double rightSpeed) {
     m_rightSpeed = rightSpeed;
     m_leftSpeed = leftSpeed;
-    drivetrain.tankDrive(leftSpeed, rightSpeed);
+    drivetrain.tankDrive(m_leftSpeed, m_rightSpeed);
+    TestingDashboard.getInstance().updateNumber(m_drive, "SpeedOfTravel", leftSpeed);
   }
 
   //Encoder Methods
@@ -222,19 +254,11 @@ public class Drive extends SubsystemBase {
     // This method will be called once per scheduler run
     if (Constants.DRIVE_PERIODIC_ENABLE) {
       // This method will be called once per scheduler run
-      new ArcadeDrive();
-      // This is just to be used for debugging
-      double fwdLimit = SmartDashboard.getNumber("FWD Accel Limit", 3);
-      double rotLimit = SmartDashboard.getNumber("ROT Accel Limit", 3);
+      TestingDashboard.getInstance().updateNumber(m_drive, "FrontLeftMotorDistance", m_frontLeftEncoder.getPosition());
+      TestingDashboard.getInstance().updateNumber(m_drive, "FrontRightMotorDistance", m_frontRightEncoder.getPosition());
+      TestingDashboard.getInstance().updateNumber(m_drive, "FrontLeftMotorSpeed", m_frontLeftEncoder.getVelocity());
+      TestingDashboard.getInstance().updateNumber(m_drive, "FrontRightMotorSpeed", m_frontRightEncoder.getVelocity());
 
-      if (fwdLimit != fwdRateLimit) {
-        fwdRateLimiter = new SlewRateLimiter(fwdLimit);
-        fwdRateLimit = fwdLimit;
-      }
-      if (rotLimit != rotRateLimit) {
-        rotRateLimiter = new SlewRateLimiter(rotLimit);
-        rotRateLimit = rotLimit;
-      }
     }
   }
 }

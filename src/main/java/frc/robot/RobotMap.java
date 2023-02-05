@@ -159,6 +159,35 @@ public class RobotMap {
 	private static final int USB_2 = 2;
 	private static final int USB_3 = 3;
 
+	// Pneumatic Control Module (PCM) ports
+	private static final int PCM_0 = 0;
+	private static final int PCM_1 = 1;
+	private static final int PCM_2 = 2;
+	private static final int PCM_3 = 3;
+	private static final int PCM_4 = 4;
+	private static final int PCM_5 = 5;
+	private static final int PCM_6 = 6;
+	private static final int PCM_7 = 7;
+
+	//List of all PDP ports
+	private static final int PDP_0 = 0;
+	private static final int PDP_1 = 1;
+	private static final int PDP_2 = 2;
+	private static final int PDP_3 = 3;
+	private static final int PDP_4 = 4;
+	private static final int PDP_5 = 5;
+	private static final int PDP_6 = 6;
+	private static final int PDP_7 = 7;
+	private static final int PDP_8 = 8;
+	private static final int PDP_9 = 9;
+	private static final int PDP_10 = 10;
+	private static final int PDP_11 = 11;
+	private static final int PDP_12 = 12;
+	private static final int PDP_13 = 13;
+	private static final int PDP_14 = 14;
+	private static final int PDP_15 = 15;
+	private static final int PDP_16 = 16;
+
 	//[D]rive
 	public static final int D_FRONT_LEFT = CAN_1;
 	public static final int D_FRONT_RIGHT = CAN_3;

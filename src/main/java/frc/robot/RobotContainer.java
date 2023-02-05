@@ -4,16 +4,14 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.Drive.ArcadeDrive;
 import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.testingdashboard.TestingDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.commands.Drive.ArcadeDrive;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -23,24 +21,28 @@ import edu.wpi.first.wpilibj.XboxController;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
+  SendableChooser<Command> m_chooser = new SendableChooser<>();
   private final Drive m_drive;
-
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  // private final CommandXboxController m_driverController =
-  //     new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
     m_drive = Drive.getInstance();
+    m_drive.setDefaultCommand(new ArcadeDrive());
 
     // Configure the trigger bindings
     configureBindings();
 
-    m_drive.setDefaultCommand(new ArcadeDrive());
+    // Register commands with TestingDashboard commands
 
+    // Drive
+    ArcadeDrive.registerWithTestingDashboard();
+
+    // Create Testing Dashboard
+    TestingDashboard.getInstance().createTestingDashboard();
+    // Put the chooser on the dashboard
+    SmartDashboard.putData(m_chooser);
   }
 
   /**
@@ -53,13 +55,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-
-          OI.getInstance();
-
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    OI.getInstance();
   }
 
   /**
@@ -68,7 +64,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    // An ExampleCommand will run in autonomous
+    return m_chooser.getSelected();
   }
 }
