@@ -99,10 +99,10 @@ public class Drive extends SubsystemBase {
     m_currentIdleMode = IdleMode.kCoast;
     setEncoderConversionFactor(CONVERSION_FACTOR);
 
-    m_backLeft.setOpenLoopRampRate(2);
-    m_frontLeft.setOpenLoopRampRate(2);
-    m_backRight.setOpenLoopRampRate(2);
-    m_frontRight.setOpenLoopRampRate(2);
+    // m_backLeft.setOpenLoopRampRate(2);
+    // m_frontLeft.setOpenLoopRampRate(2);
+    // m_backRight.setOpenLoopRampRate(2);
+    // m_frontRight.setOpenLoopRampRate(2);
 
     m_accelerometer = new BuiltInAccelerometer(); // unit: g
     m_accelHelper = new RoboRioAccelerometerHelper(m_accelerometer);
@@ -258,7 +258,7 @@ public class Drive extends SubsystemBase {
   }
 
   public void arcadeDrive(double fwd, double rot, boolean sqInputs) {
-    drivetrain.arcadeDrive(fwd, rot);
+    drivetrain.arcadeDrive(fwd, -rot);
   }
 
   public void tankDrive(double leftSpeed, double rightSpeed) {
