@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import frc.robot.RobotMap;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.testingdashboard.TestingDashboard;
@@ -17,7 +16,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 public class Hand extends SubsystemBase {
 
   private CANSparkMax m_handMotor;
-  private RelativeEncoder m_handEncoder;
   
   private static Hand m_hand;
 
@@ -25,8 +23,6 @@ public class Hand extends SubsystemBase {
   private Hand() {
 
     m_handMotor = new CANSparkMax(RobotMap.H_MOTOR, MotorType.kBrushless);
-
-    m_handEncoder = m_handMotor.getEncoder();
 
     m_handMotor.restoreFactoryDefaults();
 
@@ -36,15 +32,9 @@ public class Hand extends SubsystemBase {
     if (m_hand == null) {
       m_hand = new Hand();
       TestingDashboard.getInstance().registerSubsystem(m_hand, "Hand");
-      TestingDashboard.getInstance().registerNumber(m_hand, "Encoders", "HandMotorDistance", 0);
-      TestingDashboard.getInstance().registerNumber(m_hand, "Encoders", "HandMotorSpeed", 0);
       TestingDashboard.getInstance().registerNumber(m_hand, "Motors", "HandMotorCurrent", 0); // in Amps
     }
     return m_hand;
-  }
-
-  public RelativeEncoder getHandEncoder() {
-	  return m_handEncoder;
   }
 
 
@@ -52,7 +42,5 @@ public class Hand extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    TestingDashboard.getInstance().updateNumber(m_hand, "HandMotorDistance", m_handEncoder.getPosition());
-    TestingDashboard.getInstance().updateNumber(m_hand, "HandMotorSpeed", m_handEncoder.getVelocity());
   }
 }
