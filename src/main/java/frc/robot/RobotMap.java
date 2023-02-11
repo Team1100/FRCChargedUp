@@ -231,7 +231,10 @@ public class RobotMap {
 	
 	//[S]hooter
 	public static final int S_MOTOR = CAN_28;
-	
+
+	//[H]and
+	public static final int H_MOTOR = CAN_50; //temporary value
+
 	//[U]ser Input
 	public static final int U_DRIVER_XBOX_CONTROLLER = 0;
 	public static final int U_OPERATOR_XBOX_CONTROLLER = 1;
