@@ -33,6 +33,7 @@ public final class Constants {
 
   // Subsystem periodic loops
   public static final boolean DRIVE_PERIODIC_ENABLE = true;
+  public static final double DRIVE_RAMP_RATE = 2; // Limit changes in power to require 2 secons to go from zero to full
 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
