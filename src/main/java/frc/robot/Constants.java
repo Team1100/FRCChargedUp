@@ -28,6 +28,13 @@ public final class Constants {
   public static final double D_FWD_RATE_LIMIT = 2.8;
   public static final double D_ROT_RATE_LIMIT = 3.2;
 
+  // Defines Arm Constants
+
+  // Note that MAX POWER should be a value between 0 and 1
+  public static final double A_TURRET_MAX_POWER = 0.5;
+  public static final double A_SHOULDER_MAX_POWER = 0.5;
+  public static final double A_ELBOW_MAX_POWER = 0.5;
+
   // Defines if systems are availible
   public static final boolean HW_ENABLE_DRIVE = true;
 
@@ -35,7 +42,5 @@ public final class Constants {
   public static final boolean DRIVE_PERIODIC_ENABLE = true;
   public static final double DRIVE_RAMP_RATE = 2; // Limit changes in power to require 2 secons to go from zero to full
 
-  public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
-  }
+
 }

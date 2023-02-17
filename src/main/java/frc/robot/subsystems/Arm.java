@@ -56,8 +56,24 @@ public class Arm extends SubsystemBase {
       TestingDashboard.getInstance().registerNumber(m_arm, "Encoders", "ElbowEncoderPulses", 0);
       TestingDashboard.getInstance().registerNumber(m_arm, "Encoders", "ShoulderEncoderPulses", 0);
       TestingDashboard.getInstance().registerNumber(m_arm, "Encoders", "TurretEncoderPulses", 0);
+
+      TestingDashboard.getInstance().registerNumber(m_arm, "MotorInputs", "ElbowMotorPower", 0);
+      TestingDashboard.getInstance().registerNumber(m_arm, "MotorInputs", "ShoulderMotorPower", 0);
+      TestingDashboard.getInstance().registerNumber(m_arm, "MotorInputs", "TurretMotorPower", 0);
     }
     return m_arm;
+  }
+
+  public void setTurretMotorPower(double value) {
+    m_turret.set(value);
+  }
+
+  public void setShoulderMotorPower(double value) {
+    m_shoulder.set(value);
+  }
+
+  public void setElbowMotorPower(double value) {
+    m_elbow.set(value);
   }
 
   @Override
