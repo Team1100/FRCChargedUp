@@ -19,13 +19,13 @@ public class Arm extends SubsystemBase {
 
   private static Arm m_arm;
 
-  private static CANSparkMax m_shoulder;
-  private static CANSparkMax m_elbow;
-  private static CANSparkMax m_turret;
+  private CANSparkMax m_shoulder;
+  private CANSparkMax m_elbow;
+  private CANSparkMax m_turret;
 
-  private static RelativeEncoder m_shoulderEncoder;
-  private static RelativeEncoder m_elbowEncoder;
-  private static RelativeEncoder m_turretEncoder;
+  private RelativeEncoder m_shoulderEncoder;
+  private RelativeEncoder m_elbowEncoder;
+  private RelativeEncoder m_turretEncoder;
 
   private AnalogInput m_shoulderPot;
   private AnalogInput m_elbowPot;
@@ -33,9 +33,9 @@ public class Arm extends SubsystemBase {
 
   /** Creates a new Arm. */
   private Arm() {
-    m_shoulder = new CANSparkMax(RobotMap.A_SHOULDER, MotorType.kBrushless);
-    m_elbow = new CANSparkMax(RobotMap.A_ELBOW, MotorType.kBrushless);
-    m_turret = new CANSparkMax(RobotMap.A_TURRET, MotorType.kBrushless);
+    m_shoulder = new CANSparkMax(RobotMap.A_SHOULDER_MOTOR, MotorType.kBrushless);
+    m_elbow = new CANSparkMax(RobotMap.A_ELBOW_MOTOR, MotorType.kBrushless);
+    m_turret = new CANSparkMax(RobotMap.A_TURRET_MOTOR, MotorType.kBrushless);
 
     m_shoulderEncoder = m_shoulder.getEncoder();
     m_elbowEncoder = m_elbow.getEncoder();
@@ -50,14 +50,6 @@ public class Arm extends SubsystemBase {
   public static Arm getInstance() {
     if (m_arm == null) {
       m_arm = new Arm();
-      m_turret = new CANSparkMax(RobotMap.A_TURRET, MotorType.kBrushless);
-      m_shoulder = new CANSparkMax(RobotMap.A_SHOULDER, MotorType.kBrushless);
-      m_elbow = new CANSparkMax(RobotMap.A_ELBOW, MotorType.kBrushless);
-
-      m_turretEncoder = m_turret.getEncoder();
-      m_shoulderEncoder = m_shoulder.getEncoder();
-      m_elbowEncoder = m_elbow.getEncoder();
-      
       TestingDashboard.getInstance().registerSubsystem(m_arm, "Arm");
       TestingDashboard.getInstance().registerNumber(m_arm, "Potentiometers", "ElbowPotVoltage", 0);
       TestingDashboard.getInstance().registerNumber(m_arm, "Potentiometers", "ShoulderPotVoltage", 0);
@@ -74,32 +66,18 @@ public class Arm extends SubsystemBase {
     return m_arm;
   }
 
-  public double getTurntableAngle() {
-    return m_turretEncoder.getPosition();
+  public double getTurretAngle() {
+    return m_turretEncoder.getPosition() * Constants.TURRET_DEGREES_PER_PULSE;
   }
 
   public double getShoulderAngle() {
-    return m_shoulderEncoder.getPosition();
+    return m_shoulderEncoder.getPosition() * Constants.SHOULDER_DEGREES_PER_PULSE;
   }
 
   public double getElbowAngle() {
-    return m_elbowEncoder.getPosition();
+    return m_elbowEncoder.getPosition() * Constants.ELBOW_DEGREES_PER_PULSE;
   }
 
-  public void turntableToAngle(double angle) {
-    double angleLeft = angle - getTurntableAngle();
-    while(angleLeft >= Constants.ANGLE_DEADBAND) {
-      m_turret.set(0.01*(angle-getTurntableAngle()));
-    }
-  }
-
-  public void shoulderToAngle(double angle) {
-
-  }
-
-  public void elbowToAngle(double angle) {
-
-  }
   public void setTurretMotorPower(double value) {
     m_turret.set(value);
   }
