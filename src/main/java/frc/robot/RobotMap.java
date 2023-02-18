@@ -200,37 +200,16 @@ public class RobotMap {
 	public static final int D_RIGHT_ENCODER_B = DIO_MXP_3;
 	public static final int D_SPEED_POTENTIOMETER = ANALOG_3;
 
-	//[CL]imber
-	public static final int CL_LEFT_MOTOR = CAN_22;
-	public static final int CL_RIGHT_MOTOR = CAN_21;
-	public static final int CL_LEFT_CANE_TURN_MOTOR = CAN_12;
-	public static final int CL_RIGHT_CANE_TURN_MOTOR = CAN_10;
-	public static final int CL_CANE_TURN_ENCODER_A = DIO_2;
-	public static final int CL_CANE_TURN_ENCODER_B = DIO_3;
-	public static final int CL_LEFT_LIMIT_SWITCH = DIO_0;
-	public static final int CL_RIGHT_LIMIT_SWITCH = DIO_1;
-	public static final int CL_POTENTIOMETER = ANALOG_0;
+	//[A]rm
+	public static final int A_ELBOW = CAN_22;
+	public static final int A_SHOULDER = CAN_21;
+	public static final int A_TURNTABLE = CAN_12;
 
 
-	//[I]ntake
+	//[H]and
 	public static final int I_LEFT_ROLLER = CAN_27;
 	public static final int I_PISTON_PORT1 = PCM_2;
 	public static final int I_PISTON_PORT2 = PCM_3;
-
-
-	//[C]onveyor
-	public static final int C_LEFT_MOTOR = CAN_30;
-	public static final int C_RIGHT_MOTOR = CAN_31;
-	public static final int C_GATE_PISTON_PORT1 = PCM_0;
-	public static final int C_GATE_PISTON_PORT2 = PCM_1;
-
-	//[L]ights
-	public static final int L_LIGHT_POWER = PCM_7;
-	public static final int L_LIGHT_RED = PCM_6;
-	public static final int L_LIGHT_BLUE = PCM_4;
-	
-	//[S]hooter
-	public static final int S_MOTOR = CAN_28;
 	
 	//[U]ser Input
 	public static final int U_DRIVER_XBOX_CONTROLLER = 0;

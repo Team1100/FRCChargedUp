@@ -28,6 +28,9 @@ public final class Constants {
   public static final double D_FWD_RATE_LIMIT = 2.8;
   public static final double D_ROT_RATE_LIMIT = 3.2;
 
+  // Defines Arm constants
+  public static final double ANGLE_DEADBAND = 10;
+
   // Defines if systems are availible
   public static final boolean HW_ENABLE_DRIVE = true;
 
