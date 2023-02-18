@@ -36,6 +36,10 @@ public class Hand extends SubsystemBase {
     return m_hand;
   }
 
+  public void spinHandMotor(double value) {
+    m_handMotor.set(value);
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
