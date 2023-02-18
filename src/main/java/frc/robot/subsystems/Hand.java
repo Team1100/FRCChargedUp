@@ -4,15 +4,29 @@
 
 package frc.robot.subsystems;
 
+import frc.robot.RobotMap;
+
+import com.revrobotics.CANSparkMax;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.testingdashboard.TestingDashboard;
 
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 public class Hand extends SubsystemBase {
+
+  private CANSparkMax m_handMotor;
 
   private static Hand m_hand;
 
   /** Creates a new Claw. */
-  private Hand() {}
+  private Hand() {
+
+    m_handMotor = new CANSparkMax(RobotMap.H_MOTOR, MotorType.kBrushless);
+
+    m_handMotor.restoreFactoryDefaults();
+
+  }
 
   public static Hand getInstance() {
     if (m_hand == null) {

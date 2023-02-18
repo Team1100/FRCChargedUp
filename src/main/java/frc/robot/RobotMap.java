@@ -201,16 +201,30 @@ public class RobotMap {
 	public static final int D_SPEED_POTENTIOMETER = ANALOG_3;
 
 	//[A]rm
+<<<<<<< HEAD
 	public static final int A_ELBOW = CAN_22;
 	public static final int A_SHOULDER = CAN_21;
 	public static final int A_TURNTABLE = CAN_12;
+=======
+	public static final int A_SHOULDER_MOTOR = CAN_10; // TODO: Add real CAN ID
+	public static final int A_ELBOW_MOTOR = CAN_11; // TODO: Add real CAN ID
+	public static final int A_TURRET_MOTOR = CAN_12; // TODO: Add real CAN ID
+>>>>>>> 3f65b077283cc188c617b8b1ccd449f84ed95f1c
 
+	public static final int A_SHOULDER_POTENTIOMETER = ANALOG_0;
+	public static final int A_ELBOW_POTENTIOMETER = ANALOG_1;
+	public static final int A_TURRET_POTENTIOMETER = ANALOG_2;
 
 	//[H]and
+<<<<<<< HEAD
 	public static final int I_LEFT_ROLLER = CAN_27;
 	public static final int I_PISTON_PORT1 = PCM_2;
 	public static final int I_PISTON_PORT2 = PCM_3;
 	
+=======
+	public static final int H_MOTOR = CAN_50; // temporary value
+
+>>>>>>> 3f65b077283cc188c617b8b1ccd449f84ed95f1c
 	//[U]ser Input
 	public static final int U_DRIVER_XBOX_CONTROLLER = 0;
 	public static final int U_OPERATOR_XBOX_CONTROLLER = 1;
