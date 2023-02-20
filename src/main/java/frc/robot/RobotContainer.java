@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Hand;
 import frc.robot.testingdashboard.TestingDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -14,6 +15,11 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Arm.ArmOperatorControl;
 import frc.robot.commands.Drive.ArcadeDrive;
+import frc.robot.commands.Hand.ExpelCone;
+import frc.robot.commands.Hand.ExpelCube;
+import frc.robot.commands.Hand.IntakeCone;
+import frc.robot.commands.Hand.IntakeCube;
+import frc.robot.commands.Hand.SpinIntake;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -37,6 +43,8 @@ public class RobotContainer {
     m_arm = Arm.getInstance();
     m_arm.setDefaultCommand(new ArmOperatorControl());
 
+    Hand.getInstance();
+
     // Configure the trigger bindings
     configureBindings();
 
@@ -47,6 +55,13 @@ public class RobotContainer {
 
     // Arm
     ArmOperatorControl.registerWithTestingDashboard();
+
+    // Hand
+    SpinIntake.registerWithTestingDashboard();
+    ExpelCone.registerWithTestingDashboard();
+    ExpelCube.registerWithTestingDashboard();
+    IntakeCone.registerWithTestingDashboard();
+    IntakeCube.registerWithTestingDashboard();
 
     // Create Testing Dashboard
     TestingDashboard.getInstance().createTestingDashboard();

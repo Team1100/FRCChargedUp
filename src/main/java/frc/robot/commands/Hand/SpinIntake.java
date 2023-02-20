@@ -12,47 +12,49 @@ import frc.robot.testingdashboard.TestingDashboard;
 public class SpinIntake extends CommandBase {
 
   protected Hand m_hand;
-  private boolean m_finished;
-  private double m_speed = Constants.DEFAULT_INTAKE_CONE_SPEED;
+  private double m_power = Constants.DEFAULT_INTAKE_CONE_POWER;
+  private boolean m_parameterized;
   
   /** Creates a new IntakeBall. */
-  public SpinIntake(double s) {
+  public SpinIntake(double s, boolean parameterized) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_hand = Hand.getInstance();
     addRequirements(m_hand);
-    m_finished = false;
-    m_speed = s;
+    m_power = s;
+    m_parameterized = parameterized;
   }
 
   //Register with TestingDashboard
   public static void registerWithTestingDashboard() {
     Hand hand = Hand.getInstance();
-    SpinIntake cmd = new SpinIntake(Constants.DEFAULT_INTAKE_CONE_SPEED);
+    SpinIntake cmd = new SpinIntake(Constants.DEFAULT_INTAKE_CONE_POWER, false);
     TestingDashboard.getInstance().registerCommand(hand, "Basic", cmd);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_finished = false;
+    m_hand.setHandMotorPower(m_power);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_hand.spinHandMotor(m_speed);
+    if (!m_parameterized) {
+      m_power = TestingDashboard.getInstance().getNumber(m_hand, "HandPower");
+    } 
+    m_hand.setHandMotorPower(m_power);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_hand.spinHandMotor(0);
-    m_finished = false;
+    m_hand.setHandMotorPower(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_finished;
+    return false;
   }
 }

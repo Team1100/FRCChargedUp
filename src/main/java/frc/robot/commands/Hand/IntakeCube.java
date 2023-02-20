@@ -5,10 +5,19 @@
 package frc.robot.commands.Hand;
 
 import frc.robot.Constants;
+import frc.robot.subsystems.Hand;
+import frc.robot.testingdashboard.TestingDashboard;
 
 public class IntakeCube extends SpinIntake {
   /** Creates a new Intake. */
-  public IntakeCube() {
-    super(Constants.DEFAULT_INTAKE_CUBE_SPEED);
+  public IntakeCube(boolean parameterized) {
+    super(Constants.DEFAULT_INTAKE_CUBE_POWER, parameterized);
+  }
+
+  //Register with TestingDashboard
+  public static void registerWithTestingDashboard() {
+    Hand hand = Hand.getInstance();
+    IntakeCube cmd = new IntakeCube(false);
+    TestingDashboard.getInstance().registerCommand(hand, "Basic", cmd);
   }
 }

@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import frc.robot.Constants;
 import frc.robot.RobotMap;
 
 import com.revrobotics.CANSparkMax;
@@ -32,11 +33,12 @@ public class Hand extends SubsystemBase {
     if (m_hand == null) {
       m_hand = new Hand();
       TestingDashboard.getInstance().registerSubsystem(m_hand, "Hand");
+      TestingDashboard.getInstance().registerNumber(m_hand, "MotorInput", "HandPower", Constants.DEFAULT_INTAKE_CUBE_POWER);
     }
     return m_hand;
   }
 
-  public void spinHandMotor(double value) {
+  public void setHandMotorPower(double value) {
     m_handMotor.set(value);
   }
 

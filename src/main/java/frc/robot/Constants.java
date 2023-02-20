@@ -32,10 +32,10 @@ public final class Constants {
   public static final double D_ROT_RATE_LIMIT = 3.2;
 
   // Defines Hand command constants
-  public static final double DEFAULT_INTAKE_CUBE_SPEED = 0.5;
-  public static final double DEFAULT_INTAKE_CONE_SPEED = 0.5;
-  public static final double DEFAULT_EXPEL_CUBE_SPEED = -0.3;
-  public static final double DEFAULT_EXPEL_CONE_SPEED = -0.3;
+  public static final double DEFAULT_INTAKE_CUBE_POWER = 0.5;
+  public static final double DEFAULT_INTAKE_CONE_POWER = 0.5;
+  public static final double DEFAULT_EXPEL_CUBE_POWER = -0.3;
+  public static final double DEFAULT_EXPEL_CONE_POWER = -0.3;
 
 
   // Note that MAX POWER should be a value between 0 and 1
