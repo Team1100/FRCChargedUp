@@ -206,14 +206,14 @@ public class RobotMap {
 	public static final int A_ELBOW_MOTOR_LEFT = CAN_12; // TODO: Add real CAN ID
 	public static final int A_ELBOW_MOTOR_RIGHT = CAN_13; // TODO: Add real CAN ID
 	public static final int A_TURRET_MOTOR = CAN_14; // TODO: Add real CAN ID
-	public static final int A_WRIST_MOTOR = CAN_15; // TODO: Add real CAN ID
+	public static final int A_WRIST_MOTOR = CAN_33;
 
 	public static final int A_SHOULDER_POTENTIOMETER = ANALOG_0;
 	public static final int A_ELBOW_POTENTIOMETER = ANALOG_1;
 	public static final int A_TURRET_POTENTIOMETER = ANALOG_2;
 
 	//[H]and
-	public static final int H_MOTOR = CAN_50; // temporary value
+	public static final int H_MOTOR = CAN_30;
 
 	//[U]ser Input
 	public static final int U_DRIVER_XBOX_CONTROLLER = 0;
