@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.Arm.ArmOperatorControl;
+import frc.robot.commands.Arm.ArmOperatorPowerControl;
 import frc.robot.commands.Drive.ArcadeDrive;
 import frc.robot.commands.Hand.ExpelCone;
 import frc.robot.commands.Hand.ExpelCube;
@@ -41,7 +41,7 @@ public class RobotContainer {
     m_drive.setDefaultCommand(new ArcadeDrive());
 
     m_arm = Arm.getInstance();
-    m_arm.setDefaultCommand(new ArmOperatorControl());
+    m_arm.setDefaultCommand(new ArmOperatorPowerControl());
 
     Hand.getInstance();
 
@@ -54,7 +54,7 @@ public class RobotContainer {
     ArcadeDrive.registerWithTestingDashboard();
 
     // Arm
-    ArmOperatorControl.registerWithTestingDashboard();
+    ArmOperatorPowerControl.registerWithTestingDashboard();
 
     // Hand
     SpinIntake.registerWithTestingDashboard();

@@ -147,6 +147,10 @@ public class Arm extends SubsystemBase {
     m_elbow.set(value);
   }
 
+  public void setWristMotorPower(double value) {
+    m_wrist.set(value);
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

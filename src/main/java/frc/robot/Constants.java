@@ -39,10 +39,10 @@ public final class Constants {
 
 
   // Note that MAX POWER should be a value between 0 and 1
-  public static final double A_TURRET_MAX_POWER = 0.5;
-  public static final double A_SHOULDER_MAX_POWER = 0.5;
-  public static final double A_ELBOW_MAX_POWER = 0.5;
-  public static final double A_WRIST_MAX_POWER = 0.5;
+  public static final double A_TURRET_MAX_POWER = 0.3;
+  public static final double A_SHOULDER_MAX_POWER = 0.4;
+  public static final double A_ELBOW_MAX_POWER = 0.4;
+  public static final double A_WRIST_MAX_POWER = 0.4;
 
   public static final double TURRET_MOTOR_ROTATIONS_PER_REVOLUTION = 256;
   public static final double TURRET_DEGREES_PER_PULSE = DEGREES_PER_REVOLUTION / TURRET_MOTOR_ROTATIONS_PER_REVOLUTION;
