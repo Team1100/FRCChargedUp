@@ -17,6 +17,8 @@ import frc.robot.Constants;
 import frc.robot.RobotMap;
 import frc.robot.testingdashboard.TestingDashboard;
 
+import java.awt.geom.Point2D;
+
 public class Arm extends SubsystemBase {
 
   private static Arm m_arm;
@@ -55,6 +57,10 @@ public class Arm extends SubsystemBase {
   private double m_elbowTargetAngle;
   private double m_turretTargetAngle;
   private double m_wristTargetAngle;
+
+  
+  private Point2D.Double m_handCoor;
+
 
   /** Creates a new Arm. */
   private Arm() {
@@ -104,10 +110,11 @@ public class Arm extends SubsystemBase {
     }
 
     initializeJointTargetAngles();
+
   }
 
   public static Arm getInstance() {
-    if (m_arm == null) {
+			    if (m_arm == null) {
       m_arm = new Arm();
       TestingDashboard.getInstance().registerSubsystem(m_arm, "Arm");
       TestingDashboard.getInstance().registerNumber(m_arm, "Potentiometers", "ElbowPotVoltage", 0);
@@ -283,4 +290,5 @@ public class Arm extends SubsystemBase {
     }
   
   }
+
 }
