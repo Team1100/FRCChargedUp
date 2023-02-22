@@ -38,6 +38,25 @@ public final class Constants {
   public static final double DEFAULT_EXPEL_CONE_POWER = -0.3;
 
 
+  // Defines Arm command constants
+
+  public static final boolean A_ENABLE_SOFTWARE_PID = true;
+  public static final double A_TURRET_SOFTWARE_P = 0.01;
+  public static final double A_TURRET_SOFTWARE_I = 0;
+  public static final double A_TURRET_SOFTWARE_D = 0;
+
+  public static final double A_SHOULDER_SOFTWARE_P = 0.01;
+  public static final double A_SHOULDER_SOFTWARE_I = 0;
+  public static final double A_SHOULDER_SOFTWARE_D = 0;
+
+  public static final double A_ELBOW_SOFTWARE_P = 0.01;
+  public static final double A_ELBOW_SOFTWARE_I = 0;
+  public static final double A_ELBOW_SOFTWARE_D = 0;
+
+  public static final double A_WRIST_SOFTWARE_P = 0.01;
+  public static final double A_WRIST_SOFTWARE_I = 0;
+  public static final double A_WRIST_SOFTWARE_D = 0;
+
   // Note that MAX POWER should be a value between 0 and 1
   public static final double A_TURRET_MAX_POWER = 0.3;
   public static final double A_SHOULDER_MAX_POWER = 0.4;
