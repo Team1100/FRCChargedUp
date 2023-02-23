@@ -81,6 +81,13 @@ public class Arm extends SubsystemBase {
     m_turretEncoder = m_turret.getEncoder();
     m_wristEncoder = m_wrist.getEncoder();
 
+    m_shoulderEncoderLeft.setPositionConversionFactor(Constants.SHOULDER_MOTOR_VEL_CONVERSION_FACTOR);
+    m_shoulderEncoderRight.setPositionConversionFactor(Constants.SHOULDER_MOTOR_VEL_CONVERSION_FACTOR);
+    m_elbowEncoderLeft.setPositionConversionFactor(Constants.ELBOW_MOTOR_VEL_CONVERSION_FACTOR);
+    m_elbowEncoderRight.setPositionConversionFactor(Constants.ELBOW_MOTOR_VEL_CONVERSION_FACTOR);
+    m_turretEncoder.setPositionConversionFactor(Constants.TURRET_MOTOR_VEL_CONVERSION_FACTOR);
+
+
     // Initialize ARM potentiometers
     m_shoulderPot = new AnalogInput(RobotMap.A_SHOULDER_POTENTIOMETER);
     m_elbowPot = new AnalogInput(RobotMap.A_ELBOW_POTENTIOMETER);
@@ -192,6 +199,18 @@ public class Arm extends SubsystemBase {
   public double getWristAngle() {
     double wristEncoderAngle = m_wristEncoder.getPosition() * Constants.WRIST_DEGREES_PER_PULSE;
     return wristEncoderAngle;
+  }
+
+  public double getTurretVelocity() {
+    return m_turretEncoder.getVelocity();
+  }
+
+  public double getShoulderVelocity() {
+    return (m_shoulderEncoderLeft.getVelocity() + m_shoulderEncoderRight.getVelocity())/2;
+  }
+
+  public double getElbowVelocity() {
+    return (m_elbowEncoderLeft.getVelocity() + m_elbowEncoderRight.getVelocity())/2;
   }
 
   public void setTurretMotorPower(double value) {

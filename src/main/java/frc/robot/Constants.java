@@ -96,6 +96,13 @@ public final class Constants {
   public static final double ELBOW_POT_FULL_SWING_ANGLE = ELBOW_POT_END_ANGLE > ELBOW_POT_START_ANGLE? ELBOW_POT_END_ANGLE - ELBOW_POT_START_ANGLE: ELBOW_POT_START_ANGLE - ELBOW_POT_END_ANGLE;
   public static final double ELBOW_POT_DEGREES_PER_VOLT = ELBOW_POT_FULL_SWING_ANGLE / ELBOW_POT_FULL_SWING_VOLTAGE;
 
+  // Velocity Conversion Values for the arm motors
+  // TODO: Fill in with appropriate conversion factors
+  public static final double TURRET_MOTOR_VEL_CONVERSION_FACTOR = 1 / TURRET_MOTOR_ROTATIONS_PER_REVOLUTION;
+  public static final double SHOULDER_MOTOR_VEL_CONVERSION_FACTOR = 1 / SHOULDER_MOTOR_ROTATIONS_PER_REVOLUTION;
+  public static final double ELBOW_MOTOR_VEL_CONVERSION_FACTOR = 1 / ELBOW_MOTOR_ROTATIONS_PER_REVOLUTION;
+
+
   // Defines if systems are availible
   public static final boolean HW_ENABLE_DRIVE = true;
   public static final boolean HW_ENABLE_ARM = true;
