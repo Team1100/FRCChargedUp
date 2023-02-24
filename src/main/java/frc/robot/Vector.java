@@ -32,6 +32,16 @@ public class Vector {
         is3D = true;
     }
 
+    public Vector(Vector a) {
+        x = a.x;
+        y = a.y;
+        if (a.is3D()) {
+            z = a.z;
+            is3D = true;
+        }
+
+    }
+
     public static double dot(Vector a, Vector b) {
         double result = a.x * b.x + a.y * b.y;
         if (is3D) {
@@ -101,6 +111,17 @@ public class Vector {
 
     public boolean is3D() {
         return is3D;
-        
+    }
+
+    public void setValues(Vector a) {
+        this.x = a.x;
+        this.y = a.y;
+        this.z = a.z;
+    }
+
+    public void setValues(double X, double Y, double Z) {
+        this.x = X;
+        this.y = Y;
+        this.z = Z;
     }
 }

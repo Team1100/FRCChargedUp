@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import frc.robot.RobotMap;
+import frc.robot.helpers.ArmSegmentHelper;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -22,6 +24,7 @@ import java.awt.geom.Point2D;
 public class Arm extends SubsystemBase {
 
   private static Arm m_arm;
+  private ArmSegmentHelper m_armHelper;
 
   private CANSparkMax m_shoulderLeft;
   private CANSparkMax m_shoulderRight;
@@ -32,8 +35,6 @@ public class Arm extends SubsystemBase {
   private CANSparkMax m_elbow;
   private CANSparkMax m_turret;
   private CANSparkMax m_wrist;
-
-
 
   private RelativeEncoder m_shoulderEncoderLeft;
   private RelativeEncoder m_shoulderEncoderRight;
@@ -58,8 +59,6 @@ public class Arm extends SubsystemBase {
   private double m_turretTargetAngle;
   private double m_wristTargetAngle;
 
-  
-  private Point2D.Double m_handCoor;
 
 
   /** Creates a new Arm. */
@@ -72,6 +71,9 @@ public class Arm extends SubsystemBase {
     m_elbowRight = new CANSparkMax(RobotMap.A_ELBOW_MOTOR_RIGHT, MotorType.kBrushless);
     m_turret = new CANSparkMax(RobotMap.A_TURRET_MOTOR, MotorType.kBrushless);
     m_wrist = new CANSparkMax(RobotMap.A_WRIST_MOTOR, MotorType.kBrushless);
+
+    // Initialize the Arm Segment Helper
+    m_armHelper = new ArmSegmentHelper();
 
     // Acquire references to ARM encoders
     m_shoulderEncoderLeft = m_shoulderLeft.getEncoder();
@@ -161,6 +163,14 @@ public class Arm extends SubsystemBase {
       TestingDashboard.getInstance().registerNumber(m_arm, "WristSoftwarePID", "TargetWristP", 0);
       TestingDashboard.getInstance().registerNumber(m_arm, "WristSoftwarePID", "TargetWristI", 0);
       TestingDashboard.getInstance().registerNumber(m_arm, "WristSoftwarePID", "TargetWristD", 0);
+
+      TestingDashboard.getInstance().registerNumber(m_arm, "HandCoordinates", "HandXCoor", 0);
+      TestingDashboard.getInstance().registerNumber(m_arm, "HandCoordinates", "HandYCoor", 0);
+      TestingDashboard.getInstance().registerNumber(m_arm, "HandCoordinates", "HandZCoor", 0);
+
+      TestingDashboard.getInstance().registerNumber(m_arm, "HandVelocity", "HandXVel", 0);
+      TestingDashboard.getInstance().registerNumber(m_arm, "HandVelocity", "HandYVel", 0);
+      TestingDashboard.getInstance().registerNumber(m_arm, "HandVelocity", "HandZVel", 0);
     }
     return m_arm;
   }
@@ -307,7 +317,8 @@ public class Arm extends SubsystemBase {
     if (Constants.A_ENABLE_SOFTWARE_PID && m_enableArmPid) {
       controlJointsWithSoftwarePidControl();
     }
-  
+
+    m_armHelper.updateArmSegmentValues();
   }
 
 }

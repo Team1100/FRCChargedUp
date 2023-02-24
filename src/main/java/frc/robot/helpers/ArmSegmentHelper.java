@@ -2,6 +2,7 @@ package frc.robot.helpers;
 import java.awt.geom.Point2D;
 import frc.robot.Vector;
 import frc.robot.subsystems.Arm;
+import frc.robot.testingdashboard.TestingDashboard;
 
 
 public class ArmSegmentHelper {
@@ -39,6 +40,7 @@ public class ArmSegmentHelper {
 
     
     private Vector m_handCoor;
+    private Vector m_handVel;
 
     Arm m_arm;
 
@@ -57,6 +59,12 @@ public class ArmSegmentHelper {
         // TODO: Initialize with a more accurate coordinate.
         // Initially has m_handCoor set as if the arm is straight up with the forearm folded down, may want to i
         m_handCoor = new Vector(0,0, SHOULDER_LENGTH - FOREARM_LENGTH + SHOULDER_JOINT_COOR.z);
+        m_handVel = new Vector(0,0,0);
+    }
+
+    public void updateArmSegmentValues() {
+        calculateHandCoor();
+        calculateHandVelocity();
     }
 
     /**
@@ -79,8 +87,12 @@ public class ArmSegmentHelper {
             + SHOULDER_LENGTH * Math.sin(Math.toRadians(m_arm.getShoulderAngle())) 
             + FOREARM_LENGTH * Math.sin(Math.toRadians(m_arm.getShoulderAngle() + m_arm.getElbowAngle() + 180));
 
-        m_handCoor = new Vector(x,y,z);
-        return m_handCoor;
+        TestingDashboard.getInstance().updateNumber(m_arm, "HandXCoor", x);
+        TestingDashboard.getInstance().updateNumber(m_arm, "HandYCoor", y);
+        TestingDashboard.getInstance().updateNumber(m_arm, "HandZCoor", z);
+
+        m_handCoor.setValues(x,y,z);
+        return new Vector(x, y, z);
     }
 
     /**
@@ -107,6 +119,11 @@ public class ArmSegmentHelper {
         // Adds velocity contributed by both arm segments
         double handVelZ = elbowVelZ + (m_arm.getElbowVelocity() * RPM_TO_RAD * FOREARM_LENGTH * Math.cos(Math.toRadians(m_arm.getElbowAngle())));
         
+        TestingDashboard.getInstance().updateNumber(m_arm, "HandXVel", handVelX);
+        TestingDashboard.getInstance().updateNumber(m_arm, "HandYVel", handVelY);
+        TestingDashboard.getInstance().updateNumber(m_arm, "HandZVel", handVelZ);
+
+        m_handVel.setValues(handVelX, handVelY, handVelZ);
         return new Vector(handVelX,handVelY,handVelZ);
     }
 
@@ -156,5 +173,13 @@ public class ArmSegmentHelper {
      */
     public extentionLimitFaces predictOverExtention(double lookAheadTime) {
         return checkForOverextention(calculateFutureCoor(lookAheadTime));
+    }
+
+    public Vector getHandCoor() {
+        return new Vector(m_handCoor);
+    }
+
+    public Vector getHandVel() {
+        return new Vector(m_handVel);
     }
 }
