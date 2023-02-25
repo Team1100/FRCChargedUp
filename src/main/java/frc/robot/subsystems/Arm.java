@@ -279,25 +279,24 @@ public class Arm extends SubsystemBase {
 
     while(done == false) {
 
-    if(getHandY() + DEADBAND - y <= 0 && getHandY() - DEADBAND - y >= 0) {
+      if(getHandY() + DEADBAND - y <= 0 && getHandY() - DEADBAND - y >= 0) {
+        a1 = (Math.asin(((y + (Math.cos(a2) * 32))/(41.5))));
+        a2 = - (Math.acos((y - (41.5 * Math.sin(a1))) / (32)));
+      }
 
-    a1 = (Math.asin(((y + (Math.cos(a2) * 32))/(41.5))));
-    a2 = - (Math.acos((y - (41.5 * Math.sin(a1))) / (32)));
+      if((getHandX() + DEADBAND - x <= 0 && getHandX() - DEADBAND - x >= 0)) {
+        a1 = Math.acos((x - (32 * Math.sin(a2))) / (41.5));
+        a2 = Math.asin((x - (41.5 * Math.cos(a1)))/(32));
+      }
+
+      // NOTE: Must convert sin and cos to DEGREES, not RADIANS !!!
+      if((getHandX() + DEADBAND - x <= 0 && getHandX() - DEADBAND - x >= 0) || (getHandY() + DEADBAND - y <= 0 && getHandY() - DEADBAND - y >= 0)) {
+        done = true;
+      }
     }
-
-    if((getHandX() + DEADBAND - x <= 0 && getHandX() - DEADBAND - x >= 0)) {
-      a1 = Math.acos((x - (32 * Math.sin(a2))) / (41.5));
-      a2 = Math.asin((x - (41.5 * Math.cos(a1)))/(32));
-    }
-
-    // NOTE: Must convert sin and cos to DEGREES, not RADIANS !!!
-
-    if((getHandX() + DEADBAND - x <= 0 && getHandX() - DEADBAND - x >= 0) || (getHandY() + DEADBAND - y <= 0 && getHandY() - DEADBAND - y >= 0)) {
-      done = true;
-    }
+    return a1a2;
   }
 
-    return a1a2;
   public void setWristMotorPower(double value) {
     m_wrist.set(value);
   }
@@ -355,7 +354,6 @@ public class Arm extends SubsystemBase {
     setShoulderMotorPower(s_power);
     setElbowMotorPower(e_power);
     setWristMotorPower(w_power);
->>>>>>> refs/remotes/origin/main
   }
 
   @Override
