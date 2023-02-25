@@ -27,6 +27,7 @@ import frc.robot.commands.Arm.EnableWristPid;
 import frc.robot.commands.Drive.ArcadeDrive;
 import frc.robot.commands.Hand.ExpelCone;
 import frc.robot.commands.Hand.ExpelCube;
+import frc.robot.commands.Hand.HandOperatorPowerControl;
 import frc.robot.commands.Hand.IntakeCone;
 import frc.robot.commands.Hand.IntakeCube;
 import frc.robot.commands.Hand.SpinIntake;
@@ -43,6 +44,7 @@ public class RobotContainer {
   SendableChooser<Command> m_chooser = new SendableChooser<>();
   private final Drive m_drive;
   private final Arm m_arm;
+  private final Hand m_hand;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -53,7 +55,8 @@ public class RobotContainer {
     m_arm = Arm.getInstance();
     m_arm.setDefaultCommand(new ArmOperatorPowerControl());
 
-    Hand.getInstance();
+    m_hand = Hand.getInstance();
+    m_hand.setDefaultCommand(new HandOperatorPowerControl());
 
     // Configure the trigger bindings
     configureBindings();
@@ -82,6 +85,7 @@ public class RobotContainer {
     ExpelCube.registerWithTestingDashboard();
     IntakeCone.registerWithTestingDashboard();
     IntakeCube.registerWithTestingDashboard();
+    HandOperatorPowerControl.registerWithTestingDashboard();
 
     // Create Testing Dashboard
     TestingDashboard.getInstance().createTestingDashboard();

@@ -207,6 +207,11 @@ public class Arm extends SubsystemBase {
         TestingDashboard.getInstance().registerNumber(m_arm, "JointAnglesAll", "ElbowPotAngle", 0);
         TestingDashboard.getInstance().registerNumber(m_arm, "JointAnglesAll", "ElbowEncoderLeftAngle", 0);
         TestingDashboard.getInstance().registerNumber(m_arm, "JointAnglesAll", "ElbowEncoderRightAngle", 0);
+
+        TestingDashboard.getInstance().registerNumber(m_arm, "JointAngles", "TurretAngle", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "JointAngles", "ShoulderAngle", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "JointAngles", "ElbowAngle", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "JointAngles", "WristAngle", 0);
     }
     return m_arm;
   }
@@ -581,6 +586,11 @@ public class Arm extends SubsystemBase {
     TestingDashboard.getInstance().updateNumber(m_arm, "ElbowPotAngle", getElbowPotAngle());
     TestingDashboard.getInstance().updateNumber(m_arm, "ElbowEncoderLeftAngle", getElbowEncoderLeftAngle());
     TestingDashboard.getInstance().updateNumber(m_arm, "ElbowEncoderRightAngle", getElbowEncoderRightAngle());
+
+    TestingDashboard.getInstance().updateNumber(m_arm, "TurretAngle", getTurretAngle());
+    TestingDashboard.getInstance().updateNumber(m_arm, "ShoulderAngle", getShoulderAngle());
+    TestingDashboard.getInstance().updateNumber(m_arm, "ElbowAngle", getElbowAngle());
+    TestingDashboard.getInstance().updateNumber(m_arm, "WristAngle", getWristAngle());
 
     updatePidEnableFlags();
 

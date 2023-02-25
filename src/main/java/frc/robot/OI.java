@@ -7,6 +7,9 @@
 
 package frc.robot;
 
+import frc.robot.commands.Hand.ExpelCube;
+import frc.robot.commands.Hand.IntakeCube;
+import frc.robot.commands.Hand.SpinIntake;
 import frc.robot.input.AttackThree;
 import frc.robot.input.ButtonBox;
 import frc.robot.input.XboxController;
@@ -64,6 +67,8 @@ public class OI {
     if (Constants.XBOX_CONTROLLER_DRIVER_ENABLE) {
     }
     if (Constants.XBOX_CONTROLLER_OPERATOR_ENABLE) {
+      OperatorXboxController.getButtonY().onTrue(new IntakeCube(false));
+      OperatorXboxController.getButtonA().onTrue(new ExpelCube(false));
     }
     
     ////////////////////////////////////////////////////
