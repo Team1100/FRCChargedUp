@@ -204,6 +204,38 @@ public class Arm extends SubsystemBase {
     m_wristTargetAngle = 0;
   }
 
+  public void setWristTargetAngle(double angle) {
+    m_wristTargetAngle = angle;
+  }
+
+  public void setElbowTargetAngle(double angle) {
+    m_elbowTargetAngle = angle;
+  }
+
+  public void setShoulderTargetAngle(double angle) {
+    m_shoulderTargetAngle = angle;
+  }
+
+  public void setTurretTargetAngle(double angle) {
+    m_turretTargetAngle = angle;
+  }
+
+  public double setWristTargetAngle() {
+    return m_wristTargetAngle;
+  }
+
+  public double getElbowTargetAngle() {
+    return m_elbowTargetAngle;
+  }
+
+  public double getShoulderTargetAngle() {
+    return m_shoulderTargetAngle;
+  }
+
+  public double getTurretTargetAngle() {
+    return m_turretTargetAngle;
+  }
+
   public double getTurretAngle() {
     double turretEncoderAngle = m_turretEncoder.getPosition() * Constants.TURRET_DEGREES_PER_PULSE;
     double turretPotAngle = m_turretPot.getVoltage() * Constants.TURRET_POT_DEGREES_PER_VOLT;

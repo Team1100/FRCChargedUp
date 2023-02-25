@@ -16,6 +16,7 @@ public final class Constants {
 
   // General Constants
   public static final double DEGREES_PER_REVOLUTION = 360;
+  public static final double DEGREES_PER_JOY_SPAN = 180 / 1;
 
   // Joysticks enabled
   public static final boolean ATTACK_THREE_ENABLE = false;
@@ -62,6 +63,12 @@ public final class Constants {
   public static final double A_SHOULDER_MAX_POWER = 0.4;
   public static final double A_ELBOW_MAX_POWER = 0.4;
   public static final double A_WRIST_MAX_POWER = 0.4;
+
+  // Joint angle increments
+  public static final double A_TURRET_ANGLE_INCREMENT = 5; // degrees
+  public static final double A_SHOULDER_ANGLE_INCREMENT = 5; // degrees
+  public static final double A_ELBOW_ANGLE_INCREMENT = 5; // degrees
+  public static final double A_WRIST_ANGLE_INCREMENT = 5; // degrees
 
   public static final double TURRET_MOTOR_ROTATIONS_PER_REVOLUTION = 256;
   public static final double TURRET_DEGREES_PER_PULSE = DEGREES_PER_REVOLUTION / TURRET_MOTOR_ROTATIONS_PER_REVOLUTION;
