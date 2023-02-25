@@ -246,6 +246,10 @@ public class Arm extends SubsystemBase {
     m_elbow.set(value);
   }
 
+  public void setWristMotorPower(double value) {
+    m_wrist.set(value);
+  }
+
   public double getHandX(/*double theta1, double theta2, double rotation*/) {
     double x = 0;
 
@@ -306,10 +310,6 @@ public class Arm extends SubsystemBase {
       }
     }
     return a1a2;
-  }
-
-  public void setWristMotorPower(double value) {
-    m_wrist.set(value);
   }
 
   public void enableArmPid() {

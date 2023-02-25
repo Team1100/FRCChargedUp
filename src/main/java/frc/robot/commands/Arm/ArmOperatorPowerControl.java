@@ -37,6 +37,7 @@ public class ArmOperatorPowerControl extends CommandBase {
     m_arm.setElbowMotorPower(0);
     m_arm.setWristMotorPower(0);
     m_xbox = OI.getInstance().getOperatorXboxController();
+    m_arm.disableArmPid();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
