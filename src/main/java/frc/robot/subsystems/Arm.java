@@ -9,6 +9,7 @@ import frc.robot.helpers.ArmSegmentHelper;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
@@ -72,8 +73,12 @@ public class Arm extends SubsystemBase {
     m_turret = new CANSparkMax(RobotMap.A_TURRET_MOTOR, MotorType.kBrushless);
     m_wrist = new CANSparkMax(RobotMap.A_WRIST_MOTOR, MotorType.kBrushless);
 
-    // Initialize the Arm Segment Helper
-    m_armHelper = new ArmSegmentHelper();
+    m_shoulderLeft.restoreFactoryDefaults();
+    m_shoulderRight.restoreFactoryDefaults();
+    m_elbowLeft.restoreFactoryDefaults();
+    m_elbowRight.restoreFactoryDefaults();
+    m_turret.restoreFactoryDefaults();
+    m_wrist.restoreFactoryDefaults();
 
     // Acquire references to ARM encoders
     m_shoulderEncoderLeft = m_shoulderLeft.getEncoder();
@@ -95,16 +100,22 @@ public class Arm extends SubsystemBase {
     m_elbowPot = new AnalogInput(RobotMap.A_ELBOW_POTENTIOMETER);
     m_turretPot = new AnalogInput(RobotMap.A_TURRET_POTENTIOMETER);
 
+    // Sets arm motors to brake mode
+    m_shoulderLeft.setIdleMode(IdleMode.kBrake);
+    m_shoulderRight.setIdleMode(IdleMode.kBrake);
+    m_elbowLeft.setIdleMode(IdleMode.kBrake);
+    m_elbowRight.setIdleMode(IdleMode.kBrake);
+    m_turret.setIdleMode(IdleMode.kBrake);
+    m_wrist.setIdleMode(IdleMode.kBrake);
+
     // Set inversion for the elbow and shoulder
-    m_shoulderLeft.setInverted(true);
-    m_elbowLeft.setInverted(true);
     m_shoulderRight.setInverted(false);
-    m_shoulderRight.setInverted(false);
+    m_elbowRight.setInverted(false);
 
     // Setup the LEFT shoulder/elbow to follow
     // the RIGHT shoulder/elbow
-    m_shoulderLeft.follow(m_shoulderRight);
-    m_elbowLeft.follow(m_shoulderRight);
+    m_shoulderLeft.follow(m_shoulderRight, true);
+    m_elbowLeft.follow(m_elbowRight, true);
 
     // The shoulder and elbow motors will be driven by
     // working through their RIGHT sides
@@ -123,54 +134,54 @@ public class Arm extends SubsystemBase {
   }
 
   public static Arm getInstance() {
-			    if (m_arm == null) {
-      m_arm = new Arm();
-      TestingDashboard.getInstance().registerSubsystem(m_arm, "Arm");
-      TestingDashboard.getInstance().registerNumber(m_arm, "Potentiometers", "ElbowPotVoltage", 0);
-      TestingDashboard.getInstance().registerNumber(m_arm, "Potentiometers", "ShoulderPotVoltage", 0);
-      TestingDashboard.getInstance().registerNumber(m_arm, "Potentiometers", "TurretPotVoltage", 0);
+			if (m_arm == null) {
+        m_arm = new Arm();
+        TestingDashboard.getInstance().registerSubsystem(m_arm, "Arm");
+        TestingDashboard.getInstance().registerNumber(m_arm, "Potentiometers", "ElbowPotVoltage", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "Potentiometers", "ShoulderPotVoltage", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "Potentiometers", "TurretPotVoltage", 0);
 
-      TestingDashboard.getInstance().registerNumber(m_arm, "Encoders", "ElbowEncoderLeftPulses", 0);
-      TestingDashboard.getInstance().registerNumber(m_arm, "Encoders", "ElbowEncoderRightPulses", 0);
-      TestingDashboard.getInstance().registerNumber(m_arm, "Encoders", "ShoulderEncoderLeftPulses", 0);
-      TestingDashboard.getInstance().registerNumber(m_arm, "Encoders", "ShoulderEncoderRightPulses", 0);
-      TestingDashboard.getInstance().registerNumber(m_arm, "Encoders", "TurretEncoderPulses", 0);
-      TestingDashboard.getInstance().registerNumber(m_arm, "Encoders", "WristEncoderPulses", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "Encoders", "ElbowEncoderLeftPulses", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "Encoders", "ElbowEncoderRightPulses", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "Encoders", "ShoulderEncoderLeftPulses", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "Encoders", "ShoulderEncoderRightPulses", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "Encoders", "TurretEncoderPulses", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "Encoders", "WristEncoderPulses", 0);
 
-      TestingDashboard.getInstance().registerNumber(m_arm, "MotorInputs", "ElbowMotorPower", 0);
-      TestingDashboard.getInstance().registerNumber(m_arm, "MotorInputs", "ShoulderMotorPower", 0);
-      TestingDashboard.getInstance().registerNumber(m_arm, "MotorInputs", "TurretMotorPower", 0);
-      TestingDashboard.getInstance().registerNumber(m_arm, "MotorInputs", "WristMotorPower", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "MotorInputs", "ElbowMotorPower", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "MotorInputs", "ShoulderMotorPower", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "MotorInputs", "TurretMotorPower", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "MotorInputs", "WristMotorPower", 0);
 
-      TestingDashboard.getInstance().registerString(m_arm, "PidMasterControl", "ArmSoftwarePidEnable", "Disabled");
+        TestingDashboard.getInstance().registerString(m_arm, "PidMasterControl", "ArmSoftwarePidEnable", "Disabled");
 
-      TestingDashboard.getInstance().registerNumber(m_arm, "TurretSoftwarePID", "TargetTurretAngle", 0);
-      TestingDashboard.getInstance().registerNumber(m_arm, "TurretSoftwarePID", "TargetTurretP", 0);
-      TestingDashboard.getInstance().registerNumber(m_arm, "TurretSoftwarePID", "TargetTurretI", 0);
-      TestingDashboard.getInstance().registerNumber(m_arm, "TurretSoftwarePID", "TargetTurretD", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "TurretSoftwarePID", "TargetTurretAngle", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "TurretSoftwarePID", "TargetTurretP", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "TurretSoftwarePID", "TargetTurretI", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "TurretSoftwarePID", "TargetTurretD", 0);
 
-      TestingDashboard.getInstance().registerNumber(m_arm, "ShoulderSoftwarePID", "TargetShoulderAngle", 0);
-      TestingDashboard.getInstance().registerNumber(m_arm, "ShoulderSoftwarePID", "TargetShoulderP", 0);
-      TestingDashboard.getInstance().registerNumber(m_arm, "ShoulderSoftwarePID", "TargetShoulderI", 0);
-      TestingDashboard.getInstance().registerNumber(m_arm, "ShoulderSoftwarePID", "TargetShoulderD", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "ShoulderSoftwarePID", "TargetShoulderAngle", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "ShoulderSoftwarePID", "TargetShoulderP", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "ShoulderSoftwarePID", "TargetShoulderI", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "ShoulderSoftwarePID", "TargetShoulderD", 0);
 
-      TestingDashboard.getInstance().registerNumber(m_arm, "ElbowSoftwarePID", "TargetElbowAngle", 0);
-      TestingDashboard.getInstance().registerNumber(m_arm, "ElbowSoftwarePID", "TargetElbowP", 0);
-      TestingDashboard.getInstance().registerNumber(m_arm, "ElbowSoftwarePID", "TargetElbowI", 0);
-      TestingDashboard.getInstance().registerNumber(m_arm, "ElbowSoftwarePID", "TargetElbowD", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "ElbowSoftwarePID", "TargetElbowAngle", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "ElbowSoftwarePID", "TargetElbowP", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "ElbowSoftwarePID", "TargetElbowI", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "ElbowSoftwarePID", "TargetElbowD", 0);
 
-      TestingDashboard.getInstance().registerNumber(m_arm, "WristSoftwarePID", "TargetWristAngle", 0);
-      TestingDashboard.getInstance().registerNumber(m_arm, "WristSoftwarePID", "TargetWristP", 0);
-      TestingDashboard.getInstance().registerNumber(m_arm, "WristSoftwarePID", "TargetWristI", 0);
-      TestingDashboard.getInstance().registerNumber(m_arm, "WristSoftwarePID", "TargetWristD", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "WristSoftwarePID", "TargetWristAngle", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "WristSoftwarePID", "TargetWristP", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "WristSoftwarePID", "TargetWristI", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "WristSoftwarePID", "TargetWristD", 0);
 
-      TestingDashboard.getInstance().registerNumber(m_arm, "HandCoordinates", "HandXCoor", 0);
-      TestingDashboard.getInstance().registerNumber(m_arm, "HandCoordinates", "HandYCoor", 0);
-      TestingDashboard.getInstance().registerNumber(m_arm, "HandCoordinates", "HandZCoor", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "HandCoordinates", "HandXCoor", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "HandCoordinates", "HandYCoor", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "HandCoordinates", "HandZCoor", 0);
 
-      TestingDashboard.getInstance().registerNumber(m_arm, "HandVelocity", "HandXVel", 0);
-      TestingDashboard.getInstance().registerNumber(m_arm, "HandVelocity", "HandYVel", 0);
-      TestingDashboard.getInstance().registerNumber(m_arm, "HandVelocity", "HandZVel", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "HandVelocity", "HandXVel", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "HandVelocity", "HandYVel", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "HandVelocity", "HandZVel", 0);
     }
     return m_arm;
   }
@@ -380,7 +391,6 @@ public class Arm extends SubsystemBase {
       controlJointsWithSoftwarePidControl();
     }
 
-    m_armHelper.updateArmSegmentValues();
   }
 
 }
