@@ -15,7 +15,15 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Arm.ArmOperatorPowerControl;
 import frc.robot.commands.Arm.DisableArmPid;
+import frc.robot.commands.Arm.DisableElbowPid;
+import frc.robot.commands.Arm.DisableShoulderPid;
+import frc.robot.commands.Arm.DisableTurretPid;
+import frc.robot.commands.Arm.DisableWristPid;
 import frc.robot.commands.Arm.EnableArmPid;
+import frc.robot.commands.Arm.EnableElbowPid;
+import frc.robot.commands.Arm.EnableShoulderPid;
+import frc.robot.commands.Arm.EnableTurretPid;
+import frc.robot.commands.Arm.EnableWristPid;
 import frc.robot.commands.Drive.ArcadeDrive;
 import frc.robot.commands.Hand.ExpelCone;
 import frc.robot.commands.Hand.ExpelCube;
@@ -59,6 +67,14 @@ public class RobotContainer {
     ArmOperatorPowerControl.registerWithTestingDashboard();
     EnableArmPid.registerWithTestingDashboard();
     DisableArmPid.registerWithTestingDashboard();
+    EnableWristPid.registerWithTestingDashboard();
+    DisableWristPid.registerWithTestingDashboard();
+    EnableElbowPid.registerWithTestingDashboard();
+    DisableElbowPid.registerWithTestingDashboard();
+    EnableShoulderPid.registerWithTestingDashboard();
+    DisableShoulderPid.registerWithTestingDashboard();
+    EnableTurretPid.registerWithTestingDashboard();
+    DisableTurretPid.registerWithTestingDashboard();
 
     // Hand
     SpinIntake.registerWithTestingDashboard();

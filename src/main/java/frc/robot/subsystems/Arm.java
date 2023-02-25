@@ -51,9 +51,13 @@ public class Arm extends SubsystemBase {
   // PID controllers and enable/disable
   private boolean m_enableArmPid = false;
   private PIDController m_shoulderPid;
+  private boolean m_enableShoulderPid = false;
   private PIDController m_elbowPid;
+  private boolean m_enableElbowPid = false;
   private PIDController m_turretPid;
+  private boolean m_enableTurretPid = false;
   private PIDController m_wristPid;
+  private boolean m_enableWristPid = false;
 
   private double m_shoulderTargetAngle;
   private double m_elbowTargetAngle;
@@ -154,6 +158,12 @@ public class Arm extends SubsystemBase {
         TestingDashboard.getInstance().registerNumber(m_arm, "MotorInputs", "WristMotorPower", 0);
 
         TestingDashboard.getInstance().registerString(m_arm, "PidMasterControl", "ArmSoftwarePidEnable", "Disabled");
+
+        TestingDashboard.getInstance().registerString(m_arm, "PidJointControl", "WristSoftwarePidEnable", "Disabled");
+        TestingDashboard.getInstance().registerString(m_arm, "PidJointControl", "ElbowSoftwarePidEnable", "Disabled");
+        TestingDashboard.getInstance().registerString(m_arm, "PidJointControl", "ShoulderSoftwarePidEnable", "Disabled");
+        TestingDashboard.getInstance().registerString(m_arm, "PidJointControl", "TurretSoftwarePidEnable", "Disabled");
+
 
         TestingDashboard.getInstance().registerNumber(m_arm, "TurretSoftwarePID", "TargetTurretAngle", 0);
         TestingDashboard.getInstance().registerNumber(m_arm, "TurretSoftwarePID", "TargetTurretP", 0);
@@ -314,10 +324,54 @@ public class Arm extends SubsystemBase {
 
   public void enableArmPid() {
     m_enableArmPid = true;
+    m_enableWristPid = true;
+    m_enableElbowPid = true;
+    m_enableShoulderPid = true;
+    m_enableTurretPid = true;
   }
 
   public void disableArmPid() {
     m_enableArmPid = false;
+    m_enableWristPid = false;
+    m_enableElbowPid = false;
+    m_enableShoulderPid = false;
+    m_enableTurretPid = false;
+  }
+
+  public void enableWristPid() {
+    m_enableArmPid = true;
+    m_enableWristPid = true;
+  }
+
+  public void disableWristPid() {
+    m_enableWristPid = false;
+  }
+
+  public void enableElbowPid() {
+    m_enableArmPid = true;
+    m_enableElbowPid = true;
+  }
+
+  public void disableElbowPid() {
+    m_enableElbowPid = false;
+  }
+
+  public void enableShoulderPid() {
+    m_enableArmPid = true;
+    m_enableShoulderPid = true;
+  }
+
+  public void disableShoulderPid() {
+    m_enableShoulderPid = false;
+  }
+
+  public void enableTurretPid() {
+    m_enableArmPid = true;
+    m_enableTurretPid = true;
+  }
+
+  public void disableTurretPid() {
+    m_enableTurretPid = false;
   }
 
   public void updateJointSoftwarePidControllerValues() {
@@ -353,18 +407,67 @@ public class Arm extends SubsystemBase {
 
   public void controlJointsWithSoftwarePidControl() {
     updateJointSoftwarePidControllerValues();
-    double t_power = m_turretPid.calculate(getTurretAngle(), m_turretTargetAngle);
-    double s_power = m_shoulderPid.calculate(getShoulderAngle(), m_shoulderTargetAngle);
-    double e_power = m_elbowPid.calculate(getElbowAngle(), m_elbowTargetAngle);
-    double w_power = m_wristPid.calculate(getWristAngle(), m_wristTargetAngle);
-    t_power = MathUtil.clamp(t_power, -Constants.A_TURRET_MAX_POWER, Constants.A_TURRET_MAX_POWER);
-    s_power = MathUtil.clamp(s_power, -Constants.A_SHOULDER_MAX_POWER, Constants.A_SHOULDER_MAX_POWER);
-    e_power = MathUtil.clamp(e_power, -Constants.A_ELBOW_MAX_POWER, Constants.A_ELBOW_MAX_POWER);
-    w_power = MathUtil.clamp(w_power, -Constants.A_WRIST_MAX_POWER, Constants.A_WRIST_MAX_POWER);
-    setTurretMotorPower(t_power);
-    setShoulderMotorPower(s_power);
-    setElbowMotorPower(e_power);
-    setWristMotorPower(w_power);
+
+    // Do nothing if Arm PID control is not enabled
+    if (!m_enableArmPid) {
+      return;
+    }
+
+    if (m_enableTurretPid) {
+      double t_power = m_turretPid.calculate(getTurretAngle(), m_turretTargetAngle);
+      t_power = MathUtil.clamp(t_power, -Constants.A_TURRET_MAX_POWER, Constants.A_TURRET_MAX_POWER);
+      setTurretMotorPower(t_power);
+    }
+
+    if (m_enableShoulderPid) {
+      double s_power = m_shoulderPid.calculate(getShoulderAngle(), m_shoulderTargetAngle);
+      s_power = MathUtil.clamp(s_power, -Constants.A_SHOULDER_MAX_POWER, Constants.A_SHOULDER_MAX_POWER);
+      setShoulderMotorPower(s_power);
+    }
+
+    if (m_enableElbowPid) {
+      double e_power = m_elbowPid.calculate(getElbowAngle(), m_elbowTargetAngle);
+      e_power = MathUtil.clamp(e_power, -Constants.A_ELBOW_MAX_POWER, Constants.A_ELBOW_MAX_POWER);
+      setElbowMotorPower(e_power);
+    }
+
+    if (m_enableWristPid) {
+      double w_power = m_wristPid.calculate(getWristAngle(), m_wristTargetAngle);
+      w_power = MathUtil.clamp(w_power, -Constants.A_WRIST_MAX_POWER, Constants.A_WRIST_MAX_POWER);
+      setWristMotorPower(w_power);
+    }
+  }
+
+  public void updatePidEnableFlags() {
+    if (m_enableArmPid) {
+      TestingDashboard.getInstance().updateString(m_arm, "ArmSoftwarePidEnable", "Enabled");
+    } else {
+      TestingDashboard.getInstance().updateString(m_arm, "ArmSoftwarePidEnable", "Disabled");
+    }
+
+    if (m_enableWristPid) {
+      TestingDashboard.getInstance().updateString(m_arm, "WristSoftwarePidEnable", "Enabled");
+    } else {
+      TestingDashboard.getInstance().updateString(m_arm, "WristSoftwarePidEnable", "Disabled");
+    }
+
+    if (m_enableElbowPid) {
+      TestingDashboard.getInstance().updateString(m_arm, "ElbowSoftwarePidEnable", "Enabled");
+    } else {
+      TestingDashboard.getInstance().updateString(m_arm, "ElbowSoftwarePidEnable", "Disabled");
+    }
+
+    if (m_enableShoulderPid) {
+      TestingDashboard.getInstance().updateString(m_arm, "ShoulderSoftwarePidEnable", "Enabled");
+    } else {
+      TestingDashboard.getInstance().updateString(m_arm, "ShoulderSoftwarePidEnable", "Disabled");
+    }
+
+    if (m_enableTurretPid) {
+      TestingDashboard.getInstance().updateString(m_arm, "TurretSoftwarePidEnable", "Enabled");
+    } else {
+      TestingDashboard.getInstance().updateString(m_arm, "TurretSoftwarePidEnable", "Disabled");
+    }
   }
 
   @Override
@@ -381,11 +484,7 @@ public class Arm extends SubsystemBase {
     TestingDashboard.getInstance().updateNumber(m_arm, "TurretEncoderPulses", m_turretEncoder.getPosition());
     TestingDashboard.getInstance().updateNumber(m_arm, "WristEncoderPulses", m_wristEncoder.getPosition());
 
-    if (m_enableArmPid) {
-      TestingDashboard.getInstance().updateString(m_arm, "ArmSoftwarePidEnable", "Enabled");
-    } else {
-      TestingDashboard.getInstance().updateString(m_arm, "ArmSoftwarePidEnable", "Disabled");
-    }
+    updatePidEnableFlags();
 
     if (Constants.A_ENABLE_SOFTWARE_PID && m_enableArmPid) {
       controlJointsWithSoftwarePidControl();
