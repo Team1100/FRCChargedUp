@@ -147,6 +147,71 @@ public class Arm extends SubsystemBase {
     m_elbow.set(value);
   }
 
+  public double getHandX(/*double theta1, double theta2, double rotation*/) {
+    double x = 0;
+
+    double thetaOne = getShoulderAngle();
+    double thetaTwo = getElbowAngle();
+    double rotation = getTurretAngle();
+
+    double theta1 = thetaOne;
+    double theta2 = thetaTwo;
+    double rot = rotation;
+
+    x = (41.5 * Math.sin(Math.toRadians(theta1))) - (32 * Math.sin(Math.toRadians(theta2)));
+
+    return x;
+  }
+
+  public double getHandY(/*double thetaOne, double thetaTwo, double rotation*/) {
+    double y = 0;
+
+    double thetaOne = getShoulderAngle();
+    double thetaTwo = getElbowAngle();
+    double rotation = getTurretAngle();
+
+    double theta1 = thetaOne;
+    double theta2 = thetaTwo;
+    double rot = rotation;
+
+    y = (41.5 * Math.cos(Math.toRadians(theta1))) - (32 * Math.cos(Math.toRadians(theta2)));
+
+    return y;
+  }
+
+  public double[] getEncoderTargetAngles(double x, double y) {
+    double[] a1a2 = {0, 0};
+
+    double DEADBAND = 5;
+
+    double a1 = 0;
+    double a2 = 0;
+
+    boolean done = false;
+
+    while(done == false) {
+
+    if(getHandY() + DEADBAND - y <= 0 && getHandY() - DEADBAND - y >= 0) {
+
+    a1 = (Math.asin(((y + (Math.cos(a2) * 32))/(41.5))));
+    a2 = - (Math.acos((y - (41.5 * Math.sin(a1))) / (32)));
+    }
+
+    if((getHandX() + DEADBAND - x <= 0 && getHandX() - DEADBAND - x >= 0)) {
+      a1 = Math.acos((x - (32 * Math.sin(a2))) / (41.5));
+      a2 = Math.asin((x - (41.5 * Math.cos(a1)))/(32));
+    }
+
+    // NOTE: Must convert sin and cos to DEGREES, not RADIANS !!!
+
+    if((getHandX() + DEADBAND - x <= 0 && getHandX() - DEADBAND - x >= 0) || (getHandY() + DEADBAND - y <= 0 && getHandY() - DEADBAND - y >= 0)) {
+      done = true;
+    }
+  }
+
+    return a1a2;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
