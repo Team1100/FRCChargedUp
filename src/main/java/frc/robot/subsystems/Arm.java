@@ -196,6 +196,17 @@ public class Arm extends SubsystemBase {
         TestingDashboard.getInstance().registerNumber(m_arm, "HandVelocity", "HandXVel", 0);
         TestingDashboard.getInstance().registerNumber(m_arm, "HandVelocity", "HandYVel", 0);
         TestingDashboard.getInstance().registerNumber(m_arm, "HandVelocity", "HandZVel", 0);
+
+        TestingDashboard.getInstance().registerNumber(m_arm, "JointAnglesAll", "TurretPotAngle", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "JointAnglesAll", "TurretEncoderAngle", 0);
+
+        TestingDashboard.getInstance().registerNumber(m_arm, "JointAnglesAll", "ShoulderPotAngle", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "JointAnglesAll", "ShoulderEncoderLeftAngle", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "JointAnglesAll", "ShoulderEncoderRightAngle", 0);
+
+        TestingDashboard.getInstance().registerNumber(m_arm, "JointAnglesAll", "ElbowPotAngle", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "JointAnglesAll", "ElbowEncoderLeftAngle", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "JointAnglesAll", "ElbowEncoderRightAngle", 0);
     }
     return m_arm;
   }
@@ -240,25 +251,57 @@ public class Arm extends SubsystemBase {
     return m_turretTargetAngle;
   }
 
+  private double getTurretPotAngle() {
+    return m_turretPot.getVoltage() * Constants.TURRET_POT_DEGREES_PER_VOLT;
+  }
+
+  private double getTurretEncoderAngle() {
+    return m_turretEncoder.getPosition() * Constants.TURRET_DEGREES_PER_PULSE;
+  }
+
   public double getTurretAngle() {
-    double turretEncoderAngle = m_turretEncoder.getPosition() * Constants.TURRET_DEGREES_PER_PULSE;
-    double turretPotAngle = m_turretPot.getVoltage() * Constants.TURRET_POT_DEGREES_PER_VOLT;
+    double turretEncoderAngle = getTurretEncoderAngle();
+    double turretPotAngle = getTurretPotAngle();
     // TODO: Compare and check if they match
     return turretPotAngle;
   }
 
+  private double getShoulderEncoderLeftAngle() {
+    return m_shoulderEncoderLeft.getPosition() * Constants.SHOULDER_DEGREES_PER_PULSE;
+  }
+
+  private double getShoulderEncoderRightAngle() {
+    return m_shoulderEncoderRight.getPosition() * Constants.SHOULDER_DEGREES_PER_PULSE;
+  }
+
+  private double getShoulderPotAngle() {
+    return m_shoulderPot.getVoltage() * Constants.SHOULDER_POT_DEGREES_PER_VOLT;
+  }
+
   public double getShoulderAngle() {
-    double shoulderEncoderLeftAngle = m_shoulderEncoderLeft.getPosition() * Constants.SHOULDER_DEGREES_PER_PULSE;
-    double shoulderEncoderRightAngle = m_shoulderEncoderRight.getPosition() * Constants.SHOULDER_DEGREES_PER_PULSE;
-    double shoulderPotAngle = m_shoulderPot.getVoltage() * Constants.SHOULDER_POT_DEGREES_PER_VOLT;
+    double shoulderEncoderLeftAngle = getShoulderEncoderLeftAngle();
+    double shoulderEncoderRightAngle = getShoulderEncoderRightAngle();
+    double shoulderPotAngle = getShoulderPotAngle();
     // TODO: Compare all 3 and discard 1 if it doesn't match
     return shoulderPotAngle;
   }
 
+  private double getElbowEncoderLeftAngle() {
+    return m_elbowEncoderLeft.getPosition() * Constants.ELBOW_DEGREES_PER_PULSE;
+  }
+
+  private double getElbowEncoderRightAngle() {
+    return m_elbowEncoderRight.getPosition() * Constants.ELBOW_DEGREES_PER_PULSE;
+  }
+
+  private double getElbowPotAngle() {
+    return m_elbowPot.getVoltage() * Constants.ELBOW_POT_DEGREES_PER_VOLT;
+  }
+
   public double getElbowAngle() {
-    double elbowEncoderLeftAngle = m_elbowEncoderLeft.getPosition() * Constants.ELBOW_DEGREES_PER_PULSE;
-    double elbowEncoderRightAngle = m_elbowEncoderRight.getPosition() * Constants.ELBOW_DEGREES_PER_PULSE;
-    double elbowPotAngle = m_elbowPot.getVoltage() * Constants.ELBOW_POT_DEGREES_PER_VOLT;
+    double elbowEncoderLeftAngle = getElbowEncoderLeftAngle();
+    double elbowEncoderRightAngle = getElbowEncoderRightAngle();
+    double elbowPotAngle = getElbowPotAngle();
     // TODO: Compare all 3 and discard 1 if it doesn't match
     return elbowPotAngle;
   }
@@ -527,6 +570,17 @@ public class Arm extends SubsystemBase {
     TestingDashboard.getInstance().updateNumber(m_arm, "ShoulderEncoderRightPulses", m_shoulderEncoderRight.getPosition());
     TestingDashboard.getInstance().updateNumber(m_arm, "TurretEncoderPulses", m_turretEncoder.getPosition());
     TestingDashboard.getInstance().updateNumber(m_arm, "WristEncoderPulses", m_wristEncoder.getPosition());
+
+    TestingDashboard.getInstance().updateNumber(m_arm, "TurretPotAngle", getTurretPotAngle());
+    TestingDashboard.getInstance().updateNumber(m_arm, "TurretEncoderAngle", getTurretEncoderAngle());
+
+    TestingDashboard.getInstance().updateNumber(m_arm, "ShoulderPotAngle", getShoulderPotAngle());
+    TestingDashboard.getInstance().updateNumber(m_arm, "ShoulderEncoderLeftAngle", getShoulderEncoderLeftAngle());
+    TestingDashboard.getInstance().updateNumber(m_arm, "ShoulderEncoderRightAngle", getShoulderEncoderRightAngle());
+
+    TestingDashboard.getInstance().updateNumber(m_arm, "ElbowPotAngle", getElbowPotAngle());
+    TestingDashboard.getInstance().updateNumber(m_arm, "ElbowEncoderLeftAngle", getElbowEncoderLeftAngle());
+    TestingDashboard.getInstance().updateNumber(m_arm, "ElbowEncoderRightAngle", getElbowEncoderRightAngle());
 
     updatePidEnableFlags();
 
