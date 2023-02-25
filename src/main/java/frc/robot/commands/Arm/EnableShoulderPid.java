@@ -12,7 +12,6 @@ public class EnableShoulderPid extends CommandBase {
   /** Creates a new EnableArmPid. */
   public EnableShoulderPid() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(Arm.getInstance());
   }
 
   public static void registerWithTestingDashboard() {
@@ -24,7 +23,7 @@ public class EnableShoulderPid extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Arm.getInstance().enableArmPid();
+    Arm.getInstance().enableShoulderPid();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

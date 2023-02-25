@@ -12,7 +12,6 @@ public class DisableElbowPid extends CommandBase {
   /** Creates a new DisableArmPid. */
   public DisableElbowPid() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(Arm.getInstance());
   }
 
   public static void registerWithTestingDashboard() {
@@ -24,7 +23,7 @@ public class DisableElbowPid extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Arm.getInstance().disableArmPid();
+    Arm.getInstance().disableElbowPid();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -12,7 +12,6 @@ public class DisableArmPid extends CommandBase {
   /** Creates a new DisableArmPid. */
   public DisableArmPid() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(Arm.getInstance());
   }
 
   public static void registerWithTestingDashboard() {

@@ -12,7 +12,6 @@ public class EnableWristPid extends CommandBase {
   /** Creates a new EnableArmPid. */
   public EnableWristPid() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(Arm.getInstance());
   }
 
   public static void registerWithTestingDashboard() {
@@ -24,7 +23,7 @@ public class EnableWristPid extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Arm.getInstance().enableArmPid();
+    Arm.getInstance().enableWristPid();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

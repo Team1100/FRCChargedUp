@@ -92,12 +92,12 @@ public class Arm extends SubsystemBase {
     m_turretEncoder = m_turret.getEncoder();
     m_wristEncoder = m_wrist.getEncoder();
 
-    m_shoulderEncoderLeft.setPositionConversionFactor(Constants.SHOULDER_MOTOR_VEL_CONVERSION_FACTOR);
-    m_shoulderEncoderRight.setPositionConversionFactor(Constants.SHOULDER_MOTOR_VEL_CONVERSION_FACTOR);
-    m_elbowEncoderLeft.setPositionConversionFactor(Constants.ELBOW_MOTOR_VEL_CONVERSION_FACTOR);
-    m_elbowEncoderRight.setPositionConversionFactor(Constants.ELBOW_MOTOR_VEL_CONVERSION_FACTOR);
-    m_turretEncoder.setPositionConversionFactor(Constants.TURRET_MOTOR_VEL_CONVERSION_FACTOR);
-
+    m_shoulderEncoderLeft.setPosition(0);
+    m_shoulderEncoderRight.setPosition(0);
+    m_elbowEncoderLeft.setPosition(0);
+    m_elbowEncoderRight.setPosition(0);
+    m_turretEncoder.setPosition(0);
+    m_wristEncoder.setPosition(0);
 
     // Initialize ARM potentiometers
     m_shoulderPot = new AnalogInput(RobotMap.A_SHOULDER_POTENTIOMETER);
@@ -268,7 +268,7 @@ public class Arm extends SubsystemBase {
     double turretEncoderAngle = getTurretEncoderAngle();
     double turretPotAngle = getTurretPotAngle();
     // TODO: Compare and check if they match
-    return turretPotAngle;
+    return turretEncoderAngle;
   }
 
   private double getShoulderEncoderLeftAngle() {
@@ -288,7 +288,7 @@ public class Arm extends SubsystemBase {
     double shoulderEncoderRightAngle = getShoulderEncoderRightAngle();
     double shoulderPotAngle = getShoulderPotAngle();
     // TODO: Compare all 3 and discard 1 if it doesn't match
-    return shoulderPotAngle;
+    return shoulderEncoderLeftAngle;
   }
 
   private double getElbowEncoderLeftAngle() {
@@ -308,7 +308,7 @@ public class Arm extends SubsystemBase {
     double elbowEncoderRightAngle = getElbowEncoderRightAngle();
     double elbowPotAngle = getElbowPotAngle();
     // TODO: Compare all 3 and discard 1 if it doesn't match
-    return elbowPotAngle;
+    return elbowEncoderLeftAngle;
   }
 
   public double getWristAngle() {
@@ -468,6 +468,7 @@ public class Arm extends SubsystemBase {
     m_turretPid.setI(i);
     m_turretPid.setD(d);
     m_turretPid.setTolerance(tolerance);
+    m_turretPid.setSetpoint(m_turretTargetAngle);
     
     p = TestingDashboard.getInstance().getNumber(m_arm, "TargetShoulderP");
     i = TestingDashboard.getInstance().getNumber(m_arm, "TargetShoulderI");
@@ -477,6 +478,7 @@ public class Arm extends SubsystemBase {
     m_shoulderPid.setI(i);
     m_shoulderPid.setD(d);
     m_shoulderPid.setTolerance(tolerance);
+    m_shoulderPid.setSetpoint(m_shoulderTargetAngle);
 
     p = TestingDashboard.getInstance().getNumber(m_arm, "TargetElbowP");
     i = TestingDashboard.getInstance().getNumber(m_arm, "TargetElbowI");
@@ -486,6 +488,7 @@ public class Arm extends SubsystemBase {
     m_elbowPid.setI(i);
     m_elbowPid.setD(d);
     m_elbowPid.setTolerance(tolerance);
+    m_elbowPid.setSetpoint(m_elbowTargetAngle);
 
     p = TestingDashboard.getInstance().getNumber(m_arm, "TargetWristP");
     i = TestingDashboard.getInstance().getNumber(m_arm, "TargetWristI");
@@ -495,6 +498,7 @@ public class Arm extends SubsystemBase {
     m_wristPid.setI(i);
     m_wristPid.setD(d);
     m_wristPid.setTolerance(tolerance);
+    m_wristPid.setSetpoint(m_wristTargetAngle);
   }
 
   public void controlJointsWithSoftwarePidControl() {

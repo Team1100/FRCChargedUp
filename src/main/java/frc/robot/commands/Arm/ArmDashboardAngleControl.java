@@ -33,9 +33,9 @@ public class ArmDashboardAngleControl extends CommandBase {
   @Override
   public void execute() {
     double t_angle = TestingDashboard.getInstance().getNumber(m_arm, "TargetTurretAngle");
-    double s_angle = TestingDashboard.getInstance().getNumber(m_arm, "ShoulderTurretAngle");
-    double e_angle = TestingDashboard.getInstance().getNumber(m_arm, "ElbowTurretAngle");
-    double w_angle = TestingDashboard.getInstance().getNumber(m_arm, "WristTurretAngle");
+    double s_angle = TestingDashboard.getInstance().getNumber(m_arm, "TargetShoulderAngle");
+    double e_angle = TestingDashboard.getInstance().getNumber(m_arm, "TargetElbowAngle");
+    double w_angle = TestingDashboard.getInstance().getNumber(m_arm, "TargetWristAngle");
 
     m_arm.setTurretTargetAngle(t_angle);
     m_arm.setShoulderTargetAngle(s_angle);
