@@ -42,18 +42,23 @@ public final class Constants {
   // Defines Arm command constants
 
   public static final boolean A_ENABLE_SOFTWARE_PID = true;
+
+  public static final double A_TURRET_SOFTWARE_TOLERANCE = 5;
   public static final double A_TURRET_SOFTWARE_P = 0.01;
   public static final double A_TURRET_SOFTWARE_I = 0;
   public static final double A_TURRET_SOFTWARE_D = 0;
 
+  public static final double A_SHOULDER_SOFTWARE_TOLERANCE = 5;
   public static final double A_SHOULDER_SOFTWARE_P = 0.01;
   public static final double A_SHOULDER_SOFTWARE_I = 0;
   public static final double A_SHOULDER_SOFTWARE_D = 0;
 
+  public static final double A_ELBOW_SOFTWARE_TOLERANCE = 5;
   public static final double A_ELBOW_SOFTWARE_P = 0.01;
   public static final double A_ELBOW_SOFTWARE_I = 0;
   public static final double A_ELBOW_SOFTWARE_D = 0;
 
+  public static final double A_WRIST_SOFTWARE_TOLERANCE = 5;
   public static final double A_WRIST_SOFTWARE_P = 0.01;
   public static final double A_WRIST_SOFTWARE_I = 0;
   public static final double A_WRIST_SOFTWARE_D = 0;

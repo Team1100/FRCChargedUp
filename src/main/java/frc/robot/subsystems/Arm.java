@@ -166,24 +166,28 @@ public class Arm extends SubsystemBase {
 
 
         TestingDashboard.getInstance().registerNumber(m_arm, "TurretSoftwarePID", "TargetTurretAngle", 0);
-        TestingDashboard.getInstance().registerNumber(m_arm, "TurretSoftwarePID", "TargetTurretP", 0);
-        TestingDashboard.getInstance().registerNumber(m_arm, "TurretSoftwarePID", "TargetTurretI", 0);
-        TestingDashboard.getInstance().registerNumber(m_arm, "TurretSoftwarePID", "TargetTurretD", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "TurretSoftwarePID", "TargetTurretTolerance", Constants.A_TURRET_SOFTWARE_TOLERANCE);
+        TestingDashboard.getInstance().registerNumber(m_arm, "TurretSoftwarePID", "TargetTurretP", Constants.A_TURRET_SOFTWARE_P);
+        TestingDashboard.getInstance().registerNumber(m_arm, "TurretSoftwarePID", "TargetTurretI", Constants.A_TURRET_SOFTWARE_I);
+        TestingDashboard.getInstance().registerNumber(m_arm, "TurretSoftwarePID", "TargetTurretD", Constants.A_TURRET_SOFTWARE_D);
 
         TestingDashboard.getInstance().registerNumber(m_arm, "ShoulderSoftwarePID", "TargetShoulderAngle", 0);
-        TestingDashboard.getInstance().registerNumber(m_arm, "ShoulderSoftwarePID", "TargetShoulderP", 0);
-        TestingDashboard.getInstance().registerNumber(m_arm, "ShoulderSoftwarePID", "TargetShoulderI", 0);
-        TestingDashboard.getInstance().registerNumber(m_arm, "ShoulderSoftwarePID", "TargetShoulderD", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "ShoulderSoftwarePID", "TargetShoulderTolerance", Constants.A_SHOULDER_SOFTWARE_TOLERANCE);
+        TestingDashboard.getInstance().registerNumber(m_arm, "ShoulderSoftwarePID", "TargetShoulderP", Constants.A_SHOULDER_SOFTWARE_P);
+        TestingDashboard.getInstance().registerNumber(m_arm, "ShoulderSoftwarePID", "TargetShoulderI", Constants.A_SHOULDER_SOFTWARE_I);
+        TestingDashboard.getInstance().registerNumber(m_arm, "ShoulderSoftwarePID", "TargetShoulderD", Constants.A_SHOULDER_SOFTWARE_D);
 
         TestingDashboard.getInstance().registerNumber(m_arm, "ElbowSoftwarePID", "TargetElbowAngle", 0);
-        TestingDashboard.getInstance().registerNumber(m_arm, "ElbowSoftwarePID", "TargetElbowP", 0);
-        TestingDashboard.getInstance().registerNumber(m_arm, "ElbowSoftwarePID", "TargetElbowI", 0);
-        TestingDashboard.getInstance().registerNumber(m_arm, "ElbowSoftwarePID", "TargetElbowD", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "ElbowSoftwarePID", "TargetElbowTolerance", Constants.A_ELBOW_SOFTWARE_TOLERANCE);
+        TestingDashboard.getInstance().registerNumber(m_arm, "ElbowSoftwarePID", "TargetElbowP", Constants.A_ELBOW_SOFTWARE_P);
+        TestingDashboard.getInstance().registerNumber(m_arm, "ElbowSoftwarePID", "TargetElbowI", Constants.A_ELBOW_SOFTWARE_I);
+        TestingDashboard.getInstance().registerNumber(m_arm, "ElbowSoftwarePID", "TargetElbowD", Constants.A_ELBOW_SOFTWARE_D);
 
         TestingDashboard.getInstance().registerNumber(m_arm, "WristSoftwarePID", "TargetWristAngle", 0);
-        TestingDashboard.getInstance().registerNumber(m_arm, "WristSoftwarePID", "TargetWristP", 0);
-        TestingDashboard.getInstance().registerNumber(m_arm, "WristSoftwarePID", "TargetWristI", 0);
-        TestingDashboard.getInstance().registerNumber(m_arm, "WristSoftwarePID", "TargetWristD", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "WristSoftwarePID", "TargetWristTolerance", Constants.A_WRIST_SOFTWARE_TOLERANCE);
+        TestingDashboard.getInstance().registerNumber(m_arm, "WristSoftwarePID", "TargetWristP", Constants.A_WRIST_SOFTWARE_P);
+        TestingDashboard.getInstance().registerNumber(m_arm, "WristSoftwarePID", "TargetWristI", Constants.A_WRIST_SOFTWARE_I);
+        TestingDashboard.getInstance().registerNumber(m_arm, "WristSoftwarePID", "TargetWristD", Constants.A_WRIST_SOFTWARE_D);
 
         TestingDashboard.getInstance().registerNumber(m_arm, "HandCoordinates", "HandXCoor", 0);
         TestingDashboard.getInstance().registerNumber(m_arm, "HandCoordinates", "HandYCoor", 0);
@@ -407,34 +411,42 @@ public class Arm extends SubsystemBase {
   }
 
   public void updateJointSoftwarePidControllerValues() {
-    double p, i, d;
+    double p, i, d, tolerance;
     p = TestingDashboard.getInstance().getNumber(m_arm, "TargetTurretP");
     i = TestingDashboard.getInstance().getNumber(m_arm, "TargetTurretI");
     d = TestingDashboard.getInstance().getNumber(m_arm, "TargetTurretD");
+    tolerance = TestingDashboard.getInstance().getNumber(m_arm, "TargetTurretTolerance");
     m_turretPid.setP(p);
     m_turretPid.setI(i);
     m_turretPid.setD(d);
+    m_turretPid.setTolerance(tolerance);
     
     p = TestingDashboard.getInstance().getNumber(m_arm, "TargetShoulderP");
     i = TestingDashboard.getInstance().getNumber(m_arm, "TargetShoulderI");
     d = TestingDashboard.getInstance().getNumber(m_arm, "TargetShoulderD");
+    tolerance = TestingDashboard.getInstance().getNumber(m_arm, "TargetShoulderTolerance");
     m_shoulderPid.setP(p);
     m_shoulderPid.setI(i);
     m_shoulderPid.setD(d);
+    m_shoulderPid.setTolerance(tolerance);
 
-    p = TestingDashboard.getInstance().getNumber(m_arm, "ElbowShoulderP");
-    i = TestingDashboard.getInstance().getNumber(m_arm, "ElbowShoulderI");
-    d = TestingDashboard.getInstance().getNumber(m_arm, "ElbowShoulderD");
+    p = TestingDashboard.getInstance().getNumber(m_arm, "TargetElbowP");
+    i = TestingDashboard.getInstance().getNumber(m_arm, "TargetElbowI");
+    d = TestingDashboard.getInstance().getNumber(m_arm, "TargetElbowD");
+    tolerance = TestingDashboard.getInstance().getNumber(m_arm, "TargetElbowTolerance");
     m_elbowPid.setP(p);
     m_elbowPid.setI(i);
     m_elbowPid.setD(d);
+    m_elbowPid.setTolerance(tolerance);
 
-    p = TestingDashboard.getInstance().getNumber(m_arm, "WristShoulderP");
-    i = TestingDashboard.getInstance().getNumber(m_arm, "WristShoulderI");
-    d = TestingDashboard.getInstance().getNumber(m_arm, "WristShoulderD");
+    p = TestingDashboard.getInstance().getNumber(m_arm, "TargetWristP");
+    i = TestingDashboard.getInstance().getNumber(m_arm, "TargetWristI");
+    d = TestingDashboard.getInstance().getNumber(m_arm, "TargetWristD");
+    tolerance = TestingDashboard.getInstance().getNumber(m_arm, "TargetWristTolerance");
     m_wristPid.setP(p);
     m_wristPid.setI(i);
     m_wristPid.setD(d);
+    m_wristPid.setTolerance(tolerance);
   }
 
   public void controlJointsWithSoftwarePidControl() {
