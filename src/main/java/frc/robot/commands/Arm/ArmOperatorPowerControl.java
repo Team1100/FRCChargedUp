@@ -12,12 +12,12 @@ import frc.robot.OI;
 import frc.robot.subsystems.Arm;
 import frc.robot.testingdashboard.TestingDashboard;
 
-public class ArmOperatorControl extends CommandBase {
+public class ArmOperatorPowerControl extends CommandBase {
   Arm m_arm;
   XboxController m_xbox;
 
   /** Creates a new ArmOperatorControl. */
-  public ArmOperatorControl() {
+  public ArmOperatorPowerControl() {
     m_arm = Arm.getInstance();
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(Arm.getInstance());
@@ -25,7 +25,7 @@ public class ArmOperatorControl extends CommandBase {
 
   public static void registerWithTestingDashboard() {
     Arm arm = Arm.getInstance();
-    ArmOperatorControl cmd = new ArmOperatorControl();
+    ArmOperatorPowerControl cmd = new ArmOperatorPowerControl();
     TestingDashboard.getInstance().registerCommand(arm, "Manual", cmd);
   }
 
@@ -35,22 +35,34 @@ public class ArmOperatorControl extends CommandBase {
     m_arm.setTurretMotorPower(0);
     m_arm.setShoulderMotorPower(0);
     m_arm.setElbowMotorPower(0);
+    m_arm.setWristMotorPower(0);
     m_xbox = OI.getInstance().getOperatorXboxController();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
+    // Turret is controlled by left and right bumpers
+    double t_power = 0;
+    if (m_xbox.getButtonLeftBumper().getAsBoolean()) {
+      t_power = Constants.A_TURRET_MAX_POWER;
+    } else if (m_xbox.getButtonRightBumper().getAsBoolean()) {
+      t_power = -Constants.A_TURRET_MAX_POWER;
+    }
+
+    // Arm joints are controlled by joysticks
     // Note that the max power here is calculated using multiplication
     // because the max power for each arm segment is a value between
     // 0 and 1. Note that 1 / 0.5 == 2, but 1 * 0.5 == 0.5
-    double t_power = m_xbox.getAxis(XboxAxis.kXLeft)*Constants.A_TURRET_MAX_POWER;
     double s_power = m_xbox.getAxis(XboxAxis.kYLeft)*Constants.A_SHOULDER_MAX_POWER;
     double e_power = m_xbox.getAxis(XboxAxis.kYRight)*Constants.A_ELBOW_MAX_POWER;
+    double w_power = m_xbox.getAxis(XboxAxis.kXRight)*Constants.A_WRIST_MAX_POWER;
 
     m_arm.setTurretMotorPower(t_power);
     m_arm.setShoulderMotorPower(s_power);
     m_arm.setElbowMotorPower(e_power);
+    m_arm.setWristMotorPower(w_power);
   }
 
   // Called once the command ends or is interrupted.
