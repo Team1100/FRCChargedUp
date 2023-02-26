@@ -92,6 +92,9 @@ public class Arm extends SubsystemBase {
     m_turretEncoder = m_turret.getEncoder();
     m_wristEncoder = m_wrist.getEncoder();
 
+    // Initializes an ArmSegmentHelper
+    m_armHelper = new ArmSegmentHelper();
+
     m_shoulderEncoderLeft.setPosition(0);
     m_shoulderEncoderRight.setPosition(0);
     m_elbowEncoderLeft.setPosition(0);
@@ -597,6 +600,8 @@ public class Arm extends SubsystemBase {
     TestingDashboard.getInstance().updateNumber(m_arm, "WristAngle", getWristAngle());
 
     updatePidEnableFlags();
+
+    m_armHelper.updateArmSegmentValues();
 
     if (Constants.A_ENABLE_SOFTWARE_PID && m_enableArmPid) {
       controlJointsWithSoftwarePidControl();

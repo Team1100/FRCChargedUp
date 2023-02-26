@@ -10,15 +10,15 @@ public class ArmSegmentHelper {
      * The cooridinate system used in this class has the origin at the bottom center of the robot (the floor is at z = 0)
      * The x-axis runs along the length of the robot (parallel to the sides), with positive being the front
      * the y-axis runs along the width of the robot (parallel to the front and back), with positive being the right
-     * the z=axis is the vertical axis, running along the height of the robot, with positive being up
+     * the z-axis is the vertical axis, running along the height of the robot, with positive being up
      * 
      * The shoulder angle is measured from the horizontal (flat is 0 degrees)
      * the forearm angle is measured relative the the shoulder angle (currently zero is folded down)
      */
 
     // TODO: replace with accurate values
-    public static final double SHOULDER_LENGTH = 2; // in feet
-    public static final double FOREARM_LENGTH = 1.4; // in feet
+    public static final double SHOULDER_LENGTH = 41.5 / 12; // in feet
+    public static final double FOREARM_LENGTH = 32 / 12; // in feet
     public static final Vector SHOULDER_JOINT_COOR = new Vector(0,0,1);
     // Used for the overextention prevention
     // TODO: replace with accurate values
@@ -42,8 +42,6 @@ public class ArmSegmentHelper {
     private Vector m_handCoor;
     private Vector m_handVel;
 
-    Arm m_arm;
-
     public enum extentionLimitFaces {
         FRONT,
         BACK,
@@ -55,7 +53,6 @@ public class ArmSegmentHelper {
     }
     
     public ArmSegmentHelper() {
-        m_arm = Arm.getInstance();
         // TODO: Initialize with a more accurate coordinate.
         // Initially has m_handCoor set as if the arm is straight up with the forearm folded down, may want to i
         m_handCoor = new Vector(0,0, SHOULDER_LENGTH - FOREARM_LENGTH + SHOULDER_JOINT_COOR.z);
@@ -72,24 +69,25 @@ public class ArmSegmentHelper {
      * @return A Vector object representing the 3D cooridnate of the hand
      */
     public Vector calculateHandCoor() {
+        Arm arm = Arm.getInstance();
         // TODO: Check origin of angle measurment and adjust to match with coordinate system
-        double x = SHOULDER_JOINT_COOR.x + Math.cos(Math.toRadians(m_arm.getTurretAngle())) *
-            (SHOULDER_LENGTH * Math.cos(Math.toRadians(m_arm.getShoulderAngle())) 
-            + FOREARM_LENGTH * Math.cos(Math.toRadians(m_arm.getShoulderAngle() + m_arm.getElbowAngle() + 180)));
+        double x = SHOULDER_JOINT_COOR.x + Math.cos(Math.toRadians(arm.getTurretAngle())) *
+            (SHOULDER_LENGTH * Math.cos(Math.toRadians(arm.getShoulderAngle())) 
+            + FOREARM_LENGTH * Math.cos(Math.toRadians(arm.getShoulderAngle() + arm.getElbowAngle() + 180)));
             
 
-        double y = SHOULDER_JOINT_COOR.y + Math.sin(Math.toRadians(m_arm.getTurretAngle())) *
-            (SHOULDER_LENGTH * Math.cos(Math.toRadians(m_arm.getShoulderAngle())) 
-            + FOREARM_LENGTH * Math.cos(Math.toRadians(m_arm.getShoulderAngle() + m_arm.getElbowAngle() + 180)));
+        double y = SHOULDER_JOINT_COOR.y + Math.sin(Math.toRadians(arm.getTurretAngle())) *
+            (SHOULDER_LENGTH * Math.cos(Math.toRadians(arm.getShoulderAngle())) 
+            + FOREARM_LENGTH * Math.cos(Math.toRadians(arm.getShoulderAngle() + arm.getElbowAngle() + 180)));
 
 
         double z = SHOULDER_JOINT_COOR.z 
-            + SHOULDER_LENGTH * Math.sin(Math.toRadians(m_arm.getShoulderAngle())) 
-            + FOREARM_LENGTH * Math.sin(Math.toRadians(m_arm.getShoulderAngle() + m_arm.getElbowAngle() + 180));
+            + SHOULDER_LENGTH * Math.sin(Math.toRadians(arm.getShoulderAngle())) 
+            + FOREARM_LENGTH * Math.sin(Math.toRadians(arm.getShoulderAngle() + arm.getElbowAngle() + 180));
 
-        TestingDashboard.getInstance().updateNumber(m_arm, "HandXCoor", x);
-        TestingDashboard.getInstance().updateNumber(m_arm, "HandYCoor", y);
-        TestingDashboard.getInstance().updateNumber(m_arm, "HandZCoor", z);
+        TestingDashboard.getInstance().updateNumber(arm, "HandXCoor", x);
+        TestingDashboard.getInstance().updateNumber(arm, "HandYCoor", y);
+        TestingDashboard.getInstance().updateNumber(arm, "HandZCoor", z);
 
         m_handCoor.setValues(x,y,z);
         return new Vector(x, y, z);
@@ -100,28 +98,29 @@ public class ArmSegmentHelper {
      * @return A Vector object representing the 3D velocity vector of the hand.
      */
     public Vector calculateHandVelocity() { // returns measurement in feet per second
+        Arm arm = Arm.getInstance();
         // TODO: Test if hand velocity calculations are accurate. May want to take derivative of the equation that calculates the coordinates.
         // TODO: Check origin of angle measurment and adjust to match with coordinate system
-        double XYDistanceFromJointToHand = (SHOULDER_LENGTH * Math.cos(Math.toRadians(m_arm.getShoulderAngle())) 
-            + FOREARM_LENGTH * Math.cos(Math.toRadians(m_arm.getShoulderAngle() + m_arm.getElbowAngle() + 180)));
+        double XYDistanceFromJointToHand = (SHOULDER_LENGTH * Math.cos(Math.toRadians(arm.getShoulderAngle())) 
+            + FOREARM_LENGTH * Math.cos(Math.toRadians(arm.getShoulderAngle() + arm.getElbowAngle() + 180)));
         // Velocity contributed by the rotation of the turret
-        double turretVelX = Math.sin(m_arm.getTurretAngle()) * m_arm.getTurretVelocity() * XYDistanceFromJointToHand;
-        double elbowVelX = (m_arm.getShoulderVelocity() * RPM_TO_RAD * SHOULDER_LENGTH * Math.sin(Math.toRadians(m_arm.getShoulderAngle())));
+        double turretVelX = Math.sin(arm.getTurretAngle()) * arm.getTurretVelocity() * XYDistanceFromJointToHand;
+        double elbowVelX = (arm.getShoulderVelocity() * RPM_TO_RAD * SHOULDER_LENGTH * Math.sin(Math.toRadians(arm.getShoulderAngle())));
         // Adds velocity contributed by arm segments and turret rotation together
-        double handVelX = turretVelX + Math.cos(Math.toRadians(m_arm.getTurretAngle()))*(elbowVelX + (m_arm.getElbowVelocity() * RPM_TO_RAD * FOREARM_LENGTH * Math.sin(Math.toRadians(m_arm.getElbowAngle()))));
+        double handVelX = turretVelX + Math.cos(Math.toRadians(arm.getTurretAngle()))*(elbowVelX + (arm.getElbowVelocity() * RPM_TO_RAD * FOREARM_LENGTH * Math.sin(Math.toRadians(arm.getElbowAngle()))));
 
-        double turretVelY = Math.cos(m_arm.getTurretAngle()) * m_arm.getTurretVelocity() * XYDistanceFromJointToHand;
-        double elbowVelY = (m_arm.getShoulderVelocity() * RPM_TO_RAD * SHOULDER_LENGTH * Math.sin(Math.toRadians(m_arm.getShoulderAngle())));
+        double turretVelY = Math.cos(arm.getTurretAngle()) * arm.getTurretVelocity() * XYDistanceFromJointToHand;
+        double elbowVelY = (arm.getShoulderVelocity() * RPM_TO_RAD * SHOULDER_LENGTH * Math.sin(Math.toRadians(arm.getShoulderAngle())));
         // Adds velocity contributed by arm segments and turret rotation together
-        double handVelY = turretVelY + Math.sin(Math.toRadians(m_arm.getTurretAngle()))*(elbowVelY + (m_arm.getElbowVelocity() * RPM_TO_RAD * FOREARM_LENGTH * Math.sin(Math.toRadians(m_arm.getElbowAngle()))));
+        double handVelY = turretVelY + Math.sin(Math.toRadians(arm.getTurretAngle()))*(elbowVelY + (arm.getElbowVelocity() * RPM_TO_RAD * FOREARM_LENGTH * Math.sin(Math.toRadians(arm.getElbowAngle()))));
 
-        double elbowVelZ = (m_arm.getShoulderVelocity() * RPM_TO_RAD * SHOULDER_LENGTH * Math.cos(Math.toRadians(m_arm.getShoulderAngle())));
+        double elbowVelZ = (arm.getShoulderVelocity() * RPM_TO_RAD * SHOULDER_LENGTH * Math.cos(Math.toRadians(arm.getShoulderAngle())));
         // Adds velocity contributed by both arm segments
-        double handVelZ = elbowVelZ + (m_arm.getElbowVelocity() * RPM_TO_RAD * FOREARM_LENGTH * Math.cos(Math.toRadians(m_arm.getElbowAngle())));
+        double handVelZ = elbowVelZ + (arm.getElbowVelocity() * RPM_TO_RAD * FOREARM_LENGTH * Math.cos(Math.toRadians(arm.getElbowAngle())));
         
-        TestingDashboard.getInstance().updateNumber(m_arm, "HandXVel", handVelX);
-        TestingDashboard.getInstance().updateNumber(m_arm, "HandYVel", handVelY);
-        TestingDashboard.getInstance().updateNumber(m_arm, "HandZVel", handVelZ);
+        TestingDashboard.getInstance().updateNumber(arm, "HandXVel", handVelX);
+        TestingDashboard.getInstance().updateNumber(arm, "HandYVel", handVelY);
+        TestingDashboard.getInstance().updateNumber(arm, "HandZVel", handVelZ);
 
         m_handVel.setValues(handVelX, handVelY, handVelZ);
         return new Vector(handVelX,handVelY,handVelZ);
