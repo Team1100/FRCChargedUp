@@ -181,4 +181,45 @@ public class ArmSegmentHelper {
     public Vector getHandVel() {
         return new Vector(m_handVel);
     }
+
+    // Get angles from x and y input (yay!):
+
+    public double[] findAnglesFromCoords(double x, double y) {
+        double[] a1a2 = {0, 0};
+    
+        double DEADBAND = 5;
+
+        final double BICEP_LENGTH = 40;
+        final double FOREARM_LENGTH = 30;
+    
+        double a1 = 0;
+        double a2 = 0;     
+        
+        // Jack & Josh's Model:
+
+        double r = Math.sqrt((x * x) + (y * y));
+
+        double theta2Numerator = -(r * r) + (BICEP_LENGTH * BICEP_LENGTH) + (FOREARM_LENGTH * FOREARM_LENGTH);
+
+        double theta2Denominator = 2 * BICEP_LENGTH * FOREARM_LENGTH;
+
+        a2 = Math.toDegrees(Math.acos(theta2Numerator / theta2Denominator));
+
+        double theta1ComplementNumerator = -(FOREARM_LENGTH * FOREARM_LENGTH) + (BICEP_LENGTH * BICEP_LENGTH) + (r * r);
+
+        double theta1ComplementDenominator = 2 * r * BICEP_LENGTH;
+
+        double theta1ComplementUpper = Math.toDegrees(Math.acos(theta1ComplementNumerator / theta1ComplementDenominator));
+
+        double theta1ComplementLower = Math.toDegrees(Math.atan(y / x));
+
+        double theta1Complement = theta1ComplementLower + theta1ComplementUpper;
+
+        a1 = 90 - theta1Complement;
+
+        a1a2[0] = a1;
+        a1a2[1] = a2;
+
+        return a1a2;
+      }
 }
