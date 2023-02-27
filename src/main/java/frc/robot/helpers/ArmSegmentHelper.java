@@ -20,6 +20,7 @@ public class ArmSegmentHelper {
     public static final double SHOULDER_LENGTH = 40 / 12; // in feet
     public static final double FOREARM_LENGTH = 30 / 12; // in feet
     // TODO: replace with accurate value(s):
+    // TODO: Fill in with accurte values for location of shoulder joint
     public static final Vector SHOULDER_JOINT_COOR = new Vector(0,0,1);
     // Used for the overextention prevention
     // TODO: replace with accurate values
@@ -36,7 +37,6 @@ public class ArmSegmentHelper {
 
     // This constant indicates the conversion factor between Rotations per Minute to Radians per Second
     public static final double RPM_TO_RAD = 2 * Math.PI / 60;
-
     public static final double LOOK_AHEAD_TIME = .25; // seconds
 
     
@@ -55,7 +55,7 @@ public class ArmSegmentHelper {
     
     public ArmSegmentHelper() {
         // TODO: Initialize with a more accurate coordinate.
-        // Initially has m_handCoor set as if the arm is straight up with the forearm folded down, may want to i
+        // Initially has m_handCoor set as if the arm is straight up with the forearm folded down
         m_handCoor = new Vector(0,0, SHOULDER_LENGTH - FOREARM_LENGTH + SHOULDER_JOINT_COOR.z);
         m_handVel = new Vector(0,0,0);
     }
