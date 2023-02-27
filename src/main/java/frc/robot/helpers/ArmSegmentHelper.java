@@ -16,9 +16,10 @@ public class ArmSegmentHelper {
      * the forearm angle is measured relative the the shoulder angle (currently zero is folded down)
      */
 
-    // TODO: replace with accurate values
-    public static final double SHOULDER_LENGTH = 41.5 / 12; // in feet
-    public static final double FOREARM_LENGTH = 32 / 12; // in feet
+    
+    public static final double SHOULDER_LENGTH = 40 / 12; // in feet
+    public static final double FOREARM_LENGTH = 30 / 12; // in feet
+    // TODO: replace with accurate value(s):
     public static final Vector SHOULDER_JOINT_COOR = new Vector(0,0,1);
     // Used for the overextention prevention
     // TODO: replace with accurate values
@@ -189,6 +190,12 @@ public class ArmSegmentHelper {
     
         double DEADBAND = 5;
 
+        boolean negative = false;
+
+        if(x < 0) {
+            x = Math.abs(x);
+        }
+
         final double BICEP_LENGTH = 40;
         final double FOREARM_LENGTH = 30;
     
@@ -219,6 +226,11 @@ public class ArmSegmentHelper {
 
         a1a2[0] = a1;
         a1a2[1] = a2;
+
+        if(negative) {
+            a1a2[0] = -a1;
+            a1a2[1] = -a2;
+        }
 
         return a1a2;
       }
