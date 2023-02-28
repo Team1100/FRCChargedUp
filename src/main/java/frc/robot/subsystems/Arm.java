@@ -413,18 +413,18 @@ public class Arm extends SubsystemBase {
 
   public void enableArmPid() {
     m_enableArmPid = true;
-    m_enableWristPid = true;
-    m_enableElbowPid = true;
-    m_enableShoulderPid = true;
-    m_enableTurretPid = true;
+    enableWristPid();
+    enableElbowPid();
+    enableShoulderPid();
+    enableTurretPid();
   }
 
   public void disableArmPid() {
     m_enableArmPid = false;
-    m_enableWristPid = false;
-    m_enableElbowPid = false;
-    m_enableShoulderPid = false;
-    m_enableTurretPid = false;
+    disableWristPid();
+    disableElbowPid();
+    disableShoulderPid();
+    disableTurretPid();
   }
 
   public void enableWristPid() {
@@ -434,6 +434,7 @@ public class Arm extends SubsystemBase {
 
   public void disableWristPid() {
     m_enableWristPid = false;
+    setWristMotorPower(0.0d);
   }
 
   public void enableElbowPid() {
@@ -443,6 +444,7 @@ public class Arm extends SubsystemBase {
 
   public void disableElbowPid() {
     m_enableElbowPid = false;
+    setElbowMotorPower(0.0d);
   }
 
   public void enableShoulderPid() {
@@ -452,6 +454,7 @@ public class Arm extends SubsystemBase {
 
   public void disableShoulderPid() {
     m_enableShoulderPid = false;
+    setShoulderMotorPower(0.0d);
   }
 
   public void enableTurretPid() {
@@ -461,6 +464,7 @@ public class Arm extends SubsystemBase {
 
   public void disableTurretPid() {
     m_enableTurretPid = false;
+    setTurretMotorPower(0.0d);
   }
 
   public void updateJointSoftwarePidControllerValues() {
