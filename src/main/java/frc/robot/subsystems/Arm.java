@@ -355,9 +355,9 @@ public class Arm extends SubsystemBase {
     double shoulderAngle = angles[0];
     double elbowAngle = angles[1];
 
-    m_shoulderTargetAngle = shoulderAngle;
     m_elbowTargetAngle = elbowAngle;
-
+    m_shoulderTargetAngle = shoulderAngle;
+    
   }
 
   public double getHandX(/*double theta1, double theta2, double rotation*/) {
