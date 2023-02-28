@@ -5,6 +5,7 @@
 package frc.robot.commands.Arm;
 
 import frc.robot.input.XboxController;
+import frc.robot.input.XboxController.DirectionalPad;
 import frc.robot.input.XboxController.XboxAxis;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -46,10 +47,19 @@ public class ArmOperatorPowerControl extends CommandBase {
 
     // Turret is controlled by left and right bumpers
     double t_power = 0;
+    double w_power = 0;
+
     if (m_xbox.getButtonLeftBumper().getAsBoolean()) {
       t_power = Constants.A_TURRET_MAX_POWER;
     } else if (m_xbox.getButtonRightBumper().getAsBoolean()) {
       t_power = -Constants.A_TURRET_MAX_POWER;
+    }
+
+    // Wrist is controlled by DPad left and right
+    if(m_xbox.getDPad().getRight().getAsBoolean()) {
+      w_power = Constants.A_WRIST_MAX_POWER;
+    } else if (m_xbox.getDPad().getLeft().getAsBoolean()) {
+      w_power = -Constants.A_WRIST_MAX_POWER;
     }
 
     // Arm joints are controlled by joysticks
@@ -58,7 +68,6 @@ public class ArmOperatorPowerControl extends CommandBase {
     // 0 and 1. Note that 1 / 0.5 == 2, but 1 * 0.5 == 0.5
     double s_power = m_xbox.getAxis(XboxAxis.kYLeft)*Constants.A_SHOULDER_MAX_POWER;
     double e_power = m_xbox.getAxis(XboxAxis.kYRight)*Constants.A_ELBOW_MAX_POWER;
-    double w_power = m_xbox.getAxis(XboxAxis.kXRight)*Constants.A_WRIST_MAX_POWER;
 
     m_arm.setTurretMotorPower(t_power);
     m_arm.setShoulderMotorPower(s_power);
