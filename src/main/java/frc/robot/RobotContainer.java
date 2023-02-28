@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Arm.ArmDashboardAngleControl;
 import frc.robot.commands.Arm.ArmOperatorAngleControl;
 import frc.robot.commands.Arm.ArmOperatorPowerControl;
+import frc.robot.commands.Arm.ArmOperatorRelativeAngleControl;
 import frc.robot.commands.Arm.DisableArmPid;
 import frc.robot.commands.Arm.DisableElbowPid;
 import frc.robot.commands.Arm.DisableShoulderPid;
@@ -71,6 +72,7 @@ public class RobotContainer {
     // Arm
     ArmOperatorPowerControl.registerWithTestingDashboard();
     ArmOperatorAngleControl.registerWithTestingDashboard();
+    ArmOperatorRelativeAngleControl.registerWithTestingDashboard();
     ArmDashboardAngleControl.registerWithTestingDashboard();
     EnableArmPid.registerWithTestingDashboard();
     DisableArmPid.registerWithTestingDashboard();

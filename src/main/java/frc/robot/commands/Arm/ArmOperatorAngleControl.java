@@ -44,19 +44,27 @@ public class ArmOperatorAngleControl extends CommandBase {
   public void execute() {
     // Turret is controlled by left and right bumpers
     double t_angle = m_arm.getTurretTargetAngle();
+    double w_angle = m_arm.getWristTargetAngle();
+
     if (m_xbox.getButtonLeftBumper().getAsBoolean()) {
       t_angle += Constants.A_TURRET_ANGLE_INCREMENT;
     } else if (m_xbox.getButtonRightBumper().getAsBoolean()) {
-      t_angle = -Constants.A_TURRET_ANGLE_INCREMENT;
+      t_angle += -Constants.A_TURRET_ANGLE_INCREMENT;
+    }
+
+    // Wrist is controlled by DPad left and right
+    if(m_xbox.getDPad().getRight().getAsBoolean()) {
+      w_angle += Constants.A_WRIST_ANGLE_INCREMENT;
+    } else if (m_xbox.getDPad().getLeft().getAsBoolean()) {
+      w_angle += -Constants.A_WRIST_ANGLE_INCREMENT;
     }
 
     // Arm joints are controlled by joysticks
     // Note that the max power here is calculated using multiplication
     // because the max power for each arm segment is a value between
     // 0 and 1. Note that 1 / 0.5 == 2, but 1 * 0.5 == 0.5
-    double s_angle = m_xbox.getAxis(XboxAxis.kYLeft)*Constants.DEGREES_PER_JOY_SPAN;
+    double s_angle = m_xbox.getAxis(XboxAxis.kYLeft)*Constants.SHOULDER_DEGREES_PER_JOY_SPAN;
     double e_angle = m_xbox.getAxis(XboxAxis.kYRight)*Constants.DEGREES_PER_JOY_SPAN;
-    double w_angle = m_xbox.getAxis(XboxAxis.kXRight)*Constants.DEGREES_PER_JOY_SPAN;
 
     m_arm.setTurretTargetAngle(t_angle);
     m_arm.setShoulderTargetAngle(s_angle);

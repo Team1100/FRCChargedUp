@@ -245,7 +245,7 @@ public class Arm extends SubsystemBase {
     m_turretTargetAngle = angle;
   }
 
-  public double setWristTargetAngle() {
+  public double getWristTargetAngle() {
     return m_wristTargetAngle;
   }
 
