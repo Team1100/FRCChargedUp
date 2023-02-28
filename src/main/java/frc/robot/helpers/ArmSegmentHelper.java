@@ -185,16 +185,16 @@ public class ArmSegmentHelper {
 
     // Get angles from x and y input (yay!):
 
-    public double[] findAnglesFromCoords(double x, double y) {
+    public static double[] findAnglesFromCoords(double x, double y) {
         double[] a1a2 = {0, 0};
     
         double DEADBAND = 5;
 
         boolean negative = false;
 
-        if(x < 0) {
-            x = Math.abs(x);
-        }
+        if(x < 0) { negative = true; }
+
+        x = Math.abs(x);
 
         final double BICEP_LENGTH = 40;
         final double FOREARM_LENGTH = 30;
