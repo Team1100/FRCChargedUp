@@ -74,8 +74,8 @@ public final class Constants {
 
   // Joint angle increments
   public static final double A_TURRET_ANGLE_INCREMENT = 1; // degrees
-  public static final double A_SHOULDER_ANGLE_INCREMENT = 5; // degrees
-  public static final double A_ELBOW_ANGLE_INCREMENT = 5; // degrees
+  public static final double A_SHOULDER_ANGLE_INCREMENT = 0.2; // degrees
+  public static final double A_ELBOW_ANGLE_INCREMENT = 0.2; // degrees
   public static final double A_WRIST_ANGLE_INCREMENT = 1; // degrees
 
   public static final double TURRET_MOTOR_ROTATIONS_PER_REVOLUTION = 250/12;
