@@ -17,23 +17,23 @@ public class ArmSegmentHelper {
      */
 
     
-    public static final double SHOULDER_LENGTH = 40 / 12; // in feet
-    public static final double FOREARM_LENGTH = 30 / 12; // in feet
+    public static final double SHOULDER_LENGTH = 40; // in inches
+    public static final double FOREARM_LENGTH = 30; // in inches
     // TODO: replace with accurate value(s):
     // TODO: Fill in with accurte values for location of shoulder joint
-    public static final Vector SHOULDER_JOINT_COOR = new Vector(0,0,1);
+    public static final Vector SHOULDER_JOINT_COOR = new Vector(0,0,14.5);
     // Used for the overextention prevention
     // TODO: replace with accurate values
-    public static final double ROBOT_WIDTH = 2;
-    public static final double ROBOT_LENGTH = 3;
+    public static final double ROBOT_WIDTH = 33;
+    public static final double ROBOT_LENGTH = 39;
 
-    public static final double XY_EXTENTION_MAX = 4; // from bumper
+    public static final double XY_EXTENTION_MAX = 48; // from bumper
     public static final double FRONT_EXTENTION_LIMIT = ROBOT_LENGTH/2 + XY_EXTENTION_MAX;
     public static final double BACK_EXTENTION_LIMIT = -FRONT_EXTENTION_LIMIT;
     public static final double RIGHT_EXTENTION_LIMIT = ROBOT_WIDTH/2 + XY_EXTENTION_MAX;
     public static final double LEFT_EXTENTION_LIMIT = -FRONT_EXTENTION_LIMIT;
-    public static final double UPPER_EXTENTION_LIMIT = 6.5; // measured from floor
-    public static final double LOWER_EXTENTION_LIMIT = 1; // TODO: Fill in with lower limit that arm should not cross (measured from the floor)
+    public static final double UPPER_EXTENTION_LIMIT = 6.5 * 12; // measured from floor
+    public static final double LOWER_EXTENTION_LIMIT = 24; // TODO: Fill in with lower limit that arm should not cross (measured from the floor)
 
     // This constant indicates the conversion factor between Rotations per Minute to Radians per Second
     public static final double RPM_TO_RAD = 2 * Math.PI / 60;
@@ -98,7 +98,7 @@ public class ArmSegmentHelper {
      * This method calculates the velocity of the hand based on the current angles and velocities of the joints
      * @return A Vector object representing the 3D velocity vector of the hand.
      */
-    public Vector calculateHandVelocity() { // returns measurement in feet per second
+    public Vector calculateHandVelocity() { // returns measurement in inches per second
         Arm arm = Arm.getInstance();
         // TODO: Test if hand velocity calculations are accurate. May want to take derivative of the equation that calculates the coordinates.
         // TODO: Check origin of angle measurment and adjust to match with coordinate system

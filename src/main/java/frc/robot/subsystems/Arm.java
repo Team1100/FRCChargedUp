@@ -22,6 +22,8 @@ import frc.robot.testingdashboard.TestingDashboard;
 
 import java.awt.geom.Point2D;
 
+import org.opencv.features2d.KAZE;
+
 public class Arm extends SubsystemBase {
 
   private static Arm m_arm;
@@ -64,6 +66,13 @@ public class Arm extends SubsystemBase {
   private double m_turretTargetAngle;
   private double m_wristTargetAngle;
 
+  private boolean shoulderEnabled;
+  private boolean elbowEnabled;
+  private boolean turretEnabled;
+  private boolean wristEnabled;
+  
+  public final static int DEFAULT_MOTOR_CURRENT_LIMITS = 65;
+
 
 
   /** Creates a new Arm. */
@@ -76,6 +85,13 @@ public class Arm extends SubsystemBase {
     m_elbowRight = new CANSparkMax(RobotMap.A_ELBOW_MOTOR_RIGHT, MotorType.kBrushless);
     m_turret = new CANSparkMax(RobotMap.A_TURRET_MOTOR, MotorType.kBrushless);
     m_wrist = new CANSparkMax(RobotMap.A_WRIST_MOTOR, MotorType.kBrushless);
+
+    m_shoulderLeft.setSmartCurrentLimit(DEFAULT_MOTOR_CURRENT_LIMITS);
+    m_shoulderRight.setSmartCurrentLimit(DEFAULT_MOTOR_CURRENT_LIMITS);
+    m_elbowLeft.setSmartCurrentLimit(DEFAULT_MOTOR_CURRENT_LIMITS);
+    m_elbowRight.setSmartCurrentLimit(DEFAULT_MOTOR_CURRENT_LIMITS);
+    m_turret.setSmartCurrentLimit(DEFAULT_MOTOR_CURRENT_LIMITS);
+    m_wrist.setSmartCurrentLimit(DEFAULT_MOTOR_CURRENT_LIMITS);
 
     m_shoulderLeft.restoreFactoryDefaults();
     m_shoulderRight.restoreFactoryDefaults();
@@ -128,6 +144,11 @@ public class Arm extends SubsystemBase {
     // working through their RIGHT sides
     m_shoulder = m_shoulderRight;
     m_elbow = m_elbowRight;
+
+    shoulderEnabled = true;
+    elbowEnabled = true;
+    turretEnabled = true;
+    wristEnabled = true;
 
     if (Constants.A_ENABLE_SOFTWARE_PID) {
       m_shoulderPid = new PIDController(Constants.A_SHOULDER_SOFTWARE_P, Constants.A_SHOULDER_SOFTWARE_I, Constants.A_SHOULDER_SOFTWARE_D);
@@ -332,19 +353,58 @@ public class Arm extends SubsystemBase {
   }
 
   public void setTurretMotorPower(double value) {
-    m_turret.set(value);
+    if (turretEnabled) {
+      m_turret.set(value);
+    }
+    
   }
 
   public void setShoulderMotorPower(double value) {
+    if (shoulderEnabled) {
     m_shoulder.set(value);
+    }
   }
 
   public void setElbowMotorPower(double value) {
+    if (elbowEnabled) {
     m_elbow.set(value);
+    }
   }
 
   public void setWristMotorPower(double value) {
+    if (wristEnabled) {
     m_wrist.set(value);
+    }
+  }
+
+  public void toggleTurretPower(boolean enabled) {
+    wristEnabled = enabled;
+  }
+
+  public void toggleShoulderPower(boolean enabled) {
+    shoulderEnabled = enabled;
+  }
+
+  public void toggleElbowPower(boolean enabled) {
+    elbowEnabled = enabled;
+  }
+
+  public void toggleWristPower(boolean enabled) {
+    wristEnabled = enabled;
+  }
+
+  public void enableAllMotors() {
+    toggleTurretPower(true);
+    toggleShoulderPower(true);
+    toggleElbowPower(true);
+    toggleWristPower(true);
+  }
+
+  public void disableAllMotors() {
+    toggleTurretPower(false);
+    toggleShoulderPower(false);
+    toggleElbowPower(false);
+    toggleWristPower(false);
   }
 
   public void positionArmToXY(double x, double y) {
@@ -445,6 +505,36 @@ public class Arm extends SubsystemBase {
     m_enableTurretPid = false;
     setTurretMotorPower(0.0d);
   }
+
+  public void checkTurretCurrentOutput() {
+    if (m_turret.getOutputCurrent() > Constants.TURRET_MOTOR_CURRENT_LIMIT) {
+      turretEnabled = false;
+    }
+  }
+
+  public void checkShoulderCurrentOutput() {
+    boolean left = m_shoulderLeft.getOutputCurrent() > Constants.SHOULDER_MOTOR_CURRENT_LIMIT;
+    boolean right = m_shoulderRight.getOutputCurrent() > Constants.SHOULDER_MOTOR_CURRENT_LIMIT;
+    if (left || right) {
+      shoulderEnabled = false;
+    }
+  }
+
+  public void checkElbowCurrentOutput() {
+    boolean left = m_elbowLeft.getOutputCurrent() > Constants.ELBOW_MOTOR_CURRENT_LIMIT;
+    boolean right = m_elbowRight.getOutputCurrent() > Constants.ELBOW_MOTOR_CURRENT_LIMIT;
+    if (left || right) {
+      elbowEnabled = false;
+    }
+  }
+
+  public void checkWristCurrentOutput() {
+    if (m_wrist.getOutputCurrent() > Constants.WRIST_MOTOR_CURRENT_LIMIT) {
+      wristEnabled = false;
+    }
+  }
+
+
 
   public void updateJointSoftwarePidControllerValues() {
     double p, i, d, tolerance;
@@ -591,6 +681,8 @@ public class Arm extends SubsystemBase {
     if (Constants.A_ENABLE_SOFTWARE_PID && m_enableArmPid) {
       controlJointsWithSoftwarePidControl();
     }
+
+
 
   }
 

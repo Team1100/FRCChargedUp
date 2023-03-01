@@ -67,6 +67,8 @@ public class RobotContainer {
     DisableShoulderPid.registerWithTestingDashboard();
     EnableTurretPid.registerWithTestingDashboard();
     DisableTurretPid.registerWithTestingDashboard();
+    EnableAllMotors.registerWithTestingDashboard();
+    DisableAllMotors.registerWithTestingDashboard();
     ArmToPreset1.registerWithTestingDashboard();
     ArmToPreset2.registerWithTestingDashboard();
     ArmToPreset3.registerWithTestingDashboard();
