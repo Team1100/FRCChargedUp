@@ -13,27 +13,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.Arm.ArmDashboardAngleControl;
-import frc.robot.commands.Arm.ArmOperatorAngleControl;
-import frc.robot.commands.Arm.ArmOperatorPowerControl;
-import frc.robot.commands.Arm.ArmOperatorRelativeAngleControl;
-import frc.robot.commands.Arm.DisableArmPid;
-import frc.robot.commands.Arm.DisableElbowPid;
-import frc.robot.commands.Arm.DisableShoulderPid;
-import frc.robot.commands.Arm.DisableTurretPid;
-import frc.robot.commands.Arm.DisableWristPid;
-import frc.robot.commands.Arm.EnableArmPid;
-import frc.robot.commands.Arm.EnableElbowPid;
-import frc.robot.commands.Arm.EnableShoulderPid;
-import frc.robot.commands.Arm.EnableTurretPid;
-import frc.robot.commands.Arm.EnableWristPid;
+import frc.robot.commands.Arm.*;
+import frc.robot.commands.Arm.presets.*;
 import frc.robot.commands.Drive.ArcadeDrive;
-import frc.robot.commands.Hand.ExpelCone;
-import frc.robot.commands.Hand.ExpelCube;
-import frc.robot.commands.Hand.HandOperatorPowerControl;
-import frc.robot.commands.Hand.IntakeCone;
-import frc.robot.commands.Hand.IntakeCube;
-import frc.robot.commands.Hand.SpinIntake;
+import frc.robot.commands.Hand.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -84,6 +67,14 @@ public class RobotContainer {
     DisableShoulderPid.registerWithTestingDashboard();
     EnableTurretPid.registerWithTestingDashboard();
     DisableTurretPid.registerWithTestingDashboard();
+    ArmToPreset1.registerWithTestingDashboard();
+    ArmToPreset2.registerWithTestingDashboard();
+    ArmToPreset3.registerWithTestingDashboard();
+    ArmToPreset4.registerWithTestingDashboard();
+    ArmToPreset5.registerWithTestingDashboard();
+    ArmToPreset6.registerWithTestingDashboard();
+    ArmToPreset7.registerWithTestingDashboard();
+    ArmToPreset8.registerWithTestingDashboard();
 
     // Hand
     SpinIntake.registerWithTestingDashboard();
