@@ -508,6 +508,7 @@ public class Arm extends SubsystemBase {
 
   public void checkTurretCurrentOutput() {
     if (m_turret.getOutputCurrent() > Constants.TURRET_MOTOR_CURRENT_LIMIT) {
+      m_turret.set(0);
       turretEnabled = false;
     }
   }
@@ -516,6 +517,7 @@ public class Arm extends SubsystemBase {
     boolean left = m_shoulderLeft.getOutputCurrent() > Constants.SHOULDER_MOTOR_CURRENT_LIMIT;
     boolean right = m_shoulderRight.getOutputCurrent() > Constants.SHOULDER_MOTOR_CURRENT_LIMIT;
     if (left || right) {
+      m_shoulder.set(0);
       shoulderEnabled = false;
     }
   }
@@ -524,12 +526,14 @@ public class Arm extends SubsystemBase {
     boolean left = m_elbowLeft.getOutputCurrent() > Constants.ELBOW_MOTOR_CURRENT_LIMIT;
     boolean right = m_elbowRight.getOutputCurrent() > Constants.ELBOW_MOTOR_CURRENT_LIMIT;
     if (left || right) {
+      m_elbow.set(0);
       elbowEnabled = false;
     }
   }
 
   public void checkWristCurrentOutput() {
     if (m_wrist.getOutputCurrent() > Constants.WRIST_MOTOR_CURRENT_LIMIT) {
+      m_wrist.set(0);
       wristEnabled = false;
     }
   }
