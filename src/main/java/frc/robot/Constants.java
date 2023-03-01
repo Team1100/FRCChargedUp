@@ -128,10 +128,10 @@ public final class Constants {
   public static final double DRIVE_RAMP_RATE = 1; // Limit changes in power to require 2 secons to go from zero to full
 
   // Motor current limits
-  public static final double TURRET_MOTOR_CURRENT_LIMIT = 10;
-  public static final double SHOULDER_MOTOR_CURRENT_LIMIT = 10;
-  public static final double ELBOW_MOTOR_CURRENT_LIMIT = 10;
-  public static final double WRIST_MOTOR_CURRENT_LIMIT = 10;
+  public static final double TURRET_MOTOR_CURRENT_LIMIT = 60;
+  public static final double SHOULDER_MOTOR_CURRENT_LIMIT = 60;
+  public static final double ELBOW_MOTOR_CURRENT_LIMIT = 60;
+  public static final double WRIST_MOTOR_CURRENT_LIMIT = 60;
 
 
 }
