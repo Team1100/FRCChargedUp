@@ -4,8 +4,6 @@
 
 package frc.robot.commands.Arm;
 
-import frc.robot.input.XboxController;
-import frc.robot.input.XboxController.XboxAxis;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.OI;
@@ -18,7 +16,6 @@ import frc.robot.testingdashboard.TestingDashboard;
 public class ArmToPositionXY extends CommandBase {
 
   Arm m_arm;
-  XboxController m_xbox;
 
   // Creates a new ArmToPositionXY:
   public ArmToPositionXY() {
@@ -30,16 +27,11 @@ public class ArmToPositionXY extends CommandBase {
   public static void registerWithTestingDashboard() {
     Arm arm = Arm.getInstance();
     ArmToPositionXY cmd = new ArmToPositionXY();
-    TestingDashboard.getInstance().registerCommand(arm, "Manual", cmd);
+    TestingDashboard.getInstance().registerCommand(arm, "Automatic", cmd);
   }
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_arm.setTurretTargetAngle(0);
-    m_arm.setShoulderTargetAngle(0);
-    m_arm.setElbowTargetAngle(0);
-    m_arm.setWristTargetAngle(0);
-    m_xbox = OI.getInstance().getOperatorXboxController();
   }
 
   @Override
