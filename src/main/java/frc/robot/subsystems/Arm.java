@@ -46,8 +46,10 @@ public class Arm extends SubsystemBase {
   private RelativeEncoder m_turretEncoder;
   private RelativeEncoder m_wristEncoder;
 
-  private AnalogInput m_shoulderPot;
-  private AnalogInput m_elbowPot;
+  private AnalogInput m_shoulderPotLeft;
+  private AnalogInput m_elbowPotLeft;
+  private AnalogInput m_shoulderPotRight;
+  private AnalogInput m_elbowPotRight;
   private AnalogInput m_turretPot;
 
   // PID controllers and enable/disable
@@ -114,8 +116,10 @@ public class Arm extends SubsystemBase {
     zeroEncoders();
 
     // Initialize ARM potentiometers
-    m_shoulderPot = new AnalogInput(RobotMap.A_SHOULDER_POTENTIOMETER);
-    m_elbowPot = new AnalogInput(RobotMap.A_ELBOW_POTENTIOMETER);
+    m_shoulderPotLeft = new AnalogInput(RobotMap.A_SHOULDER_POTENTIOMETER_LEFT);
+    m_elbowPotLeft = new AnalogInput(RobotMap.A_ELBOW_POTENTIOMETER_LEFT);
+    m_shoulderPotLeft = new AnalogInput(RobotMap.A_SHOULDER_POTENTIOMETER_RIGHT);
+    m_elbowPotLeft = new AnalogInput(RobotMap.A_ELBOW_POTENTIOMETER_RIGHT);
     m_turretPot = new AnalogInput(RobotMap.A_TURRET_POTENTIOMETER);
 
     // Sets arm motors to brake mode
@@ -160,8 +164,10 @@ public class Arm extends SubsystemBase {
 			if (m_arm == null) {
         m_arm = new Arm();
         TestingDashboard.getInstance().registerSubsystem(m_arm, "Arm");
-        TestingDashboard.getInstance().registerNumber(m_arm, "Potentiometers", "ElbowPotVoltage", 0);
-        TestingDashboard.getInstance().registerNumber(m_arm, "Potentiometers", "ShoulderPotVoltage", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "Potentiometers", "ElbowPotLeftVoltage", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "Potentiometers", "ShoulderPotLeftVoltage", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "Potentiometers", "ElbowPotRightVoltage", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "Potentiometers", "ShoulderPotRightVoltage", 0);
         TestingDashboard.getInstance().registerNumber(m_arm, "Potentiometers", "TurretPotVoltage", 0);
 
         TestingDashboard.getInstance().registerNumber(m_arm, "Encoders", "ElbowEncoderLeftPulses", 0);
@@ -298,14 +304,19 @@ public class Arm extends SubsystemBase {
     return m_shoulderEncoderRight.getPosition() * Constants.SHOULDER_DEGREES_PER_PULSE;
   }
 
-  private double getShoulderPotAngle() {
-    return m_shoulderPot.getVoltage() * Constants.SHOULDER_POT_DEGREES_PER_VOLT;
+  private double getShoulderPotLeftAngle() {
+    return m_shoulderPotLeft.getVoltage() * Constants.SHOULDER_POT_LEFT_DEGREES_PER_VOLT;
+  }
+
+  private double getShoulderPotRightAngle() {
+    return m_shoulderPotRight.getVoltage() * Constants.SHOULDER_POT_RIGHT_DEGREES_PER_VOLT;
   }
 
   public double getShoulderAngle() {
     double shoulderEncoderLeftAngle = getShoulderEncoderLeftAngle();
     double shoulderEncoderRightAngle = getShoulderEncoderRightAngle();
-    double shoulderPotAngle = getShoulderPotAngle();
+    double shoulderPotLeftAngle = getShoulderPotLeftAngle();
+    double shoulderPotRightAngle = getShoulderPotRightAngle();
     // TODO: Compare all 3 and discard 1 if it doesn't match
     return shoulderEncoderLeftAngle;
   }
@@ -318,14 +329,19 @@ public class Arm extends SubsystemBase {
     return m_elbowEncoderRight.getPosition() * Constants.ELBOW_DEGREES_PER_PULSE;
   }
 
-  private double getElbowPotAngle() {
-    return m_elbowPot.getVoltage() * Constants.ELBOW_POT_DEGREES_PER_VOLT;
+  private double getElbowPotLeftAngle() {
+    return m_elbowPotLeft.getVoltage() * Constants.ELBOW_POT_LEFT_DEGREES_PER_VOLT;
+  }
+
+  private double getElbowPotRightAngle() {
+    return m_elbowPotRight.getVoltage() * Constants.ELBOW_POT_RIGHT_DEGREES_PER_VOLT;
   }
 
   public double getElbowAngle() {
     double elbowEncoderLeftAngle = getElbowEncoderLeftAngle();
     double elbowEncoderRightAngle = getElbowEncoderRightAngle();
-    double elbowPotAngle = getElbowPotAngle();
+    double elbowPotLeftAngle = getElbowPotLeftAngle();
+    double elbowPotRightAngle = getElbowPotRightAngle();
     // TODO: Compare all 3 and discard 1 if it doesn't match
     return elbowEncoderLeftAngle;
   }
@@ -679,8 +695,10 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    TestingDashboard.getInstance().updateNumber(m_arm, "ElbowPotVoltage", m_elbowPot.getVoltage());
-    TestingDashboard.getInstance().updateNumber(m_arm, "ShoulderPotVoltage", m_shoulderPot.getVoltage());
+    TestingDashboard.getInstance().updateNumber(m_arm, "ElbowPotLeftVoltage", m_elbowPotLeft.getVoltage());
+    TestingDashboard.getInstance().updateNumber(m_arm, "ShoulderPotLeftVoltage", m_shoulderPotLeft.getVoltage());
+    TestingDashboard.getInstance().updateNumber(m_arm, "ElbowPotRightVoltage", m_elbowPotRight.getVoltage());
+    TestingDashboard.getInstance().updateNumber(m_arm, "ShoulderPotRightVoltage", m_shoulderPotRight.getVoltage());
     TestingDashboard.getInstance().updateNumber(m_arm, "TurretPotVoltage", m_turretPot.getVoltage());
 
     TestingDashboard.getInstance().updateNumber(m_arm, "ElbowEncoderLeftPulses", m_elbowEncoderLeft.getPosition());
@@ -693,11 +711,13 @@ public class Arm extends SubsystemBase {
     TestingDashboard.getInstance().updateNumber(m_arm, "TurretPotAngle", getTurretPotAngle());
     TestingDashboard.getInstance().updateNumber(m_arm, "TurretEncoderAngle", getTurretEncoderAngle());
 
-    TestingDashboard.getInstance().updateNumber(m_arm, "ShoulderPotAngle", getShoulderPotAngle());
+    TestingDashboard.getInstance().updateNumber(m_arm, "ShoulderPotLeftAngle", getShoulderPotLeftAngle());
+    TestingDashboard.getInstance().updateNumber(m_arm, "ShoulderPotRightAngle", getShoulderPotRightAngle());
     TestingDashboard.getInstance().updateNumber(m_arm, "ShoulderEncoderLeftAngle", getShoulderEncoderLeftAngle());
     TestingDashboard.getInstance().updateNumber(m_arm, "ShoulderEncoderRightAngle", getShoulderEncoderRightAngle());
 
-    TestingDashboard.getInstance().updateNumber(m_arm, "ElbowPotAngle", getElbowPotAngle());
+    TestingDashboard.getInstance().updateNumber(m_arm, "ElbowPotLeftAngle", getElbowPotLeftAngle());
+    TestingDashboard.getInstance().updateNumber(m_arm, "ElbowPotRightAngle", getElbowPotRightAngle());
     TestingDashboard.getInstance().updateNumber(m_arm, "ElbowEncoderLeftAngle", getElbowEncoderLeftAngle());
     TestingDashboard.getInstance().updateNumber(m_arm, "ElbowEncoderRightAngle", getElbowEncoderRightAngle());
 
