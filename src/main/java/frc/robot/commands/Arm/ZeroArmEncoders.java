@@ -19,7 +19,7 @@ public class ZeroArmEncoders extends CommandBase {
 
   public static void registerWithTestingDashboard() {
     Arm arm = Arm.getInstance();
-    ArmDashboardAngleControl cmd = new ArmDashboardAngleControl();
+    ZeroArmEncoders cmd = new ZeroArmEncoders();
     TestingDashboard.getInstance().registerCommand(arm, "Manual", cmd);
   }
 
@@ -35,12 +35,7 @@ public class ZeroArmEncoders extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_arm.getShoulderEncoderLeft().setPosition(0);
-    m_arm.getShoulderEncoderRight().setPosition(0);
-    m_arm.getElbowEncoderLeft().setPosition(0);
-    m_arm.getElbowEncoderRight().setPosition(0);
-    m_arm.getTurretEncoder().setPosition(0);
-    m_arm.getWristEncoder().setPosition(0);
+    m_arm.zeroEncoders();
   }
 
   // Returns true when the command should end.

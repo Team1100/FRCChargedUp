@@ -39,7 +39,7 @@ public class RobotContainer {
     m_drive.setDefaultCommand(new ArcadeDrive());
 
     m_arm = Arm.getInstance();
-    m_arm.setDefaultCommand(new ArmDashboardAngleControl());
+    m_arm.setDefaultCommand(new ArmOperatorRelativeAngleControl());
 
     m_hand = Hand.getInstance();
     m_hand.setDefaultCommand(new HandOperatorPowerControl());
@@ -77,6 +77,7 @@ public class RobotContainer {
     ArmToPreset6.registerWithTestingDashboard();
     ArmToPreset7.registerWithTestingDashboard();
     ArmToPreset8.registerWithTestingDashboard();
+    ZeroArmEncoders.registerWithTestingDashboard();
 
     // Hand
     SpinIntake.registerWithTestingDashboard();

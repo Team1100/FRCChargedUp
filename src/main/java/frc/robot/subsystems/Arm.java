@@ -111,12 +111,7 @@ public class Arm extends SubsystemBase {
     // Initializes an ArmSegmentHelper
     m_armHelper = new ArmSegmentHelper();
 
-    m_shoulderEncoderLeft.setPosition(0);
-    m_shoulderEncoderRight.setPosition(0);
-    m_elbowEncoderLeft.setPosition(0);
-    m_elbowEncoderRight.setPosition(0);
-    m_turretEncoder.setPosition(0);
-    m_wristEncoder.setPosition(0);
+    zeroEncoders();
 
     // Initialize ARM potentiometers
     m_shoulderPot = new AnalogInput(RobotMap.A_SHOULDER_POTENTIOMETER);
@@ -391,6 +386,15 @@ public class Arm extends SubsystemBase {
 
   public void toggleWristPower(boolean enabled) {
     wristEnabled = enabled;
+  }
+
+  public void zeroEncoders() {
+    m_shoulderEncoderLeft.setPosition(0);
+    m_shoulderEncoderRight.setPosition(0);
+    m_elbowEncoderLeft.setPosition(0);
+    m_elbowEncoderRight.setPosition(0);
+    m_turretEncoder.setPosition(0);
+    m_wristEncoder.setPosition(0);
   }
 
   public RelativeEncoder getShoulderEncoderLeft() {
