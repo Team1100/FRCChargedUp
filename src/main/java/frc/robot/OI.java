@@ -68,9 +68,6 @@ public class OI {
     if (Constants.XBOX_CONTROLLER_DRIVER_ENABLE) {
     }
     if (Constants.XBOX_CONTROLLER_OPERATOR_ENABLE) {
-      OperatorXboxController.getButtonY().onTrue(new IntakeCube(false));
-      OperatorXboxController.getButtonA().onTrue(new ExpelCube(false));
-      OperatorXboxController.getButtonB().onTrue(new ArmToPositionXY());
     }
     
     ////////////////////////////////////////////////////
