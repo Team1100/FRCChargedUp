@@ -4,21 +4,17 @@
 
 package frc.robot.commands.Arm;
 
-import frc.robot.OI;
-import frc.robot.input.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Arm;
 import frc.robot.testingdashboard.TestingDashboard;
 
-public class ArmDashboardAngleControl extends CommandBase {
+public class ZeroArmEncoders extends CommandBase {
   Arm m_arm;
-  XboxController m_xbox;
-
-  /** Creates a new ArmDashboardAngleControl. */
-  public ArmDashboardAngleControl() {
+  
+  /** Creates a new ZeroArmEncoders. */
+  public ZeroArmEncoders() {
     m_arm = Arm.getInstance();
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(Arm.getInstance());
   }
 
   public static void registerWithTestingDashboard() {
@@ -30,32 +26,21 @@ public class ArmDashboardAngleControl extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_xbox = OI.getInstance().getOperatorXboxController();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    
-    double t_angle = TestingDashboard.getInstance().getNumber(m_arm, "TargetTurretAngle");
-    double s_angle = TestingDashboard.getInstance().getNumber(m_arm, "TargetShoulderAngle");
-    double e_angle = TestingDashboard.getInstance().getNumber(m_arm, "TargetElbowAngle");
-    double w_angle = TestingDashboard.getInstance().getNumber(m_arm, "TargetWristAngle");
-
-    if(m_xbox.getButtonA().getAsBoolean()) {
-      m_arm.setTurretTargetAngle(t_angle);
-    } else if(m_xbox.getButtonX().getAsBoolean()) {
-      m_arm.setShoulderTargetAngle(s_angle);
-    } else if(m_xbox.getButtonY().getAsBoolean()) {
-      m_arm.setElbowTargetAngle(e_angle);
-    } else if(m_xbox.getButtonB().getAsBoolean()) {
-      m_arm.setWristTargetAngle(w_angle);
-    } 
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_arm.getShoulderEncoderLeft().setPosition(0);
+    m_arm.getShoulderEncoderRight().setPosition(0);
+    m_arm.getElbowEncoderLeft().setPosition(0);
+    m_arm.getElbowEncoderRight().setPosition(0);
+    m_arm.getTurretEncoder().setPosition(0);
+    m_arm.getWristEncoder().setPosition(0);
   }
 
   // Returns true when the command should end.

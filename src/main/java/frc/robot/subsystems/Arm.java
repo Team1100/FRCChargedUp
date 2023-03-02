@@ -393,6 +393,30 @@ public class Arm extends SubsystemBase {
     wristEnabled = enabled;
   }
 
+  public RelativeEncoder getShoulderEncoderLeft() {
+    return m_shoulderEncoderLeft;
+  }
+
+  public RelativeEncoder getShoulderEncoderRight() {
+    return m_shoulderEncoderRight;
+  }
+
+  public RelativeEncoder getElbowEncoderLeft() {
+    return m_elbowEncoderLeft;
+  }
+
+  public RelativeEncoder getElbowEncoderRight() {
+    return m_elbowEncoderRight;
+  }
+
+  public RelativeEncoder getTurretEncoder() {
+    return m_turretEncoder;
+  }
+
+  public RelativeEncoder getWristEncoder() {
+    return m_wristEncoder;
+  }
+
   public void enableAllMotors() {
     toggleTurretPower(true);
     toggleShoulderPower(true);

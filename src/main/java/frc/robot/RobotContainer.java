@@ -39,7 +39,7 @@ public class RobotContainer {
     m_drive.setDefaultCommand(new ArcadeDrive());
 
     m_arm = Arm.getInstance();
-    m_arm.setDefaultCommand(new ArmOperatorPowerControl());
+    m_arm.setDefaultCommand(new ArmDashboardAngleControl());
 
     m_hand = Hand.getInstance();
     m_hand.setDefaultCommand(new HandOperatorPowerControl());
