@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Arm.*;
 import frc.robot.commands.Arm.presets.*;
+import frc.robot.commands.Arm.sequences.ArmToPresetBackwardSequence;
+import frc.robot.commands.Arm.sequences.ArmToPresetForwardSequence;
 import frc.robot.commands.Drive.ArcadeDrive;
 import frc.robot.commands.Hand.*;
 
@@ -69,6 +71,8 @@ public class RobotContainer {
     DisableTurretPid.registerWithTestingDashboard();
     EnableAllMotors.registerWithTestingDashboard();
     DisableAllMotors.registerWithTestingDashboard();
+    ArmToPresetForwardSequence.registerWithTestingDashboard();
+    ArmToPresetBackwardSequence.registerWithTestingDashboard();
     ArmToPreset1.registerWithTestingDashboard();
     ArmToPreset2.registerWithTestingDashboard();
     ArmToPreset3.registerWithTestingDashboard();

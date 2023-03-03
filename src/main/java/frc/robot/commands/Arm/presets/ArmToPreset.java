@@ -48,6 +48,10 @@ public class ArmToPreset extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    boolean turretFinished = m_arm.getTurretPID().atSetpoint();
+    boolean shoulderFinished = m_arm.getShoulderPID().atSetpoint();
+    boolean elbowFinished = m_arm.getElbowPID().atSetpoint();
+    boolean wristFinished = m_arm.getWristPID().atSetpoint();
+    return turretFinished && shoulderFinished && elbowFinished && wristFinished;
   }
 }

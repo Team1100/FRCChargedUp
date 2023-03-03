@@ -596,7 +596,7 @@ public class Arm extends SubsystemBase {
     m_elbowPid.setI(i);
     m_elbowPid.setD(d);
     m_elbowPid.setTolerance(tolerance);
-    m_elbowPid.setSetpoint(m_elbowTargetAngle);
+    m_elbowPid.setSetpoint(m_elbowTargetAngle-getShoulderAngle());
 
     p = TestingDashboard.getInstance().getNumber(m_arm, "TargetWristP");
     i = TestingDashboard.getInstance().getNumber(m_arm, "TargetWristI");
@@ -672,6 +672,22 @@ public class Arm extends SubsystemBase {
     } else {
       TestingDashboard.getInstance().updateString(m_arm, "TurretSoftwarePidEnable", "Disabled");
     }
+  }
+
+  public PIDController getTurretPID() {
+    return m_turretPid;
+  }
+
+  public PIDController getShoulderPID() {
+    return m_shoulderPid;
+  }
+
+  public PIDController getElbowPID() {
+    return m_elbowPid;
+  }
+
+  public PIDController getWristPID() {
+    return m_wristPid;
   }
 
   @Override
