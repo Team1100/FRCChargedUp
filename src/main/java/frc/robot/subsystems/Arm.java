@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.RobotMap;
+import frc.robot.Vector;
 import frc.robot.helpers.ArmSegmentHelper;
 
 import com.revrobotics.CANSparkMax;
@@ -70,6 +71,9 @@ public class Arm extends SubsystemBase {
   private boolean elbowEnabled;
   private boolean turretEnabled;
   private boolean wristEnabled;
+
+  // Determines whether or not the motors will shut off if they pull too much current.
+  private final static boolean CURRENT_LIMITING_ENABLED = true;
   
   public final static int DEFAULT_MOTOR_CURRENT_LIMITS = 65;
 
@@ -231,6 +235,11 @@ public class Arm extends SubsystemBase {
         TestingDashboard.getInstance().registerNumber(m_arm, "JointAngles", "ShoulderAngle", 0);
         TestingDashboard.getInstance().registerNumber(m_arm, "JointAngles", "ElbowAngle", 0);
         TestingDashboard.getInstance().registerNumber(m_arm, "JointAngles", "WristAngle", 0);
+
+        TestingDashboard.getInstance().registerNumber(m_arm, "MotorCurrents", "TurretCurrent", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "MotorCurrents", "ShoulderCurrent", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "MotorCurrents", "ElbowCurrent", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "MotorCurrents", "WristCurrent", 0);
     }
     return m_arm;
   }
@@ -433,17 +442,6 @@ public class Arm extends SubsystemBase {
     toggleShoulderPower(false);
     toggleElbowPower(false);
     toggleWristPower(false);
-  }
-
-  public void positionArmToXY(double x, double y) {
-    double[] angles = ArmSegmentHelper.findAnglesFromCoords(x, y);
-
-    double shoulderAngle = angles[0];
-    double elbowAngle = angles[1];
-
-    m_shoulderTargetAngle = shoulderAngle;
-    m_elbowTargetAngle = elbowAngle;
-
   }
 
   public double getHandX(/*double theta1, double theta2, double rotation*/) {
@@ -706,6 +704,11 @@ public class Arm extends SubsystemBase {
     TestingDashboard.getInstance().updateNumber(m_arm, "ElbowAngle", getElbowAngle());
     TestingDashboard.getInstance().updateNumber(m_arm, "WristAngle", getWristAngle());
 
+    TestingDashboard.getInstance().updateNumber(m_arm, "TurretCurrent", m_turret.getOutputCurrent());
+    TestingDashboard.getInstance().updateNumber(m_arm, "ShoulderCurrent", m_shoulder.getOutputCurrent());
+    TestingDashboard.getInstance().updateNumber(m_arm, "ElbowCurrent", m_elbow.getOutputCurrent());
+    TestingDashboard.getInstance().updateNumber(m_arm, "WristCurrent", m_wrist.getOutputCurrent());
+
     updatePidEnableFlags();
 
     m_armHelper.updateArmSegmentValues();
@@ -714,6 +717,12 @@ public class Arm extends SubsystemBase {
       controlJointsWithSoftwarePidControl();
     }
 
+    if (CURRENT_LIMITING_ENABLED) {
+      checkTurretCurrentOutput();
+      checkShoulderCurrentOutput();
+      checkElbowCurrentOutput();
+      checkWristCurrentOutput();
+    }
 
 
   }

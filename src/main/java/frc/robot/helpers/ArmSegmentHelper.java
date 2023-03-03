@@ -185,7 +185,9 @@ public class ArmSegmentHelper {
 
     // Get angles from x and y input (yay!):
 
-    public static double[] findAnglesFromCoords(double x, double y) {
+    public static double[] getAnglesFrom2DVector(Vector vector2D) {
+        double x = vector2D.x;
+        double y = vector2D.y;
         double[] a1a2 = {0, 0};
     
         double DEADBAND = 5;
@@ -233,5 +235,28 @@ public class ArmSegmentHelper {
         }
 
         return a1a2;
-      }
+    }
+
+    public static Vector convert3Dto2D(Vector vector3D) {
+        Vector vector2D = new Vector(0,0);
+        if (vector2D.is3D()) {
+            double x = Vector.mag(new Vector(vector3D.x,vector3D.y));
+            double y = vector3D.z;
+            vector2D.setValues(x, y);
+        }
+        return vector2D;
+    }
+
+    /**
+     * 
+     * @param vector3D A target 3D coordinate
+     * @return         An array that containes the three angle values necessary
+     *                 for the arm to reach the target 3D coordinate, in the order
+     *                 {turretAngle, shoulderAngle, elbowAngle}
+     */
+    public static double[] getAnglesFrom3DVector(Vector vector3D) {
+        double[] armAngles = getAnglesFrom2DVector(convert3Dto2D(vector3D));
+        double turretAngle = Math.atan(vector3D.y/vector3D.x);
+        return new double[] {turretAngle, armAngles[0], armAngles[1]};
+    }
 }

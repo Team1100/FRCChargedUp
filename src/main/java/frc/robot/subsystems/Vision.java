@@ -18,8 +18,6 @@ public class Vision extends SubsystemBase {
   private static Vision m_vision;
   NetworkTable table;
 
-  public final static double INITIAL_SPEED = 0.6;
-
   /**
    * Creates a new Vision.
    */
@@ -31,10 +29,6 @@ public class Vision extends SubsystemBase {
     if (m_vision == null) {
       m_vision = new Vision();
       TestingDashboard.getInstance().registerSubsystem(m_vision, "Vision");
-      TestingDashboard.getInstance().registerNumber(m_vision, "Turn", "InitialAngle", 0);
-      TestingDashboard.getInstance().registerNumber(m_vision, "Turn", "FinalAngle", 0);
-      TestingDashboard.getInstance().registerNumber(m_vision, "Turn", "SpeedWhenTurning", INITIAL_SPEED);
-      TestingDashboard.getInstance().registerNumber(m_vision, "Vision", "Timer", 0);
       
       Shuffleboard.getTab("Vision")
           .add("hueMin", 0)
