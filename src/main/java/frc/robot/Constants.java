@@ -33,6 +33,9 @@ public final class Constants {
   public static final double D_FWD_RATE_LIMIT = 2.8;
   public static final double D_ROT_RATE_LIMIT = 3.2;
 
+  // This is set to false to disable the ramp rate for driver comfort:
+  public static final boolean ENABLE_RAMP_RATE = false;
+
   // Defines Hand command constants
   public static final double DEFAULT_INTAKE_CUBE_POWER = 0.5;
   public static final double DEFAULT_INTAKE_CONE_POWER = 0.5;

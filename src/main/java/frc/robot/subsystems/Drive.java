@@ -99,10 +99,12 @@ public class Drive extends SubsystemBase {
     m_currentIdleMode = IdleMode.kCoast;
     setEncoderConversionFactor(CONVERSION_FACTOR);
 
+    if(Constants.ENABLE_RAMP_RATE) {
     m_backLeft.setOpenLoopRampRate(Constants.DRIVE_RAMP_RATE);
     m_frontLeft.setOpenLoopRampRate(Constants.DRIVE_RAMP_RATE);
     m_backRight.setOpenLoopRampRate(Constants.DRIVE_RAMP_RATE);
     m_frontRight.setOpenLoopRampRate(Constants.DRIVE_RAMP_RATE);
+    }
 
     m_accelerometer = new BuiltInAccelerometer(); // unit: g
     m_accelHelper = new RoboRioAccelerometerHelper(m_accelerometer);
