@@ -74,6 +74,12 @@ public final class Constants {
   public static final double A_ELBOW_MAX_POWER = 0.5;
   public static final double A_WRIST_MAX_POWER = 0.6;
 
+  // Resting Positions
+  public static final double WRIST_RESTING_ANGLE = 180;
+  public static final double ELBOW_RESTING_ANGLE = 0;
+  public static final double SHOULDER_RESTING_ANGLE = 0;
+  public static final double TURRET_RESTING_ANGLE = 0;
+
   // Joint angle increments
   public static final double A_TURRET_ANGLE_INCREMENT = 1; // degrees
   public static final double A_SHOULDER_ANGLE_INCREMENT = 0.2; // degrees

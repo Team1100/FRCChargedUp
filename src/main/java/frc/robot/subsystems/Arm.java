@@ -694,6 +694,10 @@ public class Arm extends SubsystemBase {
     }
   }
 
+  public boolean atSetpoint() {
+    return m_turretPid.atSetpoint() && m_shoulderPid.atSetpoint() && m_elbowPid.atSetpoint() && m_wristPid.atSetpoint();
+  }
+
   public PIDController getTurretPID() {
     return m_turretPid;
   }

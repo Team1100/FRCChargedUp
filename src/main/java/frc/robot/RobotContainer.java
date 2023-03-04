@@ -84,6 +84,8 @@ public class RobotContainer {
     ArmToPreset7.registerWithTestingDashboard();
     ArmToPreset8.registerWithTestingDashboard();
     ZeroArmEncoders.registerWithTestingDashboard();
+    ArmToHomePosition.registerWithTestingDashboard();
+    CancelArmMovement.registerWithTestingDashboard();
 
     // Hand
     SpinIntake.registerWithTestingDashboard();
