@@ -12,7 +12,6 @@ public class EnableArmPid extends CommandBase {
   /** Creates a new EnableArmPid. */
   public EnableArmPid() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(Arm.getInstance());
   }
 
   public static void registerWithTestingDashboard() {

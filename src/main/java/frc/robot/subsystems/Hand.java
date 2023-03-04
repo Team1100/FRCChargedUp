@@ -34,8 +34,13 @@ public class Hand extends SubsystemBase {
       m_hand = new Hand();
       TestingDashboard.getInstance().registerSubsystem(m_hand, "Hand");
       TestingDashboard.getInstance().registerNumber(m_hand, "MotorInput", "HandPower", Constants.DEFAULT_INTAKE_CUBE_POWER);
+      TestingDashboard.getInstance().registerNumber(m_hand, "MotorOutput", "HandOutputCurrent", 0.0d);
     }
     return m_hand;
+  }
+
+  public double getHandOutputCurrent() {
+    return m_handMotor.getOutputCurrent();
   }
 
   public void setHandMotorPower(double value) {
@@ -45,5 +50,6 @@ public class Hand extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    TestingDashboard.getInstance().updateNumber(m_hand, "HandOutputCurrent", getHandOutputCurrent());
   }
 }

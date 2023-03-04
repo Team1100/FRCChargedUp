@@ -8,22 +8,22 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Arm;
 import frc.robot.testingdashboard.TestingDashboard;
 
-public class DisableArmPid extends CommandBase {
+public class DisableWristPid extends CommandBase {
   /** Creates a new DisableArmPid. */
-  public DisableArmPid() {
+  public DisableWristPid() {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   public static void registerWithTestingDashboard() {
     Arm arm = Arm.getInstance();
-    DisableArmPid cmd = new DisableArmPid();
-    TestingDashboard.getInstance().registerCommand(arm, "PidMasterControl", cmd);
+    DisableWristPid cmd = new DisableWristPid();
+    TestingDashboard.getInstance().registerCommand(arm, "PidJointControl", cmd);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Arm.getInstance().disableArmPid();
+    Arm.getInstance().disableWristPid();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

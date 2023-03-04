@@ -16,6 +16,8 @@ public final class Constants {
 
   // General Constants
   public static final double DEGREES_PER_REVOLUTION = 360;
+  public static final double DEGREES_PER_JOY_SPAN = 180 / 1;
+  public static final double SHOULDER_DEGREES_PER_JOY_SPAN = 90 / 1;
 
   // Joysticks enabled
   public static final boolean ATTACK_THREE_ENABLE = false;
@@ -31,45 +33,60 @@ public final class Constants {
   public static final double D_FWD_RATE_LIMIT = 2.8;
   public static final double D_ROT_RATE_LIMIT = 3.2;
 
+  public static final boolean D_ENABLE_RAMP_RATE = true;
+
   // Defines Hand command constants
   public static final double DEFAULT_INTAKE_CUBE_POWER = 0.5;
   public static final double DEFAULT_INTAKE_CONE_POWER = 0.5;
   public static final double DEFAULT_EXPEL_CUBE_POWER = -0.3;
   public static final double DEFAULT_EXPEL_CONE_POWER = -0.3;
 
+  public static final double HAND_MAX_POWER = 0.5;
+
 
   // Defines Arm command constants
 
   public static final boolean A_ENABLE_SOFTWARE_PID = true;
+
+  public static final double A_TURRET_SOFTWARE_TOLERANCE = 2;
   public static final double A_TURRET_SOFTWARE_P = 0.01;
   public static final double A_TURRET_SOFTWARE_I = 0;
   public static final double A_TURRET_SOFTWARE_D = 0;
 
+  public static final double A_SHOULDER_SOFTWARE_TOLERANCE = 2;
   public static final double A_SHOULDER_SOFTWARE_P = 0.01;
   public static final double A_SHOULDER_SOFTWARE_I = 0;
   public static final double A_SHOULDER_SOFTWARE_D = 0;
 
+  public static final double A_ELBOW_SOFTWARE_TOLERANCE = 2;
   public static final double A_ELBOW_SOFTWARE_P = 0.01;
   public static final double A_ELBOW_SOFTWARE_I = 0;
   public static final double A_ELBOW_SOFTWARE_D = 0;
 
+  public static final double A_WRIST_SOFTWARE_TOLERANCE = 2;
   public static final double A_WRIST_SOFTWARE_P = 0.01;
   public static final double A_WRIST_SOFTWARE_I = 0;
   public static final double A_WRIST_SOFTWARE_D = 0;
 
   // Note that MAX POWER should be a value between 0 and 1
   public static final double A_TURRET_MAX_POWER = 0.3;
-  public static final double A_SHOULDER_MAX_POWER = 0.4;
-  public static final double A_ELBOW_MAX_POWER = 0.4;
-  public static final double A_WRIST_MAX_POWER = 0.4;
+  public static final double A_SHOULDER_MAX_POWER = 0.2;
+  public static final double A_ELBOW_MAX_POWER = 0.5;
+  public static final double A_WRIST_MAX_POWER = 0.6;
 
-  public static final double TURRET_MOTOR_ROTATIONS_PER_REVOLUTION = 256;
+  // Joint angle increments
+  public static final double A_TURRET_ANGLE_INCREMENT = 1; // degrees
+  public static final double A_SHOULDER_ANGLE_INCREMENT = 0.2; // degrees
+  public static final double A_ELBOW_ANGLE_INCREMENT = 0.2; // degrees
+  public static final double A_WRIST_ANGLE_INCREMENT = 1; // degrees
+
+  public static final double TURRET_MOTOR_ROTATIONS_PER_REVOLUTION = 250/12;
   public static final double TURRET_DEGREES_PER_PULSE = DEGREES_PER_REVOLUTION / TURRET_MOTOR_ROTATIONS_PER_REVOLUTION;
   public static final double SHOULDER_MOTOR_ROTATIONS_PER_REVOLUTION = 256;
   public static final double SHOULDER_DEGREES_PER_PULSE = DEGREES_PER_REVOLUTION / SHOULDER_MOTOR_ROTATIONS_PER_REVOLUTION;
   public static final double ELBOW_MOTOR_ROTATIONS_PER_REVOLUTION = 256;
   public static final double ELBOW_DEGREES_PER_PULSE = DEGREES_PER_REVOLUTION / ELBOW_MOTOR_ROTATIONS_PER_REVOLUTION; 
-  public static final double WRIST_MOTOR_ROTATIONS_PER_REVOLUTION = 256;
+  public static final double WRIST_MOTOR_ROTATIONS_PER_REVOLUTION = 100;
   public static final double WRIST_DEGREES_PER_PULSE = DEGREES_PER_REVOLUTION / WRIST_MOTOR_ROTATIONS_PER_REVOLUTION; 
 
   public static final double TURRET_POT_START_VOLTAGE = 0;
@@ -80,21 +97,44 @@ public final class Constants {
   public static final double TURRET_POT_FULL_SWING_ANGLE = TURRET_POT_END_ANGLE > TURRET_POT_START_ANGLE? TURRET_POT_END_ANGLE - TURRET_POT_START_ANGLE: TURRET_POT_START_ANGLE - TURRET_POT_END_ANGLE;
   public static final double TURRET_POT_DEGREES_PER_VOLT = TURRET_POT_FULL_SWING_ANGLE / TURRET_POT_FULL_SWING_VOLTAGE;
 
-  public static final double SHOULDER_POT_START_VOLTAGE = 0;
-  public static final double SHOULDER_POT_END_VOLTAGE = 5;
-  public static final double SHOULDER_POT_FULL_SWING_VOLTAGE = SHOULDER_POT_END_VOLTAGE > SHOULDER_POT_START_VOLTAGE? SHOULDER_POT_END_VOLTAGE - SHOULDER_POT_START_VOLTAGE: SHOULDER_POT_START_VOLTAGE - SHOULDER_POT_END_VOLTAGE;
-  public static final double SHOULDER_POT_START_ANGLE = 0;
-  public static final double SHOULDER_POT_END_ANGLE = 360;
-  public static final double SHOULDER_POT_FULL_SWING_ANGLE = SHOULDER_POT_END_ANGLE > SHOULDER_POT_START_ANGLE? SHOULDER_POT_END_ANGLE - SHOULDER_POT_START_ANGLE: SHOULDER_POT_START_ANGLE - SHOULDER_POT_END_ANGLE;
-  public static final double SHOULDER_POT_DEGREES_PER_VOLT = SHOULDER_POT_FULL_SWING_ANGLE / SHOULDER_POT_FULL_SWING_VOLTAGE;
+  public static final double SHOULDER_POT_LEFT_START_VOLTAGE = 0;
+  public static final double SHOULDER_POT_LEFT_END_VOLTAGE = 5;
+  public static final double SHOULDER_POT_LEFT_FULL_SWING_VOLTAGE = SHOULDER_POT_LEFT_END_VOLTAGE > SHOULDER_POT_LEFT_START_VOLTAGE? SHOULDER_POT_LEFT_END_VOLTAGE - SHOULDER_POT_LEFT_START_VOLTAGE: SHOULDER_POT_LEFT_START_VOLTAGE - SHOULDER_POT_LEFT_END_VOLTAGE;
+  public static final double SHOULDER_POT_LEFT_START_ANGLE = 0;
+  public static final double SHOULDER_POT_LEFT_END_ANGLE = 360;
+  public static final double SHOULDER_POT_LEFT_FULL_SWING_ANGLE = SHOULDER_POT_LEFT_END_ANGLE > SHOULDER_POT_LEFT_START_ANGLE? SHOULDER_POT_LEFT_END_ANGLE - SHOULDER_POT_LEFT_START_ANGLE: SHOULDER_POT_LEFT_START_ANGLE - SHOULDER_POT_LEFT_END_ANGLE;
+  public static final double SHOULDER_POT_LEFT_DEGREES_PER_VOLT = SHOULDER_POT_LEFT_FULL_SWING_ANGLE / SHOULDER_POT_LEFT_FULL_SWING_VOLTAGE;
 
-  public static final double ELBOW_POT_START_VOLTAGE = 0;
-  public static final double ELBOW_POT_END_VOLTAGE = 5;
-  public static final double ELBOW_POT_FULL_SWING_VOLTAGE = ELBOW_POT_END_VOLTAGE > ELBOW_POT_START_VOLTAGE? ELBOW_POT_END_VOLTAGE - ELBOW_POT_START_VOLTAGE: ELBOW_POT_START_VOLTAGE - ELBOW_POT_END_VOLTAGE;
-  public static final double ELBOW_POT_START_ANGLE = 0;
-  public static final double ELBOW_POT_END_ANGLE = 360;
-  public static final double ELBOW_POT_FULL_SWING_ANGLE = ELBOW_POT_END_ANGLE > ELBOW_POT_START_ANGLE? ELBOW_POT_END_ANGLE - ELBOW_POT_START_ANGLE: ELBOW_POT_START_ANGLE - ELBOW_POT_END_ANGLE;
-  public static final double ELBOW_POT_DEGREES_PER_VOLT = ELBOW_POT_FULL_SWING_ANGLE / ELBOW_POT_FULL_SWING_VOLTAGE;
+  public static final double SHOULDER_POT_RIGHT_START_VOLTAGE = 0;
+  public static final double SHOULDER_POT_RIGHT_END_VOLTAGE = 5;
+  public static final double SHOULDER_POT_RIGHT_FULL_SWING_VOLTAGE = SHOULDER_POT_RIGHT_END_VOLTAGE > SHOULDER_POT_RIGHT_START_VOLTAGE? SHOULDER_POT_RIGHT_END_VOLTAGE - SHOULDER_POT_RIGHT_START_VOLTAGE: SHOULDER_POT_RIGHT_START_VOLTAGE - SHOULDER_POT_RIGHT_END_VOLTAGE;
+  public static final double SHOULDER_POT_RIGHT_START_ANGLE = 0;
+  public static final double SHOULDER_POT_RIGHT_END_ANGLE = 360;
+  public static final double SHOULDER_POT_RIGHT_FULL_SWING_ANGLE = SHOULDER_POT_RIGHT_END_ANGLE > SHOULDER_POT_RIGHT_START_ANGLE? SHOULDER_POT_RIGHT_END_ANGLE - SHOULDER_POT_RIGHT_START_ANGLE: SHOULDER_POT_RIGHT_START_ANGLE - SHOULDER_POT_RIGHT_END_ANGLE;
+  public static final double SHOULDER_POT_RIGHT_DEGREES_PER_VOLT = SHOULDER_POT_RIGHT_FULL_SWING_ANGLE / SHOULDER_POT_RIGHT_FULL_SWING_VOLTAGE;
+
+  public static final double ELBOW_POT_LEFT_START_VOLTAGE = 0;
+  public static final double ELBOW_POT_LEFT_END_VOLTAGE = 5;
+  public static final double ELBOW_POT_LEFT_FULL_SWING_VOLTAGE = ELBOW_POT_LEFT_END_VOLTAGE > ELBOW_POT_LEFT_START_VOLTAGE? ELBOW_POT_LEFT_END_VOLTAGE - ELBOW_POT_LEFT_START_VOLTAGE: ELBOW_POT_LEFT_START_VOLTAGE - ELBOW_POT_LEFT_END_VOLTAGE;
+  public static final double ELBOW_POT_LEFT_START_ANGLE = 0;
+  public static final double ELBOW_POT_LEFT_END_ANGLE = 360;
+  public static final double ELBOW_POT_LEFT_FULL_SWING_ANGLE = ELBOW_POT_LEFT_END_ANGLE > ELBOW_POT_LEFT_START_ANGLE? ELBOW_POT_LEFT_END_ANGLE - ELBOW_POT_LEFT_START_ANGLE: ELBOW_POT_LEFT_START_ANGLE - ELBOW_POT_LEFT_END_ANGLE;
+  public static final double ELBOW_POT_LEFT_DEGREES_PER_VOLT = ELBOW_POT_LEFT_FULL_SWING_ANGLE / ELBOW_POT_LEFT_FULL_SWING_VOLTAGE;
+
+  public static final double ELBOW_POT_RIGHT_START_VOLTAGE = 0;
+  public static final double ELBOW_POT_RIGHT_END_VOLTAGE = 5;
+  public static final double ELBOW_POT_RIGHT_FULL_SWING_VOLTAGE = ELBOW_POT_RIGHT_END_VOLTAGE > ELBOW_POT_RIGHT_START_VOLTAGE? ELBOW_POT_RIGHT_END_VOLTAGE - ELBOW_POT_RIGHT_START_VOLTAGE: ELBOW_POT_RIGHT_START_VOLTAGE - ELBOW_POT_RIGHT_END_VOLTAGE;
+  public static final double ELBOW_POT_RIGHT_START_ANGLE = 0;
+  public static final double ELBOW_POT_RIGHT_END_ANGLE = 360;
+  public static final double ELBOW_POT_RIGHT_FULL_SWING_ANGLE = ELBOW_POT_RIGHT_END_ANGLE > ELBOW_POT_RIGHT_START_ANGLE? ELBOW_POT_RIGHT_END_ANGLE - ELBOW_POT_RIGHT_START_ANGLE: ELBOW_POT_RIGHT_START_ANGLE - ELBOW_POT_RIGHT_END_ANGLE;
+  public static final double ELBOW_POT_RIGHT_DEGREES_PER_VOLT = ELBOW_POT_RIGHT_FULL_SWING_ANGLE / ELBOW_POT_RIGHT_FULL_SWING_VOLTAGE;
+
+  // Velocity Conversion Values for the arm motors
+  // TODO: Fill in with appropriate conversion factors
+  public static final double TURRET_MOTOR_VEL_CONVERSION_FACTOR = 1 / TURRET_MOTOR_ROTATIONS_PER_REVOLUTION;
+  public static final double SHOULDER_MOTOR_VEL_CONVERSION_FACTOR = 1 / SHOULDER_MOTOR_ROTATIONS_PER_REVOLUTION;
+  public static final double ELBOW_MOTOR_VEL_CONVERSION_FACTOR = 1 / ELBOW_MOTOR_ROTATIONS_PER_REVOLUTION;
+
 
   // Defines if systems are availible
   public static final boolean HW_ENABLE_DRIVE = true;
@@ -103,6 +143,13 @@ public final class Constants {
 
   // Subsystem periodic loops
   public static final boolean DRIVE_PERIODIC_ENABLE = true;
-  public static final double DRIVE_RAMP_RATE = 2; // Limit changes in power to require 2 secons to go from zero to full
+  public static final double DRIVE_RAMP_RATE = 1; // Limit changes in power to require 2 secons to go from zero to full
+
+  // Motor current limits
+  public static final double TURRET_MOTOR_CURRENT_LIMIT = 10;
+  public static final double SHOULDER_MOTOR_CURRENT_LIMIT = 10;
+  public static final double ELBOW_MOTOR_CURRENT_LIMIT = 10;
+  public static final double WRIST_MOTOR_CURRENT_LIMIT = 10;
+
 
 }

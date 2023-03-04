@@ -8,22 +8,24 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Arm;
 import frc.robot.testingdashboard.TestingDashboard;
 
-public class DisableArmPid extends CommandBase {
-  /** Creates a new DisableArmPid. */
-  public DisableArmPid() {
+public class ZeroArmEncoders extends CommandBase {
+  Arm m_arm;
+  
+  /** Creates a new ZeroArmEncoders. */
+  public ZeroArmEncoders() {
+    m_arm = Arm.getInstance();
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   public static void registerWithTestingDashboard() {
     Arm arm = Arm.getInstance();
-    DisableArmPid cmd = new DisableArmPid();
-    TestingDashboard.getInstance().registerCommand(arm, "PidMasterControl", cmd);
+    ZeroArmEncoders cmd = new ZeroArmEncoders();
+    TestingDashboard.getInstance().registerCommand(arm, "Manual", cmd);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Arm.getInstance().disableArmPid();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -32,7 +34,14 @@ public class DisableArmPid extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_arm.zeroEncoders();
+
+    m_arm.setTurretTargetAngle(0);
+    m_arm.setShoulderTargetAngle(0);
+    m_arm.setElbowTargetAngle(0);
+    m_arm.setWristTargetAngle(0);
+  }
 
   // Returns true when the command should end.
   @Override

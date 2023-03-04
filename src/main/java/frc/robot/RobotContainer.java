@@ -13,16 +13,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.Arm.ArmOperatorPowerControl;
-import frc.robot.commands.Arm.DisableArmPid;
-import frc.robot.commands.Arm.EnableArmPid;
+import frc.robot.commands.Arm.*;
+import frc.robot.commands.Arm.presets.*;
+import frc.robot.commands.Arm.sequences.ArmToPresetBackwardSequence;
+import frc.robot.commands.Arm.sequences.ArmToPresetForwardSequence;
 import frc.robot.commands.Drive.ArcadeDrive;
-import frc.robot.commands.Hand.ExpelCone;
-import frc.robot.commands.Hand.ExpelCube;
-import frc.robot.commands.Hand.IntakeCone;
-import frc.robot.commands.Hand.IntakeCube;
-import frc.robot.commands.Hand.SpinIntake;
-import frc.robot.commands.Drive.ToggleIdleMode;
+import frc.robot.commands.Hand.*;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -36,6 +33,7 @@ public class RobotContainer {
   SendableChooser<Command> m_chooser = new SendableChooser<>();
   private final Drive m_drive;
   private final Arm m_arm;
+  private final Hand m_hand;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -44,9 +42,10 @@ public class RobotContainer {
     m_drive.setDefaultCommand(new ArcadeDrive());
 
     m_arm = Arm.getInstance();
-    m_arm.setDefaultCommand(new ArmOperatorPowerControl());
+    m_arm.setDefaultCommand(new ArmOperatorRelativeAngleControl());
 
-    Hand.getInstance();
+    m_hand = Hand.getInstance();
+    m_hand.setDefaultCommand(new HandOperatorPowerControl());
 
     // Configure the trigger bindings
     configureBindings();
@@ -58,8 +57,32 @@ public class RobotContainer {
     ToggleIdleMode.registerWithTestingDashboard();
     // Arm
     ArmOperatorPowerControl.registerWithTestingDashboard();
+    ArmOperatorAngleControl.registerWithTestingDashboard();
+    ArmOperatorRelativeAngleControl.registerWithTestingDashboard();
+    ArmDashboardAngleControl.registerWithTestingDashboard();
     EnableArmPid.registerWithTestingDashboard();
     DisableArmPid.registerWithTestingDashboard();
+    EnableWristPid.registerWithTestingDashboard();
+    DisableWristPid.registerWithTestingDashboard();
+    EnableElbowPid.registerWithTestingDashboard();
+    DisableElbowPid.registerWithTestingDashboard();
+    EnableShoulderPid.registerWithTestingDashboard();
+    DisableShoulderPid.registerWithTestingDashboard();
+    EnableTurretPid.registerWithTestingDashboard();
+    DisableTurretPid.registerWithTestingDashboard();
+    EnableAllMotors.registerWithTestingDashboard();
+    DisableAllMotors.registerWithTestingDashboard();
+    ArmToPresetForwardSequence.registerWithTestingDashboard();
+    ArmToPresetBackwardSequence.registerWithTestingDashboard();
+    ArmToPreset1.registerWithTestingDashboard();
+    ArmToPreset2.registerWithTestingDashboard();
+    ArmToPreset3.registerWithTestingDashboard();
+    ArmToPreset4.registerWithTestingDashboard();
+    ArmToPreset5.registerWithTestingDashboard();
+    ArmToPreset6.registerWithTestingDashboard();
+    ArmToPreset7.registerWithTestingDashboard();
+    ArmToPreset8.registerWithTestingDashboard();
+    ZeroArmEncoders.registerWithTestingDashboard();
 
     // Hand
     SpinIntake.registerWithTestingDashboard();
@@ -67,6 +90,7 @@ public class RobotContainer {
     ExpelCube.registerWithTestingDashboard();
     IntakeCone.registerWithTestingDashboard();
     IntakeCube.registerWithTestingDashboard();
+    HandOperatorPowerControl.registerWithTestingDashboard();
 
     // Create Testing Dashboard
     TestingDashboard.getInstance().createTestingDashboard();
