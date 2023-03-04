@@ -8,6 +8,7 @@
 package frc.robot;
 
 import frc.robot.commands.Arm.ArmToPositionXY;
+import frc.robot.commands.Drive.SwitchDriveIdleMode;
 import frc.robot.commands.Hand.ExpelCube;
 import frc.robot.commands.Hand.IntakeCube;
 import frc.robot.commands.Hand.SpinIntake;
@@ -66,6 +67,7 @@ public class OI {
     // Now Mapping Commands to XBox
     ////////////////////////////////////////////////////
     if (Constants.XBOX_CONTROLLER_DRIVER_ENABLE) {
+      DriverXboxController.getDPad().getDown().onTrue(new SwitchDriveIdleMode());
     }
     if (Constants.XBOX_CONTROLLER_OPERATOR_ENABLE) {
       OperatorXboxController.getButtonA().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
