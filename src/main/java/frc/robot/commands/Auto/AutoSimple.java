@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Arm.ArmToHomePosition;
 import frc.robot.commands.Arm.ZeroArmEncoders;
 import frc.robot.commands.Drive.DriveDistance;
+import frc.robot.subsystems.Auto;
+import frc.robot.testingdashboard.TestingDashboard;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -23,5 +25,11 @@ public class AutoSimple extends SequentialCommandGroup {
       new DriveDistance(-10, 0.3, 0.3, 1, true),
       new ArmToHomePosition()
     );
+  }
+
+  public static void registerWithTestingDashboard() {
+    AutoSimple cmd = new AutoSimple();
+    Auto auto = Auto.getInstance();
+    TestingDashboard.getInstance().registerCommand(auto, "Sequences", cmd);
   }
 }
