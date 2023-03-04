@@ -73,31 +73,9 @@ public class OI {
     }
     if (Constants.XBOX_CONTROLLER_OPERATOR_ENABLE) {
 
-      if(OperatorXboxController.getDPad().getRight().getAsBoolean()) {
-        layout++;
-      } else if (OperatorXboxController.getDPad().getLeft().getAsBoolean()) {
-        layout--;
-      }
-
-      if(layout == 1) {
-        OperatorXboxController.getButtonA().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
-        OperatorXboxController.getButtonB().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
-        OperatorXboxController.getButtonX().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
-        OperatorXboxController.getButtonY().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
-      }
-      
-      
-      OperatorXboxController.getButtonA().onTrue(new frc.robot.commands.Arm.ArmToHomePosition());
-      OperatorXboxController.getButtonB().onTrue(new frc.robot.commands.Arm.sequences.ConeGrabSequence());
-      OperatorXboxController.getButtonY().onTrue(new frc.robot.commands.Arm.sequences.ConeFarPostStraightSequence());
-      
-      
-
       OperatorXboxController.getButtonStart().onTrue(new frc.robot.commands.Arm.EnableArmPid());
       OperatorXboxController.getButtonBack().onTrue(new frc.robot.commands.Arm.DisableArmPid());
-
-      SmartDashboard.putString("Current Controller Layout", layout + "");
-      SmartDashboard.updateValues();
+      
     }
     
     ////////////////////////////////////////////////////
@@ -148,7 +126,7 @@ public class OI {
 
   public XboxController getOperatorXboxController() {
     return OperatorXboxController;
-}
+  }
 
   /**
    * Returns the KeyboardBox
