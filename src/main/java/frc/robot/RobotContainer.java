@@ -18,6 +18,7 @@ import frc.robot.commands.Arm.presets.*;
 import frc.robot.commands.Arm.sequences.ArmToPresetBackwardSequence;
 import frc.robot.commands.Arm.sequences.ArmToPresetForwardSequence;
 import frc.robot.commands.Drive.ArcadeDrive;
+import frc.robot.commands.Drive.ToggleIdleMode;
 import frc.robot.commands.Hand.*;
 
 
