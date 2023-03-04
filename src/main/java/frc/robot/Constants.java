@@ -41,7 +41,7 @@ public final class Constants {
   public static final double DEFAULT_EXPEL_CUBE_POWER = -0.3;
   public static final double DEFAULT_EXPEL_CONE_POWER = -0.3;
 
-  public static final double HAND_MAX_POWER = 0.5;
+  public static final double HAND_MAX_POWER = 0.7;
 
 
   // Defines Arm command constants

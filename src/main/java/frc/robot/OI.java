@@ -74,6 +74,9 @@ public class OI {
       OperatorXboxController.getButtonB().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
       OperatorXboxController.getButtonX().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
       OperatorXboxController.getButtonY().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
+
+      OperatorXboxController.getButtonStart().onTrue(new frc.robot.commands.Arm.EnableArmPid());
+      OperatorXboxController.getButtonBack().onTrue(new frc.robot.commands.Arm.DisableArmPid());
     }
     
     ////////////////////////////////////////////////////

@@ -122,8 +122,8 @@ public class Arm extends SubsystemBase {
     // Initialize ARM potentiometers
     m_shoulderPotLeft = new AnalogInput(RobotMap.A_SHOULDER_POTENTIOMETER_LEFT);
     m_elbowPotLeft = new AnalogInput(RobotMap.A_ELBOW_POTENTIOMETER_LEFT);
-    m_shoulderPotLeft = new AnalogInput(RobotMap.A_SHOULDER_POTENTIOMETER_RIGHT);
-    m_elbowPotLeft = new AnalogInput(RobotMap.A_ELBOW_POTENTIOMETER_RIGHT);
+    m_shoulderPotRight = new AnalogInput(RobotMap.A_SHOULDER_POTENTIOMETER_RIGHT);
+    m_elbowPotRight = new AnalogInput(RobotMap.A_ELBOW_POTENTIOMETER_RIGHT);
     m_turretPot = new AnalogInput(RobotMap.A_TURRET_POTENTIOMETER);
 
     // Sets arm motors to brake mode
@@ -229,11 +229,13 @@ public class Arm extends SubsystemBase {
         TestingDashboard.getInstance().registerNumber(m_arm, "JointAnglesAll", "TurretPotAngle", 0);
         TestingDashboard.getInstance().registerNumber(m_arm, "JointAnglesAll", "TurretEncoderAngle", 0);
 
-        TestingDashboard.getInstance().registerNumber(m_arm, "JointAnglesAll", "ShoulderPotAngle", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "JointAnglesAll", "ShoulderPotLeftAngle", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "JointAnglesAll", "ShoulderPotRightAngle", 0);
         TestingDashboard.getInstance().registerNumber(m_arm, "JointAnglesAll", "ShoulderEncoderLeftAngle", 0);
         TestingDashboard.getInstance().registerNumber(m_arm, "JointAnglesAll", "ShoulderEncoderRightAngle", 0);
 
-        TestingDashboard.getInstance().registerNumber(m_arm, "JointAnglesAll", "ElbowPotAngle", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "JointAnglesAll", "ElbowPotLeftAngle", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "JointAnglesAll", "ElbowPotRightAngle", 0);
         TestingDashboard.getInstance().registerNumber(m_arm, "JointAnglesAll", "ElbowEncoderLeftAngle", 0);
         TestingDashboard.getInstance().registerNumber(m_arm, "JointAnglesAll", "ElbowEncoderRightAngle", 0);
 

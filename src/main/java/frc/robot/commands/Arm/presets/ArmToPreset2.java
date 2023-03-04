@@ -17,7 +17,7 @@ public class ArmToPreset2 extends ArmToPreset {
 
   public static void registerWithTestingDashboard() {
     Arm arm = Arm.getInstance();
-    ArmToPreset2 cmd = new ArmToPreset2(0, 0, 0, 0);
+    ArmToPreset2 cmd = new ArmToPreset2(0, 30, 80, 45);
     TestingDashboard.getInstance().registerCommand(arm, "Automatic", cmd);
   }
 
