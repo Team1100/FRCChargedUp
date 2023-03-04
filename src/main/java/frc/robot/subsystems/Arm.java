@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.RobotMap;
+import frc.robot.Vector;
 import frc.robot.helpers.ArmSegmentHelper;
 
 import com.revrobotics.CANSparkMax;
@@ -72,6 +73,9 @@ public class Arm extends SubsystemBase {
   private boolean elbowEnabled;
   private boolean turretEnabled;
   private boolean wristEnabled;
+
+  // Determines whether or not the motors will shut off if they pull too much current.
+  private final static boolean CURRENT_LIMITING_ENABLED = true;
   
   public final static int DEFAULT_MOTOR_CURRENT_LIMITS = 65;
 
@@ -237,6 +241,11 @@ public class Arm extends SubsystemBase {
         TestingDashboard.getInstance().registerNumber(m_arm, "JointAngles", "ShoulderAngle", 0);
         TestingDashboard.getInstance().registerNumber(m_arm, "JointAngles", "ElbowAngle", 0);
         TestingDashboard.getInstance().registerNumber(m_arm, "JointAngles", "WristAngle", 0);
+
+        TestingDashboard.getInstance().registerNumber(m_arm, "MotorCurrents", "TurretCurrent", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "MotorCurrents", "ShoulderCurrent", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "MotorCurrents", "ElbowCurrent", 0);
+        TestingDashboard.getInstance().registerNumber(m_arm, "MotorCurrents", "WristCurrent", 0);
     }
     return m_arm;
   }
@@ -451,17 +460,6 @@ public class Arm extends SubsystemBase {
     toggleWristPower(false);
   }
 
-  public void positionArmToXY(double x, double y) {
-    double[] angles = ArmSegmentHelper.findAnglesFromCoords(x, y);
-
-    double shoulderAngle = angles[0];
-    double elbowAngle = angles[1];
-
-    m_shoulderTargetAngle = shoulderAngle;
-    m_elbowTargetAngle = elbowAngle;
-
-  }
-
   public double getHandX(/*double theta1, double theta2, double rotation*/) {
     double x = 0;
 
@@ -614,7 +612,7 @@ public class Arm extends SubsystemBase {
     m_elbowPid.setI(i);
     m_elbowPid.setD(d);
     m_elbowPid.setTolerance(tolerance);
-    m_elbowPid.setSetpoint(m_elbowTargetAngle);
+    m_elbowPid.setSetpoint(m_elbowTargetAngle-getShoulderAngle());
 
     p = TestingDashboard.getInstance().getNumber(m_arm, "TargetWristP");
     i = TestingDashboard.getInstance().getNumber(m_arm, "TargetWristI");
@@ -692,6 +690,22 @@ public class Arm extends SubsystemBase {
     }
   }
 
+  public PIDController getTurretPID() {
+    return m_turretPid;
+  }
+
+  public PIDController getShoulderPID() {
+    return m_shoulderPid;
+  }
+
+  public PIDController getElbowPID() {
+    return m_elbowPid;
+  }
+
+  public PIDController getWristPID() {
+    return m_wristPid;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -726,6 +740,11 @@ public class Arm extends SubsystemBase {
     TestingDashboard.getInstance().updateNumber(m_arm, "ElbowAngle", getElbowAngle());
     TestingDashboard.getInstance().updateNumber(m_arm, "WristAngle", getWristAngle());
 
+    TestingDashboard.getInstance().updateNumber(m_arm, "TurretCurrent", m_turret.getOutputCurrent());
+    TestingDashboard.getInstance().updateNumber(m_arm, "ShoulderCurrent", m_shoulder.getOutputCurrent());
+    TestingDashboard.getInstance().updateNumber(m_arm, "ElbowCurrent", m_elbow.getOutputCurrent());
+    TestingDashboard.getInstance().updateNumber(m_arm, "WristCurrent", m_wrist.getOutputCurrent());
+
     updatePidEnableFlags();
 
     m_armHelper.updateArmSegmentValues();
@@ -734,6 +753,12 @@ public class Arm extends SubsystemBase {
       controlJointsWithSoftwarePidControl();
     }
 
+    if (CURRENT_LIMITING_ENABLED) {
+      checkTurretCurrentOutput();
+      checkShoulderCurrentOutput();
+      checkElbowCurrentOutput();
+      checkWristCurrentOutput();
+    }
 
 
   }

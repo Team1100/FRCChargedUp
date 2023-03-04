@@ -124,4 +124,9 @@ public class Vector {
         this.y = Y;
         this.z = Z;
     }
+
+    public void setValues(double X, double Y) {
+        this.x = X;
+        this.y = Y;
+    }
 }
