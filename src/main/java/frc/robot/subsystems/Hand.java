@@ -50,5 +50,6 @@ public class Hand extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    TestingDashboard.getInstance().updateNumber(m_hand, "HandOutputCurrent", getHandOutputCurrent());
   }
 }

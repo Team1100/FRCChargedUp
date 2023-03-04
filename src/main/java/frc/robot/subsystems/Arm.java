@@ -75,9 +75,9 @@ public class Arm extends SubsystemBase {
   private boolean wristEnabled;
 
   // Determines whether or not the motors will shut off if they pull too much current.
-  private final static boolean CURRENT_LIMITING_ENABLED = true;
+  private final static boolean CURRENT_LIMITING_ENABLED = false;
   
-  public final static int DEFAULT_MOTOR_CURRENT_LIMITS = 65;
+  public final static int DEFAULT_MOTOR_CURRENT_LIMITS = 60;
 
 
 
@@ -511,6 +511,7 @@ public class Arm extends SubsystemBase {
   public void enableWristPid() {
     m_enableArmPid = true;
     m_enableWristPid = true;
+    m_wristPid.reset();
   }
 
   public void disableWristPid() {
@@ -521,6 +522,7 @@ public class Arm extends SubsystemBase {
   public void enableElbowPid() {
     m_enableArmPid = true;
     m_enableElbowPid = true;
+    m_elbowPid.reset();
   }
 
   public void disableElbowPid() {
@@ -531,6 +533,7 @@ public class Arm extends SubsystemBase {
   public void enableShoulderPid() {
     m_enableArmPid = true;
     m_enableShoulderPid = true;
+    m_shoulderPid.reset();
   }
 
   public void disableShoulderPid() {
@@ -541,6 +544,7 @@ public class Arm extends SubsystemBase {
   public void enableTurretPid() {
     m_enableArmPid = true;
     m_enableTurretPid = true;
+    m_turretPid.reset();
   }
 
   public void disableTurretPid() {
@@ -612,7 +616,7 @@ public class Arm extends SubsystemBase {
     m_elbowPid.setI(i);
     m_elbowPid.setD(d);
     m_elbowPid.setTolerance(tolerance);
-    m_elbowPid.setSetpoint(m_elbowTargetAngle-getShoulderAngle());
+    m_elbowPid.setSetpoint(m_elbowTargetAngle);
 
     p = TestingDashboard.getInstance().getNumber(m_arm, "TargetWristP");
     i = TestingDashboard.getInstance().getNumber(m_arm, "TargetWristI");

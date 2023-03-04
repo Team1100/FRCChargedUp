@@ -6,6 +6,7 @@ package frc.robot.commands.Arm;
 
 import frc.robot.OI;
 import frc.robot.input.XboxController;
+import frc.robot.input.XboxController.XboxAxis;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Arm;
 import frc.robot.testingdashboard.TestingDashboard;
@@ -60,6 +61,27 @@ public class ArmDashboardAngleControl extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+
+    // Command finishes if the manual controller tries to take over
+    if (m_xbox.getButtonLeftBumper().getAsBoolean()) {
+      return true;
+    } else if (m_xbox.getButtonRightBumper().getAsBoolean()) {
+      return true;
+    }
+    // Wrist is controlled by DPad left and right
+    if(m_xbox.getDPad().getRight().getAsBoolean()) {
+      return true;
+    } else if (m_xbox.getDPad().getLeft().getAsBoolean()) {
+      return true;
+    }
+    // Arm joints are controlled by joysticks
+    if (m_xbox.getAxis(XboxAxis.kYLeft) > 0.2 ||
+        m_xbox.getAxis(XboxAxis.kYLeft) < -0.2 ||
+        m_xbox.getAxis(XboxAxis.kYLeft) > 0.2 ||
+        m_xbox.getAxis(XboxAxis.kYLeft) < -0.2)
+    {
+        return true;
+    }
     return false;
   }
 }

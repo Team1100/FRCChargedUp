@@ -33,7 +33,7 @@ public final class Constants {
   public static final double D_FWD_RATE_LIMIT = 2.8;
   public static final double D_ROT_RATE_LIMIT = 3.2;
 
-  public static final boolean D_ENABLE_RAMP_RATE = false;
+  public static final boolean D_ENABLE_RAMP_RATE = true;
 
   // Defines Hand command constants
   public static final double DEFAULT_INTAKE_CUBE_POWER = 0.5;
@@ -48,31 +48,31 @@ public final class Constants {
 
   public static final boolean A_ENABLE_SOFTWARE_PID = true;
 
-  public static final double A_TURRET_SOFTWARE_TOLERANCE = 5;
+  public static final double A_TURRET_SOFTWARE_TOLERANCE = 2;
   public static final double A_TURRET_SOFTWARE_P = 0.01;
   public static final double A_TURRET_SOFTWARE_I = 0;
   public static final double A_TURRET_SOFTWARE_D = 0;
 
-  public static final double A_SHOULDER_SOFTWARE_TOLERANCE = 5;
+  public static final double A_SHOULDER_SOFTWARE_TOLERANCE = 2;
   public static final double A_SHOULDER_SOFTWARE_P = 0.01;
   public static final double A_SHOULDER_SOFTWARE_I = 0;
   public static final double A_SHOULDER_SOFTWARE_D = 0;
 
-  public static final double A_ELBOW_SOFTWARE_TOLERANCE = 5;
+  public static final double A_ELBOW_SOFTWARE_TOLERANCE = 2;
   public static final double A_ELBOW_SOFTWARE_P = 0.01;
   public static final double A_ELBOW_SOFTWARE_I = 0;
   public static final double A_ELBOW_SOFTWARE_D = 0;
 
-  public static final double A_WRIST_SOFTWARE_TOLERANCE = 5;
+  public static final double A_WRIST_SOFTWARE_TOLERANCE = 2;
   public static final double A_WRIST_SOFTWARE_P = 0.01;
   public static final double A_WRIST_SOFTWARE_I = 0;
   public static final double A_WRIST_SOFTWARE_D = 0;
 
   // Note that MAX POWER should be a value between 0 and 1
   public static final double A_TURRET_MAX_POWER = 0.3;
-  public static final double A_SHOULDER_MAX_POWER = 0.4;
-  public static final double A_ELBOW_MAX_POWER = 0.4;
-  public static final double A_WRIST_MAX_POWER = 0.4;
+  public static final double A_SHOULDER_MAX_POWER = 0.2;
+  public static final double A_ELBOW_MAX_POWER = 0.5;
+  public static final double A_WRIST_MAX_POWER = 0.6;
 
   // Joint angle increments
   public static final double A_TURRET_ANGLE_INCREMENT = 1; // degrees
@@ -146,10 +146,10 @@ public final class Constants {
   public static final double DRIVE_RAMP_RATE = 1; // Limit changes in power to require 2 secons to go from zero to full
 
   // Motor current limits
-  public static final double TURRET_MOTOR_CURRENT_LIMIT = 60;
-  public static final double SHOULDER_MOTOR_CURRENT_LIMIT = 60;
-  public static final double ELBOW_MOTOR_CURRENT_LIMIT = 60;
-  public static final double WRIST_MOTOR_CURRENT_LIMIT = 60;
+  public static final double TURRET_MOTOR_CURRENT_LIMIT = 10;
+  public static final double SHOULDER_MOTOR_CURRENT_LIMIT = 10;
+  public static final double ELBOW_MOTOR_CURRENT_LIMIT = 10;
+  public static final double WRIST_MOTOR_CURRENT_LIMIT = 10;
 
 
 }

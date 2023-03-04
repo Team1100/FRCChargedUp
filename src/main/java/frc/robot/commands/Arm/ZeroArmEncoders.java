@@ -36,11 +36,16 @@ public class ZeroArmEncoders extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_arm.zeroEncoders();
+
+    m_arm.setTurretTargetAngle(0);
+    m_arm.setShoulderTargetAngle(0);
+    m_arm.setElbowTargetAngle(0);
+    m_arm.setWristTargetAngle(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }
