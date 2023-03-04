@@ -118,10 +118,6 @@ public class ArmSegmentHelper {
         double elbowVelZ = (arm.getShoulderVelocity() * RPM_TO_RAD * SHOULDER_LENGTH * Math.cos(Math.toRadians(arm.getShoulderAngle())));
         // Adds velocity contributed by both arm segments
         double handVelZ = elbowVelZ + (arm.getElbowVelocity() * RPM_TO_RAD * FOREARM_LENGTH * Math.cos(Math.toRadians(arm.getElbowAngle())));
-        
-        TestingDashboard.getInstance().updateNumber(arm, "HandXVel", handVelX);
-        TestingDashboard.getInstance().updateNumber(arm, "HandYVel", handVelY);
-        TestingDashboard.getInstance().updateNumber(arm, "HandZVel", handVelZ);
 
         m_handVel.setValues(handVelX, handVelY, handVelZ);
         return new Vector(handVelX,handVelY,handVelZ);

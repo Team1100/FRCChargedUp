@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.Arm.ArmToPositionXY;
 import frc.robot.commands.Drive.SwitchDriveIdleMode;
 import frc.robot.commands.Hand.ExpelCube;
@@ -15,6 +16,7 @@ import frc.robot.commands.Hand.SpinIntake;
 import frc.robot.input.AttackThree;
 import frc.robot.input.ButtonBox;
 import frc.robot.input.XboxController;
+import frc.robot.testingdashboard.TestingDashboard;
 import frc.robot.input.KeyboardBox;
 
 /**
@@ -31,7 +33,7 @@ public class OI {
   private static ButtonBox buttonBox;
   private static KeyboardBox keyboardBox;
 
-
+  private int layout;
   /**
    * Used outside of the OI class to return an instance of the class.
    * @return Returns instance of OI class formed from constructor.
@@ -70,13 +72,32 @@ public class OI {
       DriverXboxController.getDPad().getUp().onTrue(new SwitchDriveIdleMode());
     }
     if (Constants.XBOX_CONTROLLER_OPERATOR_ENABLE) {
-      OperatorXboxController.getButtonA().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
-      OperatorXboxController.getButtonB().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
-      OperatorXboxController.getButtonX().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
-      OperatorXboxController.getButtonY().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
+
+      if(OperatorXboxController.getDPad().getRight().getAsBoolean()) {
+        layout++;
+      } else if (OperatorXboxController.getDPad().getLeft().getAsBoolean()) {
+        layout--;
+      }
+
+      if(layout == 1) {
+        OperatorXboxController.getButtonA().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
+        OperatorXboxController.getButtonB().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
+        OperatorXboxController.getButtonX().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
+        OperatorXboxController.getButtonY().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
+      }
+      
+      
+      OperatorXboxController.getButtonA().onTrue(new frc.robot.commands.Arm.ArmToHomePosition());
+      OperatorXboxController.getButtonB().onTrue(new frc.robot.commands.Arm.sequences.ConeGrabSequence());
+      OperatorXboxController.getButtonY().onTrue(new frc.robot.commands.Arm.sequences.ConeFarPostStraightSequence());
+      
+      
 
       OperatorXboxController.getButtonStart().onTrue(new frc.robot.commands.Arm.EnableArmPid());
       OperatorXboxController.getButtonBack().onTrue(new frc.robot.commands.Arm.DisableArmPid());
+
+      SmartDashboard.putString("Current Controller Layout", layout + "");
+      SmartDashboard.updateValues();
     }
     
     ////////////////////////////////////////////////////

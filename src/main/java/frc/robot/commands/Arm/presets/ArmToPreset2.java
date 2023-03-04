@@ -14,10 +14,10 @@ public class ArmToPreset2 extends ArmToPreset {
   public ArmToPreset2(double turretAngle, double shoulderAngle, double elbowAngle, double wristAngle) {
     super(turretAngle, shoulderAngle, elbowAngle, wristAngle);
   }
-
+  // This is the preset for grabbing a cone/cube
   public static void registerWithTestingDashboard() {
     Arm arm = Arm.getInstance();
-    ArmToPreset2 cmd = new ArmToPreset2(0, 30, 80, 45);
+    ArmToPreset2 cmd = new ArmToPreset2(0, 0, -100, 205);
     TestingDashboard.getInstance().registerCommand(arm, "Automatic", cmd);
   }
 

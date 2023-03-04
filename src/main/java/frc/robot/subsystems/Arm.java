@@ -222,10 +222,6 @@ public class Arm extends SubsystemBase {
         TestingDashboard.getInstance().registerNumber(m_arm, "HandCoordinates", "HandYCoor", 0);
         TestingDashboard.getInstance().registerNumber(m_arm, "HandCoordinates", "HandZCoor", 0);
 
-        TestingDashboard.getInstance().registerNumber(m_arm, "HandVelocity", "HandXVel", 0);
-        TestingDashboard.getInstance().registerNumber(m_arm, "HandVelocity", "HandYVel", 0);
-        TestingDashboard.getInstance().registerNumber(m_arm, "HandVelocity", "HandZVel", 0);
-
         TestingDashboard.getInstance().registerNumber(m_arm, "JointAnglesAll", "TurretPotAngle", 0);
         TestingDashboard.getInstance().registerNumber(m_arm, "JointAnglesAll", "TurretEncoderAngle", 0);
 

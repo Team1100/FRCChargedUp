@@ -50,10 +50,10 @@ public class ArmOperatorRelativeAngleControl extends CommandBase {
       t_angle += -Constants.A_TURRET_ANGLE_INCREMENT;
     }
 
-    // Wrist is controlled by DPad left and right
-    if(m_xbox.getDPad().getRight().getAsBoolean()) {
+    // Wrist is controlled by DPad up and dowm
+    if(m_xbox.getDPad().getUp().getAsBoolean()) {
       w_angle += Constants.A_WRIST_ANGLE_INCREMENT;
-    } else if (m_xbox.getDPad().getLeft().getAsBoolean()) {
+    } else if (m_xbox.getDPad().getDown().getAsBoolean()) {
       w_angle += -Constants.A_WRIST_ANGLE_INCREMENT;
     }
 
@@ -61,7 +61,7 @@ public class ArmOperatorRelativeAngleControl extends CommandBase {
     // Note that the max angle here is calculated using multiplication
     // because the controller joystick is a value between
     // 0 and 1. Note that 1 / 0.5 == 2, but 1 * 0.5 == 0.5
-    s_angle += m_xbox.getAxis(XboxAxis.kYLeft)*Constants.A_SHOULDER_ANGLE_INCREMENT;
+    s_angle += -m_xbox.getAxis(XboxAxis.kYLeft)*Constants.A_SHOULDER_ANGLE_INCREMENT;
     e_angle += m_xbox.getAxis(XboxAxis.kYRight)*Constants.A_ELBOW_ANGLE_INCREMENT;
 
     m_arm.setTurretTargetAngle(t_angle);

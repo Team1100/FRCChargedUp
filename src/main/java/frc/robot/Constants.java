@@ -60,7 +60,7 @@ public final class Constants {
   public static final double A_SHOULDER_SOFTWARE_D = 0;
 
   public static final double A_ELBOW_SOFTWARE_TOLERANCE = 2;
-  public static final double A_ELBOW_SOFTWARE_P = 0.01;
+  public static final double A_ELBOW_SOFTWARE_P = 0.05;
   public static final double A_ELBOW_SOFTWARE_I = 0;
   public static final double A_ELBOW_SOFTWARE_D = 0;
 
@@ -76,16 +76,16 @@ public final class Constants {
   public static final double A_WRIST_MAX_POWER = 0.6;
 
   // Resting Positions
-  public static final double WRIST_RESTING_ANGLE = 180;
+  public static final double WRIST_RESTING_ANGLE = 0;
   public static final double ELBOW_RESTING_ANGLE = 0;
   public static final double SHOULDER_RESTING_ANGLE = 0;
   public static final double TURRET_RESTING_ANGLE = 0;
 
   // Joint angle increments
-  public static final double A_TURRET_ANGLE_INCREMENT = 1; // degrees
-  public static final double A_SHOULDER_ANGLE_INCREMENT = 0.2; // degrees
-  public static final double A_ELBOW_ANGLE_INCREMENT = 0.2; // degrees
-  public static final double A_WRIST_ANGLE_INCREMENT = 1; // degrees
+  public static final double A_TURRET_ANGLE_INCREMENT = 1.5; // degrees
+  public static final double A_SHOULDER_ANGLE_INCREMENT = 0.3; // degrees
+  public static final double A_ELBOW_ANGLE_INCREMENT = 0.4; // degrees
+  public static final double A_WRIST_ANGLE_INCREMENT = 1.5; // degrees
 
   public static final double TURRET_MOTOR_ROTATIONS_PER_REVOLUTION = 250/12;
   public static final double TURRET_DEGREES_PER_PULSE = DEGREES_PER_REVOLUTION / TURRET_MOTOR_ROTATIONS_PER_REVOLUTION;

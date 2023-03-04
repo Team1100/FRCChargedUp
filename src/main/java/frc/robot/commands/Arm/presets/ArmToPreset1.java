@@ -14,10 +14,10 @@ public class ArmToPreset1 extends ArmToPreset {
   public ArmToPreset1(double turretAngle, double shoulderAngle, double elbowAngle, double wristAngle) {
     super(turretAngle, shoulderAngle, elbowAngle, wristAngle);
   }
-
+  // This is the preset for setting the joints to zero
   public static void registerWithTestingDashboard() {
     Arm arm = Arm.getInstance();
-    ArmToPreset1 cmd = new ArmToPreset1(0, 0, -100, 205);
+    ArmToPreset1 cmd = new ArmToPreset1(0, 0, 0, 0);
     TestingDashboard.getInstance().registerCommand(arm, "Automatic", cmd);
   }
 
