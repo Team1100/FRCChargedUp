@@ -22,6 +22,7 @@ import frc.robot.commands.Hand.ExpelCube;
 import frc.robot.commands.Hand.IntakeCone;
 import frc.robot.commands.Hand.IntakeCube;
 import frc.robot.commands.Hand.SpinIntake;
+import frc.robot.commands.Drive.ToggleIdleMode;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -54,7 +55,7 @@ public class RobotContainer {
 
     // Drive
     ArcadeDrive.registerWithTestingDashboard();
-
+    ToggleIdleMode.registerWithTestingDashboard();
     // Arm
     ArmOperatorPowerControl.registerWithTestingDashboard();
     EnableArmPid.registerWithTestingDashboard();
