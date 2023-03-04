@@ -20,6 +20,7 @@ import frc.robot.commands.Arm.sequences.ArmToPresetForwardSequence;
 import frc.robot.commands.Drive.ArcadeDrive;
 import frc.robot.commands.Hand.*;
 
+
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -53,7 +54,7 @@ public class RobotContainer {
 
     // Drive
     ArcadeDrive.registerWithTestingDashboard();
-
+    ToggleIdleMode.registerWithTestingDashboard();
     // Arm
     ArmOperatorPowerControl.registerWithTestingDashboard();
     ArmOperatorAngleControl.registerWithTestingDashboard();

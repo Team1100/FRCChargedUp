@@ -212,7 +212,7 @@ public class Drive extends SubsystemBase {
     return m_drive;
   }
 
-  public void switchIdleMode() {
+  public void toggleIdleMode() {
     if (m_currentIdleMode == IdleMode.kCoast) {
       setIdleMode(IdleMode.kBrake);
       m_currentIdleMode = IdleMode.kBrake;
