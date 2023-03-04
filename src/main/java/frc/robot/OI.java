@@ -67,7 +67,7 @@ public class OI {
     // Now Mapping Commands to XBox
     ////////////////////////////////////////////////////
     if (Constants.XBOX_CONTROLLER_DRIVER_ENABLE) {
-      DriverXboxController.getDPad().getDown().onTrue(new SwitchDriveIdleMode());
+      DriverXboxController.getDPad().getUp().onTrue(new SwitchDriveIdleMode());
     }
     if (Constants.XBOX_CONTROLLER_OPERATOR_ENABLE) {
       OperatorXboxController.getButtonA().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
