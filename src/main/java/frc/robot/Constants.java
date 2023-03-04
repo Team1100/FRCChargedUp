@@ -32,7 +32,8 @@ public final class Constants {
   // Defines Drive constants
   public static final double D_FWD_RATE_LIMIT = 2.8;
   public static final double D_ROT_RATE_LIMIT = 3.2;
-
+  public static final double D_AUTO_DRIVE_SPEED = 0.5;
+  public static final double D_BRAKE_DELAY = 2;
   public static final boolean D_ENABLE_RAMP_RATE = true;
 
   // Defines Hand command constants
