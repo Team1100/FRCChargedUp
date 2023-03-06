@@ -7,7 +7,9 @@ package frc.robot.commands.Auto;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Arm.ArmToHomePosition;
 import frc.robot.commands.Arm.ZeroArmEncoders;
+import frc.robot.commands.Arm.sequences.ConeFarPostStraightSequence;
 import frc.robot.commands.Drive.DriveDistance;
+import frc.robot.commands.Hand.ExpelCone;
 import frc.robot.subsystems.Auto;
 import frc.robot.testingdashboard.TestingDashboard;
 
@@ -21,7 +23,8 @@ public class AutoSimple extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new ZeroArmEncoders(),
-      // TODO: move arm to score one game piece,
+      new ConeFarPostStraightSequence(),
+      new ExpelCone(true),
       new DriveDistance(-10, 0.3, 0.3, 1, true),
       new ArmToHomePosition()
     );

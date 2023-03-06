@@ -50,9 +50,7 @@ public class TrackTarget extends CommandBase {
       m_arm.setTurretTargetAngle(m_arm.getTurretAngle() + Constants.A_TURRET_ANGLE_INCREMENT);
     }
 
-    // NOT FINISHED.  DO NOT USE YET!!!!!!!!  DON'T BREAK THE ROBOT!!!
-    m_arm.setShoulderTargetAngle(m_arm.getShoulderAngle() + Constants.A_SHOULDER_ANGLE_INCREMENT);
-    m_arm.setElbowTargetAngle(m_arm.getElbowAngle() + Constants.A_ELBOW_ANGLE_INCREMENT);
+    // TODO: add support for X/Y positioning as well
   }
   }
 
