@@ -8,6 +8,7 @@ import java.util.Map;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -16,13 +17,16 @@ import frc.robot.testingdashboard.TestingDashboard;
 
 public class Vision extends SubsystemBase {
   private static Vision m_vision;
-  NetworkTable table;
+  NetworkTable m_Ntable;
+
+  PowerDistribution m_pDBoard;
 
   /**
    * Creates a new Vision.
    */
   private Vision() {
-    table = NetworkTableInstance.getDefault().getTable("Shuffleboard/Vision");
+    m_Ntable = NetworkTableInstance.getDefault().getTable("Shuffleboard/Vision");
+    m_pDBoard =  new PowerDistribution();
   }
 
   public static Vision getInstance() {
@@ -65,16 +69,20 @@ public class Vision extends SubsystemBase {
   }
 
   public double getTargetOffset() {
-    return table.getEntry("offset").getDouble(0);
+    return m_Ntable.getEntry("offset").getDouble(0);
   }
 
 
 
   public boolean isTargetFound() {
-    if (table.getEntry("targetDetected").getDouble(0) == 0)
+    if (m_Ntable.getEntry("targetDetected").getDouble(0) == 0)
       return false;
     else
       return true;
+  }
+
+  public void enableLimeLight(boolean enable) {
+    m_pDBoard.setSwitchableChannel(enable);
   }
 
   @Override
