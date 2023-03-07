@@ -268,6 +268,7 @@ public class Arm extends SubsystemBase {
 
   public void setShoulderTargetAngle(double angle) {
     m_shoulderTargetAngle = angle;
+    //m_elbowTargetAngle += angle; // needed for the mechanical linkage mimic behavior now that we are moving the motor
   }
 
   public void setTurretTargetAngle(double angle) {
