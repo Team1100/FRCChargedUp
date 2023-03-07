@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import java.nio.channels.Pipe;
 import java.util.ArrayList;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -23,6 +24,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -37,6 +40,8 @@ public class Drive extends SubsystemBase {
   private RelativeEncoder m_backRightEncoder;
   private RelativeEncoder m_frontLeftEncoder;
   private RelativeEncoder m_frontRightEncoder;
+  private SparkMaxPIDController m_leftController;
+  private SparkMaxPIDController m_rightController;
   private DifferentialDrive drivetrain;
 
   private BuiltInAccelerometer m_accelerometer;
@@ -79,6 +84,11 @@ public class Drive extends SubsystemBase {
     m_backRightEncoder = m_backRight.getEncoder();
     m_frontLeftEncoder = m_frontLeft.getEncoder();
     m_frontRightEncoder = m_frontRight.getEncoder();
+
+    m_leftController = m_frontLeft.getPIDController();
+    m_rightController = m_frontRight.getPIDController();
+
+    setupPIDControllers();
 
     m_backLeft.restoreFactoryDefaults();
     m_backRight.restoreFactoryDefaults();
@@ -169,6 +179,36 @@ public class Drive extends SubsystemBase {
     } 
   }
 
+  public void setupPIDControllers(){
+    double leftP, leftI, leftD, leftFF, rightP, rightI, rightD, rightFF, maxOutput, minOutput;
+
+    leftP = TestingDashboard.getInstance().getNumber(m_drive, "LeftP");
+    leftI = TestingDashboard.getInstance().getNumber(m_drive, "LeftI");
+    leftD = TestingDashboard.getInstance().getNumber(m_drive, "LeftD");
+    leftFF = TestingDashboard.getInstance().getNumber(m_drive, "LeftFF");
+
+    rightP = TestingDashboard.getInstance().getNumber(m_drive, "RightP");
+    rightI = TestingDashboard.getInstance().getNumber(m_drive, "RightI");
+    rightD = TestingDashboard.getInstance().getNumber(m_drive, "RightD");
+    rightFF = TestingDashboard.getInstance().getNumber(m_drive, "RightFF");
+
+    maxOutput = TestingDashboard.getInstance().getNumber(m_drive, "PIDOutputMax");
+    minOutput = TestingDashboard.getInstance().getNumber(m_drive, "PIDOutputMin");
+
+    m_leftController.setP(leftP);
+    m_leftController.setI(leftI);
+    m_leftController.setD(leftD);
+    m_leftController.setFF(leftFF);
+
+    m_rightController.setP(rightP);
+    m_rightController.setI(rightI);
+    m_rightController.setD(rightD);
+    m_rightController.setFF(rightFF);
+
+    m_leftController.setOutputRange(minOutput, maxOutput);
+    m_rightController.setOutputRange(minOutput, maxOutput);
+  }
+
   public static Drive getInstance() {
     if (m_drive == null) {
       m_drive = new Drive();
@@ -208,6 +248,16 @@ public class Drive extends SubsystemBase {
       TestingDashboard.getInstance().registerString(m_drive, "Robot", "DriveIdleMode", "Coast");
       TestingDashboard.getInstance().registerNumber(m_drive, "Motors", "RotCurrentFilteringLimit", Constants.D_ROT_RATE_LIMIT);
       TestingDashboard.getInstance().registerNumber(m_drive, "Motors", "FwdCurrentFilteringLimit", Constants.D_FWD_RATE_LIMIT);
+      TestingDashboard.getInstance().registerNumber(m_drive, "PIDValues", "RightP", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "PIDValues", "RightI", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "PIDValues", "RightD", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "PIDValues", "RightFF", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "PIDValues", "LeftP", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "PIDValues", "LeftI", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "PIDValues", "LeftD", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "PIDValues", "LeftFF", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "PIDValues", "PIDOutputMax", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "PIDValues", "PIDOutputMin", 0);
     }
     return m_drive;
   }
@@ -268,6 +318,12 @@ public class Drive extends SubsystemBase {
     m_leftSpeed = leftSpeed;
     drivetrain.tankDrive(m_leftSpeed, m_rightSpeed);
     TestingDashboard.getInstance().updateNumber(m_drive, "SpeedOfTravel", leftSpeed);
+  }
+
+  public void setPIDVelocity(double leftRPM, double rightRPM)
+  {
+    m_leftController.setReference(leftRPM, ControlType.kVelocity);
+    m_rightController.setReference(rightRPM, ControlType.kVelocity);
   }
 
   //Encoder Methods
@@ -359,6 +415,9 @@ public class Drive extends SubsystemBase {
 
       // Publish motor current values
       updateMotorCurrentAverages();
+
+      //Remove once PID Controllers are tuned
+      setupPIDControllers();
     }
   }
 }
