@@ -51,6 +51,8 @@ public class Drive extends SubsystemBase {
   private double accelIntCount = 0;
   private IdleMode m_currentIdleMode;
 
+  private boolean m_currentPIDMode;
+
   public double fwdRateLimit = Constants.D_FWD_RATE_LIMIT; // limits rate change to a certain amount per second. Measured in units
   public  double rotRateLimit = Constants.D_ROT_RATE_LIMIT;
 
@@ -89,6 +91,8 @@ public class Drive extends SubsystemBase {
     m_rightController = m_frontRight.getPIDController();
 
     setupPIDControllers();
+
+    m_currentPIDMode = false;
 
     m_backLeft.restoreFactoryDefaults();
     m_backRight.restoreFactoryDefaults();

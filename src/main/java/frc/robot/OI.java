@@ -10,6 +10,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.Arm.ArmToPositionXY;
 import frc.robot.commands.Drive.SwitchDriveIdleMode;
+import frc.robot.commands.Drive.TogglePIDDrive;
 import frc.robot.commands.Hand.ExpelCube;
 import frc.robot.commands.Hand.IntakeCube;
 import frc.robot.commands.Hand.SpinIntake;
@@ -70,6 +71,7 @@ public class OI {
     ////////////////////////////////////////////////////
     if (Constants.XBOX_CONTROLLER_DRIVER_ENABLE) {
       DriverXboxController.getDPad().getUp().onTrue(new SwitchDriveIdleMode());
+      DriverXboxController.getButtonBack().toggleOnTrue(new TogglePIDDrive());
     }
     if (Constants.XBOX_CONTROLLER_OPERATOR_ENABLE) {
 
