@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from cscore import CameraServer
 from networktables import NetworkTablesInstance
+from networktables import NetworkTables
 from apriltag import apriltag
 
 import time
@@ -307,16 +308,16 @@ class VisionApplication(object):
             if not aprilTagTargets: 
                 # If no apriltags are detected, targetDetected is set to false
                 self.vision_nt.putNumber('aprilTagTargetDetected',0)
-            else: 
-                # If AprilTags are detected, targetDetected is set to true 
-                self.vision_nt.putNumber('aprilTagTargetDetected',1)
-
+            else:
                 if aprilTagTargetID in aprilTagTargets:
+                    # If AprilTags are detected, targetDetected is set to true 
+                    self.vision_nt.putNumber('aprilTagTargetDetected',1)
                     # Publishes data to Network Tables
                     self.vision_nt.putNumber('targetX',aprilTagTargets[self.aprilTagTargetID].normalizedX)
                     self.vision_nt.putNumber('yaw',aprilTagTargets[self.aprilTagTargetID].yaw)
                     # If you want to calculate distance, make sure to fill out the appropriate variables starting on line 59
                     self.vision_nt.putNumber('distanceToTarget',aprilTagTargets[self.aprilTagTargetID].distanceToTarget)
+                    NetworkTablesInstance.getDefault().flush()
 
             processingTape = False
             if processingTap:

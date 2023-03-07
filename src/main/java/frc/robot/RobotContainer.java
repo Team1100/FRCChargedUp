@@ -23,6 +23,7 @@ import frc.robot.commands.Arm.sequences.ConeGrabSequence;
 import frc.robot.commands.Drive.ArcadeDrive;
 import frc.robot.commands.Drive.ToggleIdleMode;
 import frc.robot.commands.Hand.*;
+import frc.robot.commands.VisionAuto.TrackTarget;
 import frc.robot.input.ControllerModes.Mode1;
 import frc.robot.input.ControllerModes.Mode2;
 import frc.robot.input.ControllerModes.Mode3;
@@ -64,6 +65,7 @@ public class RobotContainer {
     // Register commands with TestingDashboard commands
 
     // Auto
+    TrackTarget.registerWithTestingDashboard();
 
     // Drive
     ArcadeDrive.registerWithTestingDashboard();

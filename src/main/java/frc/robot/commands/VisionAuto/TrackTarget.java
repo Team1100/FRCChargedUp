@@ -24,7 +24,6 @@ public class TrackTarget extends CommandBase {
   }
 
   public static void registerWithTestingDashboard() {
-    Arm arm = Arm.getInstance();
     Vision vision = Vision.getInstance();
     TrackTarget cmd = new TrackTarget();
     TestingDashboard.getInstance().registerCommand(vision, "Automatic", cmd);
@@ -32,31 +31,26 @@ public class TrackTarget extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_vision.enableLimeLight(true);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     // Queries Vision subsystem for the vision values and acts upon the returned values:
-
-    while(m_vision.isTargetFound()) {             // Using isTargetFound to prevent turret from moving unnecessarily
-    double offset = m_vision.getTargetOffset();
-    
-    // Example of how this system should work: 
-
-    if(offset > 10) {
-      m_arm.setTurretTargetAngle(m_arm.getTurretAngle() - Constants.A_TURRET_ANGLE_INCREMENT);
-    } else if(offset < -10) {
-      m_arm.setTurretTargetAngle(m_arm.getTurretAngle() + Constants.A_TURRET_ANGLE_INCREMENT);
+    if (m_vision.isAprilTagTargetFound()) {
+      // Using isTargetFound to prevent turret from moving unnecessarily
+      m_arm.setTurretTargetAngle(m_arm.getTurretAngle() + m_vision.getTargetYaw());
+      // TODO: add support for X/Y positioning as well
     }
-
-    // TODO: add support for X/Y positioning as well
-  }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_vision.enableLimeLight(false);
+  }
 
   // Returns true when the command should end.
   @Override

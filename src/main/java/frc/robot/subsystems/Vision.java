@@ -82,8 +82,8 @@ public class Vision extends SubsystemBase {
     return m_Ntable.getEntry("yaw").getDouble(0);
   }
 
-  public boolean isTargetFound() {
-    if (m_Ntable.getEntry("targetDetected").getDouble(0) == 0)
+  public boolean isAprilTagTargetFound() {
+    if (m_Ntable.getEntry("aprilTagTargetDetected").getDouble(0) == 0)
       return false;
     else
       return true;
