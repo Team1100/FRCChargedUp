@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.Arm;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -23,11 +24,16 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
+
+   Arm m_arm;
+
   @Override
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+    m_arm = Arm.getInstance();
   }
 
   /**
@@ -74,6 +80,13 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    
+    m_arm.zeroEncoders();
+    m_arm.setTurretTargetAngle(0);
+    m_arm.setShoulderTargetAngle(0);
+    m_arm.setElbowTargetAngle(0);
+    m_arm.setWristTargetAngle(0); 
+
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
