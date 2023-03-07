@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.ControllerMode;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Hand;
 import frc.robot.testingdashboard.TestingDashboard;
@@ -22,6 +23,9 @@ import frc.robot.commands.Arm.sequences.ConeGrabSequence;
 import frc.robot.commands.Drive.ArcadeDrive;
 import frc.robot.commands.Drive.ToggleIdleMode;
 import frc.robot.commands.Hand.*;
+import frc.robot.input.ControllerModes.Mode1;
+import frc.robot.input.ControllerModes.Mode2;
+import frc.robot.input.ControllerModes.Mode3;
 
 
 /**
@@ -37,6 +41,7 @@ public class RobotContainer {
   private final Drive m_drive;
   private final Arm m_arm;
   private final Hand m_hand;
+  private final ControllerMode m_controllerMode;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -50,13 +55,15 @@ public class RobotContainer {
     m_hand = Hand.getInstance();
     m_hand.setDefaultCommand(new HandOperatorPowerControl());
 
+    m_controllerMode = ControllerMode.getInstance();
+    m_controllerMode.setDefaultCommand(OI.getInstance().getMode1());
+
     // Configure the trigger bindings
     configureBindings();
 
     // Register commands with TestingDashboard commands
 
     // Auto
-    AutoSimple.registerWithTestingDashboard();
 
     // Drive
     ArcadeDrive.registerWithTestingDashboard();
@@ -99,6 +106,11 @@ public class RobotContainer {
     IntakeCone.registerWithTestingDashboard();
     IntakeCube.registerWithTestingDashboard();
     HandOperatorPowerControl.registerWithTestingDashboard();
+
+    // Controller Modes
+    Mode1.registerWithTestingDashboard();
+    Mode2.registerWithTestingDashboard();
+    Mode3.registerWithTestingDashboard();
 
     // Create Testing Dashboard
     TestingDashboard.getInstance().createTestingDashboard();

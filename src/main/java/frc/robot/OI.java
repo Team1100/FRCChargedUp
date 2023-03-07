@@ -8,11 +8,13 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.commands.Arm.ArmToPositionXY;
 import frc.robot.commands.Drive.SwitchDriveIdleMode;
 import frc.robot.commands.Hand.ExpelCube;
 import frc.robot.commands.Hand.IntakeCube;
 import frc.robot.commands.Hand.SpinIntake;
+import frc.robot.input.ControllerModes.*;
 import frc.robot.input.AttackThree;
 import frc.robot.input.ButtonBox;
 import frc.robot.input.XboxController;
@@ -32,8 +34,10 @@ public class OI {
   private static XboxController OperatorXboxController;
   private static ButtonBox buttonBox;
   private static KeyboardBox keyboardBox;
+  private Mode1 m_mode1;
+  private Mode2 m_mode2;
+  private Mode3 m_mode3;
 
-  private int layout;
   /**
    * Used outside of the OI class to return an instance of the class.
    * @return Returns instance of OI class formed from constructor.
@@ -64,6 +68,11 @@ public class OI {
     if (Constants.XBOX_CONTROLLER_OPERATOR_ENABLE) {
       OperatorXboxController = new XboxController(RobotMap.U_OPERATOR_XBOX_CONTROLLER, Constants.XBOX_DEADBAND_LIMIT);
     }
+    if(Constants.CONTROLLER_MODES_ENABLE) {
+      m_mode1 = new Mode1();
+      m_mode2 = new Mode2();
+      m_mode3 = new Mode3();
+    }
     
     ////////////////////////////////////////////////////
     // Now Mapping Commands to XBox
@@ -75,7 +84,7 @@ public class OI {
 
       OperatorXboxController.getButtonStart().onTrue(new frc.robot.commands.Arm.EnableArmPid());
       OperatorXboxController.getButtonBack().onTrue(new frc.robot.commands.Arm.DisableArmPid());
-      
+
     }
     
     ////////////////////////////////////////////////////
@@ -134,6 +143,36 @@ public class OI {
    */
   public KeyboardBox getKeyboardBox() {
     return keyboardBox;
+  }
+
+  public Mode1 getMode1() {
+    return m_mode1;
+  }
+
+  public Mode2 getMode2() {
+    return m_mode2;
+  }
+
+  public Mode3 getMode3() {
+    return m_mode3;
+  }
+
+  public void Mode1() {
+    OperatorXboxController.getButtonA().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
+    OperatorXboxController.getButtonB().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
+    OperatorXboxController.getButtonX().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
+    OperatorXboxController.getButtonY().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
+  }
+
+  public void Mode2() {
+    OperatorXboxController.getButtonA().onTrue(new frc.robot.commands.Arm.ArmToHomePosition());
+    OperatorXboxController.getButtonB().onTrue(new frc.robot.commands.Arm.sequences.ConeGrabSequence());
+    OperatorXboxController.getButtonX().onTrue(new frc.robot.commands.Arm.ArmToHomePosition());
+    OperatorXboxController.getButtonY().onTrue(new frc.robot.commands.Arm.sequences.ConeFarPostStraightSequence());
+  }
+
+  public void Mode3() {
+    
   }
   
 }

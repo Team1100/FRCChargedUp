@@ -25,6 +25,8 @@ public final class Constants {
   public static final boolean KEYBOARD_BOX_ENABLE = false;
   public static final boolean XBOX_CONTROLLER_DRIVER_ENABLE = true;
   public static final boolean XBOX_CONTROLLER_OPERATOR_ENABLE = true;
+  public static final boolean CONTROLLER_MODES_ENABLE = true;
+
 
   // Xbox Deadband Limit
   public static final double XBOX_DEADBAND_LIMIT = 0.1;

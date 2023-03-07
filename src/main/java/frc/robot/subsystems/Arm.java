@@ -76,7 +76,6 @@ public class Arm extends SubsystemBase {
   private boolean turretEnabled;
   private boolean wristEnabled;
 
-  private int controllerLayout;
   // Determines whether or not the motors will shut off if they pull too much current.
   private final static boolean CURRENT_LIMITING_ENABLED = false;
   
@@ -715,14 +714,6 @@ public class Arm extends SubsystemBase {
     return m_wristPid;
   }
 
-  public void updateControllerLayout() {
-    if(OI.getInstance().getOperatorXboxController().getDPad().getRight().getAsBoolean()) {
-      controllerLayout++;
-    } else if (OI.getInstance().getOperatorXboxController().getDPad().getLeft().getAsBoolean()) {
-      controllerLayout--;
-    }
-  }
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -761,22 +752,6 @@ public class Arm extends SubsystemBase {
     TestingDashboard.getInstance().updateNumber(m_arm, "ShoulderCurrent", m_shoulder.getOutputCurrent());
     TestingDashboard.getInstance().updateNumber(m_arm, "ElbowCurrent", m_elbow.getOutputCurrent());
     TestingDashboard.getInstance().updateNumber(m_arm, "WristCurrent", m_wrist.getOutputCurrent());
-
-    if(controllerLayout == 1) {
-      OI.getInstance().getOperatorXboxController().getButtonA().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
-      OI.getInstance().getOperatorXboxController().getButtonB().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
-      OI.getInstance().getOperatorXboxController().getButtonX().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
-      OI.getInstance().getOperatorXboxController().getButtonY().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
-    }
-    
-    if(controllerLayout == 2) {
-      OI.getInstance().getOperatorXboxController().getButtonA().onTrue(new frc.robot.commands.Arm.ArmToHomePosition());
-      OI.getInstance().getOperatorXboxController().getButtonB().onTrue(new frc.robot.commands.Arm.sequences.ConeGrabSequence());
-      OI.getInstance().getOperatorXboxController().getButtonY().onTrue(new frc.robot.commands.Arm.sequences.ConeFarPostStraightSequence());
-    }
-    
-    SmartDashboard.putString("Current Controller Layout", controllerLayout + "");
-    SmartDashboard.updateValues();
 
     updatePidEnableFlags();
 
