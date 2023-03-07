@@ -8,6 +8,7 @@ import java.util.Map;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -17,6 +18,7 @@ import frc.robot.testingdashboard.TestingDashboard;
 
 public class Vision extends SubsystemBase {
   private static Vision m_vision;
+  private static int aprilTagTarget;
   NetworkTable m_Ntable;
 
   PowerDistribution m_pDBoard;
@@ -27,12 +29,16 @@ public class Vision extends SubsystemBase {
   private Vision() {
     m_Ntable = NetworkTableInstance.getDefault().getTable("Shuffleboard/Vision");
     m_pDBoard =  new PowerDistribution();
+    aprilTagTarget = 0;
   }
 
   public static Vision getInstance() {
     if (m_vision == null) {
       m_vision = new Vision();
       TestingDashboard.getInstance().registerSubsystem(m_vision, "Vision");
+
+      Shuffleboard.getTab("Vision")
+          .add("aprilTagTargetID", 0);
       
       Shuffleboard.getTab("Vision")
           .add("hueMin", 0)
@@ -72,7 +78,9 @@ public class Vision extends SubsystemBase {
     return m_Ntable.getEntry("offset").getDouble(0);
   }
 
-
+  public double getTargetYaw() {
+    return m_Ntable.getEntry("yaw").getDouble(0);
+  }
 
   public boolean isTargetFound() {
     if (m_Ntable.getEntry("targetDetected").getDouble(0) == 0)
@@ -84,6 +92,16 @@ public class Vision extends SubsystemBase {
   public void enableLimeLight(boolean enable) {
     m_pDBoard.setSwitchableChannel(enable);
   }
+
+  public void setTargetAprilTag(int apriltagID) {
+    aprilTagTarget = apriltagID;
+    m_Ntable.getEntry("aprilTagTargetID").setInteger(aprilTagTarget);
+  }
+
+  public int getTargetAprilTag() {
+    return aprilTagTarget;
+  }
+
 
   @Override
   public void periodic() {

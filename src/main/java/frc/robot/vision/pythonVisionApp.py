@@ -90,6 +90,7 @@ class VisionApplication(object):
         self.imgResult = None
         self.mask = None
 
+        self.aprilTagTargetID = 0
 
         self.hueMin = 13
         self.hueMax = 255
@@ -107,7 +108,7 @@ class VisionApplication(object):
 
         self.garea = 0
         self.contours = None
-        self.target = None
+        self.targets = [None]
         self.tapeTargetList = [None]
 
         #TODO: Fill out values below if distance calculation is desired
@@ -202,6 +203,9 @@ class VisionApplication(object):
         self.valMax = int(self.vision_nt.getNumber('valMax',255))
         self.myColors = [[self.hueMin,self.satMin,self.valMin,self.hueMax,self.satMax,self.valMax]]
 
+    def getAprilTagTargetID(self):
+        self.aprilTagTargetID = self.vision_nt.getNumber('aprilTagTargetID',0)
+
     def getImageMask(self, img, myColors):
         imgHSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  
         lower = np.array(myColors[0][0:3])
@@ -215,13 +219,13 @@ class VisionApplication(object):
         return contours
 
     def isolateTarget(self, contours):
-        tolerance = .225
+        aspectTolerance = .225
         idealAreaRatio = 0.7 # this is the ideal ratio for the area ratio value.
         idealAspectRatio = 1.66/5 # this is the ideal aspect ratio based off of the diagram but can be changed as needed.
         aspectTolerance = .44 # this is the tolerance for finding the target with the right aspect ratio
         # start off with a large tolerance, and if the ideal ratio is correct, lower the tolerance as needed. 
         self.garea = 0
-        target = self.target # Default to the "old" target
+        self.targets = [None] # Default to the "old" targets
         
         self.tapeTargetDetected = False
         if len(contours) > 0:
@@ -235,7 +239,7 @@ class VisionApplication(object):
                     continue
                 self.areaRatio = contourArea/boundingArea
                 self.aspectRatio = w/h
-                if self.areaRatio > idealAreaRatio - tolerance and self.areaRatio < idealAreaRatio + tolerance: # if the target is within the right area ratio range, it is possibly the correct target
+                if self.areaRatio > idealAreaRatio - aspectTolerance and self.areaRatio < idealAreaRatio + aspectTolerance: # if the targets is within the right area ratio range, it is possibly the correct target
                     if self.aspectRatio > idealAspectRatio - aspectTolerance and self.aspectRatio < idealAspectRatio + aspectTolerance: # if the target is within the correct aspect ratio range aswell, it is definitely the right target
                         largest = contour
                         area = boundingArea
@@ -243,27 +247,28 @@ class VisionApplication(object):
                         self.largestAspectRatio = self.aspectRatio
                         self.tapeTargetDetected = True
                         self.garea = area
-                        target = largest
+                        self.targets.append(largest)
                         # Draw the contours
-                        cv2.drawContours(self.imgResult, target, -1, (255,0,0), 3)
-        return target
+                        cv2.drawContours(self.imgResult, largest, -1, (255,0,0), 3)
 
-    def drawBoundingBox(self, target):
+    def drawBoundingBox(self):
         if self.tapeTargetDetected:
-            peri = cv2.arcLength(target, True)
-            approx = cv2.approxPolyDP(target, 0.02 * peri, True)
+            for target in self.targets:
+                peri = cv2.arcLength(target, True)
+                approx = cv2.approxPolyDP(target, 0.02 * peri, True)
+                tapeTarget = TapeTarget(self.imgResult, approx, self.tapeTargetDetected, self.camera)
+                self.tapeTargetList.append(tapeTarget)
+                tapeTarget.drawRectangle()
         else:
             approx = None
-        tapeTarget = TapeTarget(self.imgResult, approx, self.tapeTargetDetected, self.camera)
-        self.tapeTargetList.append(tapeTarget)
-        tapeTarget.drawRectangle()
+
 
     def processImgForTape(self, input_img):
         self.getMaskingValues()
         self.mask = self.getImageMask(input_img,self.myColors)
         self.contours = self.getContours(self.mask)
-        self.target = self.isolateTarget(self.contours)
-        self.drawBoundingBox(self.target)
+        self.isolateTarget(self.contours)
+        self.drawBoundingBox()
 
     def runApplication(self):
         input_img1 = np.zeros(shape=(self.camera.height,self.camera.width,3),dtype=np.uint8)
@@ -271,6 +276,7 @@ class VisionApplication(object):
         t1 = 0
         t2 = 0
         while True:
+            self.getAprilTagTargetID():
             camCenter = (self.camera.width)/2
             
             frame_time1, input_img1 = self.sink.grabFrame(input_img1)
@@ -305,28 +311,30 @@ class VisionApplication(object):
                 # If AprilTags are detected, targetDetected is set to true 
                 self.vision_nt.putNumber('aprilTagTargetDetected',1)
 
-                # Publishes data to Network Tables
-                self.vision_nt.putNumber('targetX',aprilTagTargets[1].normalizedX)
-                self.vision_nt.putNumber('targetY',aprilTagTargets[1].normalizedY)
-                # If you want to calculate distance, make sure to fill out the appropriate variables starting on line 59
-                #self.vision_nt.putNumber('distanceToTarget',targets[0].distanceToTarget)
+                if aprilTagTargetID in aprilTagTargets:
+                    # Publishes data to Network Tables
+                    self.vision_nt.putNumber('targetX',aprilTagTargets[self.aprilTagTargetID].normalizedX)
+                    self.vision_nt.putNumber('yaw',aprilTagTargets[self.aprilTagTargetID].yaw)
+                    # If you want to calculate distance, make sure to fill out the appropriate variables starting on line 59
+                    self.vision_nt.putNumber('distanceToTarget',aprilTagTargets[self.aprilTagTargetID].distanceToTarget)
 
+            processingTape = False
+            if processingTap:
+                self.processImgForTape(input_img1)
 
-            self.processImgForTape(input_img1)
-
-            # sorts the list of tape targets from left to right
-            t2 = time.clock_gettime(time.CLOCK_MONOTONIC) # gets the current "time"
-            timeDiff = t2-t1 # difference between the most recent time and the time recorded when the target was last seen
-            if self.tapeTargetDetected:
-                t1 = t2
-                self.vision_nt.putNumber('tapeTargetDetected',1)
-                #self.tapeTargetList.sort(key=lambda x: x.normalizedX)
-                self.vision_nt.putNumber('BoundingArea',self.garea)
-                self.vision_nt.putNumber('Area Ratio',self.largestAreaRatio)
-                self.vision_nt.putNumber('Aspect Ratio',self.largestAspectRatio)
-            else: # only sets updates the targetDetected if a certain amount of time has passed
-                if timeDiff > targetDetTol:
-                    self.vision_nt.putNumber('tapeTargetDetected',0)
+                # sorts the list of tape targets from left to right
+                t2 = time.clock_gettime(time.CLOCK_MONOTONIC) # gets the current "time"
+                timeDiff = t2-t1 # difference between the most recent time and the time recorded when the target was last seen
+                if self.tapeTargetDetected:
+                    t1 = t2
+                    self.vision_nt.putNumber('tapeTargetDetected',1)
+                    #self.tapeTargetList.sort(key=lambda x: x.normalizedX)
+                    self.vision_nt.putNumber('BoundingArea',self.garea)
+                    self.vision_nt.putNumber('Area Ratio',self.largestAreaRatio)
+                    self.vision_nt.putNumber('Aspect Ratio',self.largestAspectRatio)
+                else: # only sets updates the targetDetected if a certain amount of time has passed
+                    if timeDiff > targetDetTol:
+                        self.vision_nt.putNumber('tapeTargetDetected',0)
 
             self.cvsrc.putFrame(self.imgResult)
             self.cvmask.putFrame(self.mask)
