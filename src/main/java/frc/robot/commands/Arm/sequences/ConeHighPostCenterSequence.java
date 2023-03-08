@@ -7,6 +7,8 @@ package frc.robot.commands.Arm.sequences;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Arm.presets.ArmToPreset;
 import frc.robot.commands.Arm.presets.ArmToPreset1;
+import frc.robot.commands.Arm.presets.ArmToPresetNoTurret;
+import frc.robot.commands.Arm.presets.ElbowExtendPreset;
 import frc.robot.subsystems.Arm;
 import frc.robot.testingdashboard.TestingDashboard;
 
@@ -31,9 +33,8 @@ public class ConeHighPostCenterSequence extends SequentialCommandGroup {
     //TODO: figure out exactly what operators want and reprogram to match
 
     addCommands(
-      new ArmToPreset(0, 0, -103, -133),
-      new ArmToPreset(0, 50, -103, -133)
-
+      new ElbowExtendPreset(-133),
+      new ArmToPresetNoTurret(42, -113, -144)
     );
   }
 

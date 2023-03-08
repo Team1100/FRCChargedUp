@@ -138,7 +138,7 @@ public class Arm extends SubsystemBase {
 
     // Set inversion for the elbow and shoulder
     m_shoulderRight.setInverted(false);
-    m_elbowRight.setInverted(true);
+    m_elbowRight.setInverted(false);
 
     // Setup the LEFT shoulder/elbow to follow
     // the RIGHT shoulder/elbow

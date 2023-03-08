@@ -31,7 +31,7 @@ public class TurretToHighLeft extends SequentialCommandGroup {
     //TODO: figure out exactly what operators want and reprogram to match
 
     addCommands(
-      new ArmToPreset(23, 0, 0, 0)
+      new ArmToPreset(Arm.getInstance().getTurretAngle() - 11, 0, 0, 0)
     );
   }
 

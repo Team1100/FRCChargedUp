@@ -32,7 +32,7 @@ public class ConeGrabSequence extends SequentialCommandGroup {
     //TODO: figure out exactly what operators want and reprogram to match
     
     addCommands(
-      new ArmToPreset(0, 0, -115, 205)
+      new ArmToPreset(Arm.getInstance().getElbowAngle(), 0, -115, 205)
     );
   }
 

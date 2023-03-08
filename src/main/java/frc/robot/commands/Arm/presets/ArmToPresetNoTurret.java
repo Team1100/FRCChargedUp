@@ -8,21 +8,19 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Arm;
 
 
-public class ArmToPreset extends CommandBase {
+public class ArmToPresetNoTurret extends CommandBase {
   Arm m_arm;
-  private double m_turretAngle;
   private double m_shoulderAngle;
   private double m_elbowAngle;
   private double m_wristAngle;
 
 
   /** Creates a new ArmToPreset. */
-  public ArmToPreset(double turretAngle, double shoulderAngle, double elbowAngle, double wristAngle) {
+  public ArmToPresetNoTurret(double shoulderAngle, double elbowAngle, double wristAngle) {
     m_arm = Arm.getInstance();
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(Arm.getInstance());
 
-    m_turretAngle = turretAngle;
     m_shoulderAngle = shoulderAngle;
     m_elbowAngle = elbowAngle;
     m_wristAngle = wristAngle;
@@ -31,7 +29,6 @@ public class ArmToPreset extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_arm.setTurretTargetAngle(m_turretAngle);
     m_arm.setShoulderTargetAngle(m_shoulderAngle);
     m_arm.setElbowTargetAngle(m_elbowAngle);
     m_arm.setWristTargetAngle(m_wristAngle);
@@ -50,11 +47,10 @@ public class ArmToPreset extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    boolean turretFinished = m_arm.getTurretPID().atSetpoint();
     boolean shoulderFinished = m_arm.getShoulderPID().atSetpoint();
     boolean elbowFinished = m_arm.getElbowPID().atSetpoint();
     boolean wristFinished = m_arm.getWristPID().atSetpoint();
-    System.out.println(turretFinished + " " + shoulderFinished + " " + elbowFinished + " " + wristFinished);
-    return (turretFinished && shoulderFinished) && (elbowFinished && wristFinished);
+    System.out.println(shoulderFinished + " " + elbowFinished + " " + wristFinished);
+    return (shoulderFinished) && (elbowFinished && wristFinished);
   }
 }

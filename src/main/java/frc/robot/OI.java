@@ -78,7 +78,7 @@ public class OI {
     }
     if(Constants.CONTROLLER_MODES_ENABLE) {
       m_mode1 = new Mode1();
-      m_mode2 = new Mode2();
+      //m_mode2 = new Mode2();
     }
     
     ////////////////////////////////////////////////////

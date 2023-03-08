@@ -34,6 +34,12 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
 
     m_arm = Arm.getInstance();
+    m_arm.zeroEncoders();
+    m_arm.setTurretTargetAngle(0);
+    m_arm.setShoulderTargetAngle(0);
+    m_arm.setElbowTargetAngle(0);
+    m_arm.setWristTargetAngle(0); 
+    Arm.getInstance().enableArmPid();
   }
 
   /**
@@ -80,12 +86,6 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    
-    m_arm.zeroEncoders();
-    m_arm.setTurretTargetAngle(0);
-    m_arm.setShoulderTargetAngle(0);
-    m_arm.setElbowTargetAngle(0);
-    m_arm.setWristTargetAngle(0); 
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
