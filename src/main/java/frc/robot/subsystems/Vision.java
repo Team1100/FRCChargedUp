@@ -79,7 +79,7 @@ public class Vision extends SubsystemBase {
   }
 
   public double getTargetYaw() {
-    return m_Ntable.getEntry("yaw").getDouble(0);
+    return m_Ntable.getEntry("robotYaw").getDouble(0);
   }
 
   public boolean isAprilTagTargetFound() {

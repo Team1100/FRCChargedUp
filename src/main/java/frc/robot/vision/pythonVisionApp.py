@@ -22,6 +22,7 @@ class CameraView(object):
         self.elevationOfCamera = elevationOfCamera
         self.angleFromHoriz = angleFromHoriz
         self.cameraCenter = self.width/2
+        self.radiusFromAxisOfRotation = 14/12 # measured in feet
 
 class AprilTagTarget(object):
     def __init__(self, camera, coor, id):
@@ -32,6 +33,10 @@ class AprilTagTarget(object):
         self.yaw = (self.normalizedX/2) * camera.horizFOV
         #(height of target [feet] - height of camera [feet])/tan(pitch [degrees] + angle of camera [degrees])
         self.distanceToTarget = (camera.elevationOfTarget - camera.elevationOfCamera) / math.tan(math.radians(self.pitch + camera.angleFromHoriz))
+
+    def calculateAdjustedYaw(self, radiusFromAxisOfRotation):
+        return self.yaw * (radiusFromAxisOfRotation/(distanceToTarget+radiusFromAxisOfRotation))
+        
 
 class TapeTarget(object):
     def __init__(self, imageResult, approx, tapeTargetDetected, camera):
@@ -127,6 +132,7 @@ class VisionApplication(object):
 
         #Angle the camera makes relative to the horizontal (degrees)
         angleFromHoriz = 1
+        
 
         self.camera = CameraView(self.config['cameras'][0], vertFOV, horizFOV, elevationOfTarget, elevationOfCamera, angleFromHoriz)
 
@@ -277,7 +283,7 @@ class VisionApplication(object):
         t1 = 0
         t2 = 0
         while True:
-            self.getAprilTagTargetID():
+            #self.getAprilTagTargetID()
             camCenter = (self.camera.width)/2
             
             frame_time1, input_img1 = self.sink.grabFrame(input_img1)
@@ -309,15 +315,15 @@ class VisionApplication(object):
                 # If no apriltags are detected, targetDetected is set to false
                 self.vision_nt.putNumber('aprilTagTargetDetected',0)
             else:
-                if aprilTagTargetID in aprilTagTargets:
+                if self.aprilTagTargetID in aprilTagTargets:
                     # If AprilTags are detected, targetDetected is set to true 
                     self.vision_nt.putNumber('aprilTagTargetDetected',1)
                     # Publishes data to Network Tables
                     self.vision_nt.putNumber('targetX',aprilTagTargets[self.aprilTagTargetID].normalizedX)
-                    self.vision_nt.putNumber('yaw',aprilTagTargets[self.aprilTagTargetID].yaw)
+                    self.vision_nt.putNumber('robotYaw',aprilTagTargets[self.aprilTagTargetID].calculateAdjustedYaw(self.camera.radiusFromAxisOfRotation))
                     # If you want to calculate distance, make sure to fill out the appropriate variables starting on line 59
                     self.vision_nt.putNumber('distanceToTarget',aprilTagTargets[self.aprilTagTargetID].distanceToTarget)
-                    NetworkTablesInstance.getDefault().flush()
+                    
 
             processingTape = False
             if processingTap:
