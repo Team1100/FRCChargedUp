@@ -26,8 +26,6 @@ import frc.robot.commands.Hand.*;
 import frc.robot.commands.VisionAuto.TrackTarget;
 import frc.robot.input.ControllerModes.Mode1;
 import frc.robot.input.ControllerModes.Mode2;
-import frc.robot.input.ControllerModes.Mode3;
-
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -85,18 +83,8 @@ public class RobotContainer {
     DisableShoulderPid.registerWithTestingDashboard();
     EnableTurretPid.registerWithTestingDashboard();
     DisableTurretPid.registerWithTestingDashboard();
-    EnableAllMotors.registerWithTestingDashboard();
-    DisableAllMotors.registerWithTestingDashboard();
     ConeGrabSequence.registerWithTestingDashboard();
     ConeFarPostStraightSequence.registerWithTestingDashboard();
-    ArmToPreset1.registerWithTestingDashboard();
-    ArmToPreset2.registerWithTestingDashboard();
-    ArmToPreset3.registerWithTestingDashboard();
-    ArmToPreset4.registerWithTestingDashboard();
-    ArmToPreset5.registerWithTestingDashboard();
-    ArmToPreset6.registerWithTestingDashboard();
-    ArmToPreset7.registerWithTestingDashboard();
-    ArmToPreset8.registerWithTestingDashboard();
     ZeroArmEncoders.registerWithTestingDashboard();
     ArmToHomePosition.registerWithTestingDashboard();
     CancelArmMovement.registerWithTestingDashboard();
@@ -112,7 +100,6 @@ public class RobotContainer {
     // Controller Modes
     Mode1.registerWithTestingDashboard();
     Mode2.registerWithTestingDashboard();
-    Mode3.registerWithTestingDashboard();
 
     // Create Testing Dashboard
     TestingDashboard.getInstance().createTestingDashboard();

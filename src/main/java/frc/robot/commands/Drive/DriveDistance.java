@@ -30,6 +30,7 @@ public class DriveDistance extends CommandBase {
 
   /** Creates a new DriveDistance. */
   public DriveDistance(double distance, double lPower, double rPower, double brakeDelay, boolean parameterized) {
+    m_drive = Drive.getInstance();
     m_leftPower = lPower;
     m_rightPower = rPower;
     m_parameterized = parameterized;
@@ -43,7 +44,6 @@ public class DriveDistance extends CommandBase {
     m_leftEncoder.setPosition(ENCODER_INITIAL_POSITION);
     m_rightEncoder.setPosition(ENCODER_INITIAL_POSITION);
 
-    m_drive = Drive.getInstance();
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_drive);
   }

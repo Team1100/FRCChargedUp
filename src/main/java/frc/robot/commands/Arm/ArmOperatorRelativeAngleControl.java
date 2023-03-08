@@ -15,6 +15,7 @@ import frc.robot.testingdashboard.TestingDashboard;
 public class ArmOperatorRelativeAngleControl extends CommandBase {
   Arm m_arm;
   XboxController m_xbox;
+  XboxController m_driverXbox;
 
   /** Creates a new ArmOperatorRelativeAngleControl. */
   public ArmOperatorRelativeAngleControl() {
@@ -33,6 +34,7 @@ public class ArmOperatorRelativeAngleControl extends CommandBase {
   @Override
   public void initialize() {
     m_xbox = OI.getInstance().getOperatorXboxController();
+    m_driverXbox = OI.getInstance().getDriverXboxController();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -48,6 +50,9 @@ public class ArmOperatorRelativeAngleControl extends CommandBase {
       t_angle += Constants.A_TURRET_ANGLE_INCREMENT;
     } else if (m_xbox.getButtonRightBumper().getAsBoolean()) {
       t_angle += -Constants.A_TURRET_ANGLE_INCREMENT;
+    } else {
+      t_angle += m_driverXbox.getAxis(XboxAxis.kLeftTrigger) * Constants.A_TURRET_ANGLE_INCREMENT * 2;
+      t_angle += m_driverXbox.getAxis(XboxAxis.kRightTrigger) * -Constants.A_TURRET_ANGLE_INCREMENT * 2;
     }
 
     // Wrist is controlled by DPad up and dowm

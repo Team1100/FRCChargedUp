@@ -138,7 +138,7 @@ public class Arm extends SubsystemBase {
 
     // Set inversion for the elbow and shoulder
     m_shoulderRight.setInverted(false);
-    m_elbowRight.setInverted(false);
+    m_elbowRight.setInverted(true);
 
     // Setup the LEFT shoulder/elbow to follow
     // the RIGHT shoulder/elbow
@@ -213,6 +213,8 @@ public class Arm extends SubsystemBase {
         TestingDashboard.getInstance().registerNumber(m_arm, "ElbowSoftwarePID", "TargetElbowP", Constants.A_ELBOW_SOFTWARE_P);
         TestingDashboard.getInstance().registerNumber(m_arm, "ElbowSoftwarePID", "TargetElbowI", Constants.A_ELBOW_SOFTWARE_I);
         TestingDashboard.getInstance().registerNumber(m_arm, "ElbowSoftwarePID", "TargetElbowD", Constants.A_ELBOW_SOFTWARE_D);
+
+        TestingDashboard.getInstance().registerNumber(m_arm, "ElbowSoftwarePID", "TargetElbowAngleDisplayed", 0);
 
         TestingDashboard.getInstance().registerNumber(m_arm, "WristSoftwarePID", "TargetWristAngle", 0);
         TestingDashboard.getInstance().registerNumber(m_arm, "WristSoftwarePID", "TargetWristTolerance", Constants.A_WRIST_SOFTWARE_TOLERANCE);
@@ -753,6 +755,15 @@ public class Arm extends SubsystemBase {
     TestingDashboard.getInstance().updateNumber(m_arm, "ShoulderCurrent", m_shoulder.getOutputCurrent());
     TestingDashboard.getInstance().updateNumber(m_arm, "ElbowCurrent", m_elbow.getOutputCurrent());
     TestingDashboard.getInstance().updateNumber(m_arm, "WristCurrent", m_wrist.getOutputCurrent());
+
+    TestingDashboard.getInstance().updateNumber(m_arm, "TargetElbowAngleDisplayed", m_elbowTargetAngle);
+
+    /*
+    TestingDashboard.getInstance().updateNumber(m_arm, "TargetTurretAngle", m_turretTargetAngle);
+    TestingDashboard.getInstance().updateNumber(m_arm, "TargetShoulderAngle", m_shoulderTargetAngle);
+    TestingDashboard.getInstance().updateNumber(m_arm, "TargetElbowAngle", m_elbowTargetAngle);
+    TestingDashboard.getInstance().updateNumber(m_arm, "TargetWristAngle", m_wristTargetAngle);
+    */
 
     updatePidEnableFlags();
 

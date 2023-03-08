@@ -51,22 +51,22 @@ public final class Constants {
 
   public static final boolean A_ENABLE_SOFTWARE_PID = true;
 
-  public static final double A_TURRET_SOFTWARE_TOLERANCE = 2;
+  public static final double A_TURRET_SOFTWARE_TOLERANCE = 3;
   public static final double A_TURRET_SOFTWARE_P = 0.01;
   public static final double A_TURRET_SOFTWARE_I = 0;
   public static final double A_TURRET_SOFTWARE_D = 0;
 
-  public static final double A_SHOULDER_SOFTWARE_TOLERANCE = 2;
+  public static final double A_SHOULDER_SOFTWARE_TOLERANCE = 3;
   public static final double A_SHOULDER_SOFTWARE_P = 0.01;
   public static final double A_SHOULDER_SOFTWARE_I = 0;
   public static final double A_SHOULDER_SOFTWARE_D = 0;
 
-  public static final double A_ELBOW_SOFTWARE_TOLERANCE = 2;
-  public static final double A_ELBOW_SOFTWARE_P = 0.05;
+  public static final double A_ELBOW_SOFTWARE_TOLERANCE = 3;
+  public static final double A_ELBOW_SOFTWARE_P = 0.0025;
   public static final double A_ELBOW_SOFTWARE_I = 0;
   public static final double A_ELBOW_SOFTWARE_D = 0;
 
-  public static final double A_WRIST_SOFTWARE_TOLERANCE = 2;
+  public static final double A_WRIST_SOFTWARE_TOLERANCE = 3;
   public static final double A_WRIST_SOFTWARE_P = 0.01;
   public static final double A_WRIST_SOFTWARE_I = 0;
   public static final double A_WRIST_SOFTWARE_D = 0;
@@ -74,7 +74,7 @@ public final class Constants {
   // Note that MAX POWER should be a value between 0 and 1
   public static final double A_TURRET_MAX_POWER = 0.3;
   public static final double A_SHOULDER_MAX_POWER = 0.2;
-  public static final double A_ELBOW_MAX_POWER = 0.5;
+  public static final double A_ELBOW_MAX_POWER = 0.6;
   public static final double A_WRIST_MAX_POWER = 0.6;
 
   // Resting Positions
@@ -84,7 +84,7 @@ public final class Constants {
   public static final double TURRET_RESTING_ANGLE = 0;
 
   // Joint angle increments
-  public static final double A_TURRET_ANGLE_INCREMENT = 1.5; // degrees
+  public static final double A_TURRET_ANGLE_INCREMENT = 0.5; // degrees
   public static final double A_SHOULDER_ANGLE_INCREMENT = 0.3; // degrees
   public static final double A_ELBOW_ANGLE_INCREMENT = 0.4; // degrees
   public static final double A_WRIST_ANGLE_INCREMENT = 1.5; // degrees
@@ -152,7 +152,7 @@ public final class Constants {
 
   // Subsystem periodic loops
   public static final boolean DRIVE_PERIODIC_ENABLE = true;
-  public static final double DRIVE_RAMP_RATE = 1; // Limit changes in power to require 2 secons to go from zero to full
+  public static final double DRIVE_RAMP_RATE = 0.5; // Limit changes in power to require 2 secons to go from zero to full
 
   // Motor current limits
   public static final double TURRET_MOTOR_CURRENT_LIMIT = 10;

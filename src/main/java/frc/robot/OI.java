@@ -7,14 +7,23 @@
 
 package frc.robot;
 
+import java.sql.Driver;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.commands.Arm.ArmToPositionXY;
+import frc.robot.commands.Arm.sequences.TurretToHighLeft;
+import frc.robot.commands.Arm.sequences.TurretToHighRight;
+import frc.robot.commands.Arm.sequences.TurretToLowLeft;
+import frc.robot.commands.Arm.sequences.TurretToLowRight;
 import frc.robot.commands.Drive.SwitchDriveIdleMode;
+import frc.robot.commands.Drive.ToggleIdleMode;
 import frc.robot.commands.Hand.ExpelCube;
 import frc.robot.commands.Hand.IntakeCube;
 import frc.robot.commands.Hand.SpinIntake;
+import frc.robot.commands.VisionAuto.TrackTarget;
 import frc.robot.input.ControllerModes.*;
+import frc.robot.input.XboxController.XboxAxis;
 import frc.robot.input.AttackThree;
 import frc.robot.input.ButtonBox;
 import frc.robot.input.XboxController;
@@ -36,7 +45,6 @@ public class OI {
   private static KeyboardBox keyboardBox;
   private Mode1 m_mode1;
   private Mode2 m_mode2;
-  private Mode3 m_mode3;
 
   /**
    * Used outside of the OI class to return an instance of the class.
@@ -71,19 +79,21 @@ public class OI {
     if(Constants.CONTROLLER_MODES_ENABLE) {
       m_mode1 = new Mode1();
       m_mode2 = new Mode2();
-      m_mode3 = new Mode3();
     }
     
     ////////////////////////////////////////////////////
     // Now Mapping Commands to XBox
     ////////////////////////////////////////////////////
     if (Constants.XBOX_CONTROLLER_DRIVER_ENABLE) {
-      DriverXboxController.getDPad().getUp().onTrue(new SwitchDriveIdleMode());
+      DriverXboxController.getButtonBack().onTrue(new SwitchDriveIdleMode());
+      DriverXboxController.getButtonLeftBumper().onTrue(new TurretToHighLeft());
+      DriverXboxController.getButtonRightBumper().onTrue(new TurretToHighRight());
+      DriverXboxController.getButtonX().onTrue(new TurretToLowLeft());
+      DriverXboxController.getButtonB().onTrue(new TurretToLowRight());
+      DriverXboxController.getButtonA().onTrue(new TrackTarget());
+
     }
     if (Constants.XBOX_CONTROLLER_OPERATOR_ENABLE) {
-
-      OperatorXboxController.getButtonStart().onTrue(new frc.robot.commands.Arm.EnableArmPid());
-      OperatorXboxController.getButtonBack().onTrue(new frc.robot.commands.Arm.DisableArmPid());
 
     }
     
@@ -153,26 +163,18 @@ public class OI {
     return m_mode2;
   }
 
-  public Mode3 getMode3() {
-    return m_mode3;
+  public void Mode1() {
+    OperatorXboxController.getButtonA().onTrue(new frc.robot.commands.Arm.ArmToHomePosition());
+    OperatorXboxController.getButtonB().onTrue(new frc.robot.commands.Arm.sequences.ConeHighPostCenterSequence());
+    OperatorXboxController.getButtonX().onTrue(new frc.robot.commands.Arm.sequences.ConeLowPostCenterSequence());
+    OperatorXboxController.getButtonY().onTrue(new frc.robot.commands.Arm.sequences.ConeGrabSequence());
   }
 
-  public void Mode1() {
+  public void Mode2() {
     OperatorXboxController.getButtonA().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
     OperatorXboxController.getButtonB().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
     OperatorXboxController.getButtonX().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
     OperatorXboxController.getButtonY().onTrue(new frc.robot.commands.Arm.ArmDashboardAngleControl());
-  }
-
-  public void Mode2() {
-    OperatorXboxController.getButtonA().onTrue(new frc.robot.commands.Arm.ArmToHomePosition());
-    OperatorXboxController.getButtonB().onTrue(new frc.robot.commands.Arm.sequences.ConeGrabSequence());
-    OperatorXboxController.getButtonX().onTrue(new frc.robot.commands.Arm.ArmToHomePosition());
-    OperatorXboxController.getButtonY().onTrue(new frc.robot.commands.Arm.sequences.ConeFarPostStraightSequence());
-  }
-
-  public void Mode3() {
-    
   }
   
 }
