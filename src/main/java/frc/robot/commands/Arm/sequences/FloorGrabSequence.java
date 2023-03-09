@@ -14,7 +14,7 @@ import frc.robot.testingdashboard.TestingDashboard;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ConeGrabSequence extends SequentialCommandGroup {
+public class FloorGrabSequence extends SequentialCommandGroup {
 
   /**
    * Creates a new SequentialArmToPreset. This will be used to score at various
@@ -25,7 +25,7 @@ public class ConeGrabSequence extends SequentialCommandGroup {
    * @param elbowAngle
    * @param wristAngle
    */
-  public ConeGrabSequence() {
+  public FloorGrabSequence() {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
@@ -33,13 +33,13 @@ public class ConeGrabSequence extends SequentialCommandGroup {
     //TODO: figure out exactly what operators want and reprogram to match
     
     addCommands(
-      new ArmToPresetNoTurret(0, -100, 205)
+      new ArmToPresetNoTurret(48, 0, 140)
     );
   }
 
   public static void registerWithTestingDashboard() {
     Arm arm = Arm.getInstance();
-    ConeGrabSequence cmd = new ConeGrabSequence();
+    FloorGrabSequence cmd = new FloorGrabSequence();
     TestingDashboard.getInstance().registerCommand(arm, "Automatic", cmd);
   }
 }

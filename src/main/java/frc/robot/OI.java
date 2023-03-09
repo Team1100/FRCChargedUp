@@ -12,6 +12,7 @@ import java.sql.Driver;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.commands.Arm.ArmToPositionXY;
+import frc.robot.commands.Arm.sequences.FloorGrabSequence;
 import frc.robot.commands.Arm.sequences.TurretToHighLeft;
 import frc.robot.commands.Arm.sequences.TurretToHighRight;
 import frc.robot.commands.Arm.sequences.TurretToLowLeft;
@@ -90,10 +91,13 @@ public class OI {
       DriverXboxController.getButtonRightBumper().onTrue(new TurretToHighRight());
       DriverXboxController.getButtonX().onTrue(new TurretToLowLeft());
       DriverXboxController.getButtonB().onTrue(new TurretToLowRight());
-      DriverXboxController.getButtonA().onTrue(new TrackTarget());
+      DriverXboxController.getButtonY().onTrue(new TrackTarget());
+      DriverXboxController.getButtonA().onTrue(new FloorGrabSequence());
 
     }
     if (Constants.XBOX_CONTROLLER_OPERATOR_ENABLE) {
+
+
 
     }
     
@@ -164,9 +168,9 @@ public class OI {
   }
 
   public void Mode1() {
-    OperatorXboxController.getButtonA().onTrue(new frc.robot.commands.Arm.ArmToHomePosition());
-    OperatorXboxController.getButtonB().onTrue(new frc.robot.commands.Arm.sequences.ConeHighPostCenterSequence());
-    OperatorXboxController.getButtonX().onTrue(new frc.robot.commands.Arm.sequences.ConeLowPostCenterSequence());
+    OperatorXboxController.getButtonA().onTrue(new frc.robot.commands.Arm.sequences.ArmToHomeState());
+    OperatorXboxController.getButtonB().onTrue(new frc.robot.commands.Arm.sequences.HighPostCenterState());
+    OperatorXboxController.getButtonX().onTrue(new frc.robot.commands.Arm.sequences.LowPostCenterState());
     OperatorXboxController.getButtonY().onTrue(new frc.robot.commands.Arm.sequences.ConeGrabSequence());
   }
 
