@@ -161,5 +161,7 @@ public final class Constants {
   public static final double WRIST_MOTOR_CURRENT_LIMIT = 10;
   public static final double HAND_MOTOR_CURRENT_LIMIT = 35;
 
+  public static final int DEFAULT_AUTO_WAIT_TIME = 3;
+
 
 }
