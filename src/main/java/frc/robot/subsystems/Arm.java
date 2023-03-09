@@ -463,6 +463,18 @@ public class Arm extends SubsystemBase {
     toggleWristPower(false);
   }
 
+  public boolean isElbowHalfFinishedGoingOut() {
+    boolean elbowFinished = Math.abs(getElbowAngle()) > Math.abs(getElbowTargetAngle() / 2);
+    System.out.println(elbowFinished);
+    return elbowFinished;
+  }
+
+  public boolean isElbowHalfFinishedGoingIn() {
+    boolean elbowFinished = Math.abs(getElbowAngle()) < Math.abs(getElbowTargetAngle() * 2);
+    System.out.println(elbowFinished);
+    return elbowFinished;
+  }
+
   public double getHandX(/*double theta1, double theta2, double rotation*/) {
     double x = 0;
 
