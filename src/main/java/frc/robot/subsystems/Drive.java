@@ -58,9 +58,9 @@ public class Drive extends SubsystemBase {
   double m_rightSpeed;
   double m_leftSpeed;
 
-  public static final double WHEEL_DIAMETER_IN_INCHES = 4; 
+  public static final double WHEEL_DIAMETER_IN_INCHES = 6;
   public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER_IN_INCHES * Math.PI;
-  public static final double GEAR_RATIO = 6.85; //number of times the motor rotates to rotate wheel once
+  public static final double GEAR_RATIO = 68 / 12; //number of times the motor rotates to rotate wheel once
   public static final double CONVERSION_FACTOR = WHEEL_CIRCUMFERENCE / GEAR_RATIO; //conversion factor * circumference = distance
   public final static double DISTANCE = CONVERSION_FACTOR * WHEEL_CIRCUMFERENCE;
   public final static double INITIAL_SPEED = 0.3;
