@@ -47,4 +47,18 @@ public class ElbowExtendPreset extends CommandBase {
     System.out.println(elbowFinished);
     return elbowFinished;
   }
+
+  public boolean isHalfFinishedGoingOut() {
+    //boolean elbowFinished = m_arm.getElbowPID().atSetpoint();
+    boolean elbowFinished = Math.abs(m_arm.getElbowAngle()) > Math.abs(m_arm.getElbowTargetAngle() / 2);
+    System.out.println(elbowFinished);
+    return elbowFinished;
+  }
+
+  public boolean isHalfFinishedGoingIn() {
+    //boolean elbowFinished = m_arm.getElbowPID().atSetpoint();
+    boolean elbowFinished = Math.abs(m_arm.getElbowAngle()) < Math.abs(m_arm.getElbowTargetAngle() * 2);
+    System.out.println(elbowFinished);
+    return elbowFinished;
+  }
 }
