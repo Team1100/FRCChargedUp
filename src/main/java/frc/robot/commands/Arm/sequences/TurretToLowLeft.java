@@ -6,7 +6,6 @@ package frc.robot.commands.Arm.sequences;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Arm.presets.ArmToPreset;
-import frc.robot.commands.Arm.presets.ArmToPreset1;
 import frc.robot.subsystems.Arm;
 import frc.robot.testingdashboard.TestingDashboard;
 
@@ -31,7 +30,7 @@ public class TurretToLowLeft extends SequentialCommandGroup {
     //TODO: figure out exactly what operators want and reprogram to match
 
     addCommands(
-      new ArmToPreset(34, 0, 0, 0)
+      new ArmToPreset(34, 0, 0, 0, true, false, false, false)
     );
   }
 

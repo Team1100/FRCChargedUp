@@ -17,8 +17,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Autos;
 import frc.robot.commands.Arm.*;
 import frc.robot.commands.Arm.presets.*;
-import frc.robot.commands.Auto.AutoSimple;
-import frc.robot.commands.Arm.sequences.ConeFarPostStraightSequence;
 import frc.robot.commands.Arm.sequences.ConeGrabSequence;
 import frc.robot.commands.Drive.ArcadeDrive;
 import frc.robot.commands.Drive.DriveDistance;
@@ -44,7 +42,6 @@ public class RobotContainer {
   private final ControllerMode m_controllerMode;
 
   private final Command m_simpleAuto = new DriveDistance(-70, 0.55, 0.55, 0, true);
-  private final Command m_scoreAuto = new AutoSimple();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -63,7 +60,6 @@ public class RobotContainer {
 
     // Auto Routines: 
     m_chooser.setDefaultOption("Very Simple Auto", m_simpleAuto);
-    m_chooser.addOption("Simple Scoring Auto", m_scoreAuto);
 
     // Configure the trigger bindings
     configureBindings();
@@ -92,7 +88,6 @@ public class RobotContainer {
     EnableTurretPid.registerWithTestingDashboard();
     DisableTurretPid.registerWithTestingDashboard();
     ConeGrabSequence.registerWithTestingDashboard();
-    ConeFarPostStraightSequence.registerWithTestingDashboard();
     ZeroArmEncoders.registerWithTestingDashboard();
     ArmToHomePosition.registerWithTestingDashboard();
     CancelArmMovement.registerWithTestingDashboard();

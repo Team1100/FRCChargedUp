@@ -9,8 +9,7 @@ package frc.robot.commands.Arm.sequences;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.commands.Arm.presets.ArmToPresetNoTurret;
-import frc.robot.commands.Arm.presets.ElbowExtendPreset;
+import frc.robot.commands.Arm.presets.ArmToPreset;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drive;
 import frc.robot.testingdashboard.TestingDashboard;
@@ -22,19 +21,21 @@ public class ArmToHomeState extends CommandBase {
     EXTEND_ELBOW,
     SCHEDULE_EXTEND_SHOULDER,
     EXTEND_SHOULDER,
+    SCHEDULE_ROTATE_TURRET,
+    ROTATE_TURRET,
     DONE
   }
 
-  ArmToPresetNoTurret m_extendElbow = new ArmToPresetNoTurret(0, Arm.getInstance().getElbowAngle(), Arm.getInstance().getWristAngle());
-  ArmToPresetNoTurret m_extendArm = new ArmToPresetNoTurret(0, 0, 0);
+  ArmToPreset m_extendElbow = new ArmToPreset(0, 0, 0, 0, false, true, false, false);
+  ArmToPreset m_extendArm = new ArmToPreset(0, 0, 0, 0, false, true, true, true);
+  ArmToPreset m_rotateTurret = new ArmToPreset(0, 0, 0, 0, true, true, true, true);
+
 
   private boolean m_isFinished;
   private State m_state;
   /** Creates a new ReachForNextBarStatefully. */
   public ArmToHomeState() {
     // Use addRequirements() here to declare subsystem dependencies.
-    
-
     m_state = State.INIT;
     m_isFinished = false;
   }
@@ -60,6 +61,7 @@ public class ArmToHomeState extends CommandBase {
       case INIT:
         m_state = State.SCHEDULE_EXTEND_ELBOW;
         break;
+
       case SCHEDULE_EXTEND_ELBOW:
         m_extendElbow.schedule();
         m_state = State.EXTEND_ELBOW;
@@ -68,14 +70,25 @@ public class ArmToHomeState extends CommandBase {
         if (m_extendElbow.isFinished())
           m_state = State.SCHEDULE_EXTEND_SHOULDER;
         break;
+
       case SCHEDULE_EXTEND_SHOULDER:
         m_extendArm.schedule();
         m_state = State.EXTEND_SHOULDER;
         break;
       case EXTEND_SHOULDER:
         if (m_extendArm.isFinished())
+          m_state = State.SCHEDULE_ROTATE_TURRET;
+        break;
+      
+      case SCHEDULE_ROTATE_TURRET:
+        m_rotateTurret.schedule();
+        m_state = State.ROTATE_TURRET;
+        break;
+      case ROTATE_TURRET:
+        if (m_rotateTurret.isFinished())
           m_state = State.DONE;
         break;
+
       case DONE:
         m_isFinished = true;
         break;

@@ -9,8 +9,7 @@ package frc.robot.commands.Arm.sequences;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.commands.Arm.presets.ArmToPresetNoTurret;
-import frc.robot.commands.Arm.presets.ElbowExtendPreset;
+import frc.robot.commands.Arm.presets.ArmToPreset;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drive;
 import frc.robot.testingdashboard.TestingDashboard;
@@ -25,8 +24,8 @@ public class HighPostCenterState extends CommandBase {
     DONE
   }
 
-  ElbowExtendPreset m_extendElbow = new ElbowExtendPreset(-145);
-  ArmToPresetNoTurret m_extendArm = new ArmToPresetNoTurret(51, -145, -122);
+  ArmToPreset m_extendElbow = new ArmToPreset(0, 0, -145, 0, false, false, true, false);
+  ArmToPreset m_extendArm = new ArmToPreset(0, 51, -145, -122, false, true, true, true);
 
   private boolean m_isFinished;
   private State m_state;

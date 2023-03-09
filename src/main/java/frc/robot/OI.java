@@ -87,10 +87,12 @@ public class OI {
     ////////////////////////////////////////////////////
     if (Constants.XBOX_CONTROLLER_DRIVER_ENABLE) {
       DriverXboxController.getButtonBack().onTrue(new SwitchDriveIdleMode());
+      /* 
       DriverXboxController.getButtonLeftBumper().onTrue(new TurretToHighLeft());
       DriverXboxController.getButtonRightBumper().onTrue(new TurretToHighRight());
       DriverXboxController.getButtonX().onTrue(new TurretToLowLeft());
       DriverXboxController.getButtonB().onTrue(new TurretToLowRight());
+      */
       DriverXboxController.getButtonY().onTrue(new TrackTarget());
       DriverXboxController.getButtonA().onTrue(new FloorGrabSequence());
 
