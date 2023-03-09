@@ -25,7 +25,7 @@ public class AutoSimple extends SequentialCommandGroup {
       new ZeroArmEncoders(),
       new ConeFarPostStraightSequence(),
       new ExpelCone(true),
-      new DriveDistance(-10, 0.3, 0.3, 1, true),
+      new DriveDistance(-70, 0.3, 0.3, 1, true),
       new ArmToHomePosition()
     );
   }

@@ -5,6 +5,7 @@
 package frc.robot.commands.Drive;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -34,7 +35,7 @@ public class DriveDistance extends CommandBase {
     m_leftPower = lPower;
     m_rightPower = rPower;
     m_parameterized = parameterized;
-    m_distance = distance;
+    m_distance = 1.636 * distance;
     m_timer = new Timer();
     m_brakeDelay = brakeDelay;
     m_finished = false;
@@ -57,7 +58,10 @@ public class DriveDistance extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    //m_drive.setIdleMode(IdleMode.kBrake);
     m_drive.tankDrive(0, 0);
+    m_leftEncoder.setPosition(ENCODER_INITIAL_POSITION);
+    m_rightEncoder.setPosition(ENCODER_INITIAL_POSITION);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -74,6 +78,7 @@ public class DriveDistance extends CommandBase {
     } else {
       m_drive.tankDrive(-m_leftPower, -m_rightPower);
     }
+    System.out.println(m_leftEncoder.getPosition() + "   " + m_rightEncoder.getPosition());
   }
 
   // Called once the command ends or is interrupted.
@@ -100,6 +105,6 @@ public class DriveDistance extends CommandBase {
       m_drive.tankDrive(0, 0);
     }
     // if the timer has elapsed the delay and the command is finished, the command can end
-    return m_timer.hasElapsed(m_brakeDelay) && m_finished;
+    return m_finished;
   }
 }

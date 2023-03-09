@@ -4,10 +4,13 @@
 
 package frc.robot;
 
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Drive;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -26,6 +29,7 @@ public class Robot extends TimedRobot {
    */
 
    Arm m_arm;
+   Drive m_drive;
 
   @Override
   public void robotInit() {
@@ -33,6 +37,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
+    m_drive = Drive.getInstance();
     m_arm = Arm.getInstance();
     m_arm.zeroEncoders();
     m_arm.setTurretTargetAngle(0);
@@ -60,7 +65,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_drive.setIdleMode(IdleMode.kCoast);
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -69,6 +76,14 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+    m_arm.zeroEncoders();
+    m_arm.setTurretTargetAngle(0);
+    m_arm.setShoulderTargetAngle(0);
+    m_arm.setElbowTargetAngle(0);
+    m_arm.setWristTargetAngle(0); 
+
+    m_drive.setIdleMode(IdleMode.kBrake);
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
