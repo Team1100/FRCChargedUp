@@ -62,6 +62,7 @@ public class DriveDistance extends CommandBase {
     m_drive.tankDrive(0, 0);
     m_leftEncoder.setPosition(ENCODER_INITIAL_POSITION);
     m_rightEncoder.setPosition(ENCODER_INITIAL_POSITION);
+    m_finished = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.

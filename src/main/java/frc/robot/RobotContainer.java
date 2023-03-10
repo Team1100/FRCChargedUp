@@ -18,7 +18,7 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.Arm.*;
 import frc.robot.commands.Arm.presets.*;
 import frc.robot.commands.Arm.sequences.ConeGrabSequence;
-import frc.robot.commands.Auto.ScoreAndDriveBack;
+import frc.robot.commands.Auto.ScoreConeAndDriveBack;
 import frc.robot.commands.Drive.ArcadeDrive;
 import frc.robot.commands.Drive.DriveDistance;
 import frc.robot.commands.Drive.ToggleIdleMode;
@@ -42,7 +42,10 @@ public class RobotContainer {
   private final Hand m_hand;
   private final ControllerMode m_controllerMode;
 
-  private final Command m_scoreAndDriveBack = new ScoreAndDriveBack(-144);
+  private final Command m_scoreConeAndDriveBack = new ScoreConeAndDriveBack(-160,0.6);
+  private final Command m_scoreConeAndPark = new ScoreConeAndDriveBack(-80.,0.5);
+  private final Command m_scoreCubeAndDriveBack = new ScoreConeAndDriveBack(-160,0.6);
+  private final Command m_scoreCubeAndPark = new ScoreConeAndDriveBack(-80.,0.5);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -60,8 +63,10 @@ public class RobotContainer {
     m_controllerMode.setDefaultCommand(OI.getInstance().getMode1());
 
     // Auto Routines: 
-    m_chooser.setDefaultOption("Very Simple Auto", m_scoreAndDriveBack);
-
+    m_chooser.setDefaultOption("Score Cone and Drive Back", m_scoreConeAndDriveBack);
+    m_chooser.addOption("Score Cone And Park", m_scoreConeAndPark);
+    m_chooser.addOption("Score Cube And Drive Back", m_scoreCubeAndDriveBack);
+    m_chooser.addOption("Score Cube And Park", m_scoreCubeAndPark);
     // Configure the trigger bindings
     configureBindings();
 

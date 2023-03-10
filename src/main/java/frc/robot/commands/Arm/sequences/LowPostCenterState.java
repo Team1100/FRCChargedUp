@@ -64,8 +64,9 @@ public class LowPostCenterState extends CommandBase {
         m_state = State.EXTEND_ELBOW;
         break;
       case EXTEND_ELBOW:
-        if (m_extendElbow.isFinished())
+        if (Arm.getInstance().isElbowHalfFinishedGoingOut())
           m_state = State.SCHEDULE_EXTEND_SHOULDER;
+          m_extendElbow.end(true);
         break;
       case SCHEDULE_EXTEND_SHOULDER:
         m_extendArm.schedule();

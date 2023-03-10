@@ -17,19 +17,20 @@ import frc.robot.testingdashboard.TestingDashboard;
 public class ArmToHomeState extends CommandBase {
   enum State {
     INIT,
-    SCHEDULE_EXTEND_ELBOW,
-    EXTEND_ELBOW,
-    SCHEDULE_EXTEND_SHOULDER,
-    EXTEND_SHOULDER,
+    SCHEDULE_RETRACT_SHOULDER,
+    RETRACT_SHOULDER,
+    SCHEDULE_RETRACT_ELBOW,
+    RETRACT_ELBOW,
     SCHEDULE_ROTATE_TURRET,
     ROTATE_TURRET,
     DONE
   }
 
-  ArmToPreset m_extendElbow = new ArmToPreset(0, 0, 0, 0, false, true, false, false);
-  ArmToPreset m_extendArm = new ArmToPreset(0, 0, 0, 0, false, true, true, true);
+  ArmToPreset m_retractShoulder = new ArmToPreset(0, 0, 0, 0, false, true, false, false);
+  ArmToPreset m_retractElbow = new ArmToPreset(0, 0, 0, 0, false, true, true, true);
   ArmToPreset m_rotateTurret = new ArmToPreset(0, 0, 0, 0, true, true, true, true);
 
+  private double m_shoulderStartingAngle;
 
   private boolean m_isFinished;
   private State m_state;
@@ -38,6 +39,7 @@ public class ArmToHomeState extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     m_state = State.INIT;
     m_isFinished = false;
+    m_shoulderStartingAngle = 0;
   }
 
   //Register with TestingDashboard
@@ -52,6 +54,7 @@ public class ArmToHomeState extends CommandBase {
   public void initialize() {
     m_state = State.INIT;
     m_isFinished = false;
+    m_shoulderStartingAngle = Arm.getInstance().getShoulderAngle();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -59,24 +62,25 @@ public class ArmToHomeState extends CommandBase {
   public void execute() {
     switch (m_state) {
       case INIT:
-        m_state = State.SCHEDULE_EXTEND_ELBOW;
+        m_state = State.SCHEDULE_RETRACT_SHOULDER;
         break;
 
-      case SCHEDULE_EXTEND_ELBOW:
-        m_extendElbow.schedule();
-        m_state = State.EXTEND_ELBOW;
+      case SCHEDULE_RETRACT_SHOULDER:
+        m_retractShoulder.schedule();
+        m_state = State.RETRACT_SHOULDER;
         break;
-      case EXTEND_ELBOW:
-        if (m_extendElbow.isFinished())
-          m_state = State.SCHEDULE_EXTEND_SHOULDER;
+      case RETRACT_SHOULDER:
+        if (Arm.getInstance().isShoulderHalfFinishedGoingIn(m_shoulderStartingAngle))
+          m_state = State.SCHEDULE_RETRACT_ELBOW;
+          m_retractShoulder.end(true);
         break;
 
-      case SCHEDULE_EXTEND_SHOULDER:
-        m_extendArm.schedule();
-        m_state = State.EXTEND_SHOULDER;
+      case SCHEDULE_RETRACT_ELBOW:
+        m_retractElbow.schedule();
+        m_state = State.RETRACT_ELBOW;
         break;
-      case EXTEND_SHOULDER:
-        if (m_extendArm.isFinished())
+      case RETRACT_ELBOW:
+        if (m_retractElbow.isFinished())
           m_state = State.SCHEDULE_ROTATE_TURRET;
         break;
       

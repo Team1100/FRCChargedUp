@@ -25,7 +25,7 @@ public class HighPostCenterState extends CommandBase {
   }
 
   ArmToPreset m_extendElbow = new ArmToPreset(0, 0, -145, 0, false, false, true, false);
-  ArmToPreset m_extendArm = new ArmToPreset(0, 51, -145, -122, false, true, true, true);
+  ArmToPreset m_extendArm = new ArmToPreset(0, 45, -145, -122, false, true, true, true);
 
   private boolean m_isFinished;
   private State m_state;
@@ -64,8 +64,9 @@ public class HighPostCenterState extends CommandBase {
         m_state = State.EXTEND_ELBOW;
         break;
       case EXTEND_ELBOW:
-        if (m_extendElbow.isFinished())
+        if (Arm.getInstance().isElbowHalfFinishedGoingOut())
           m_state = State.SCHEDULE_EXTEND_SHOULDER;
+          m_extendElbow.end(true);
         break;
       case SCHEDULE_EXTEND_SHOULDER:
         m_extendArm.schedule();

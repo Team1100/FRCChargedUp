@@ -12,6 +12,8 @@ import java.sql.Driver;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.commands.Arm.ArmToPositionXY;
+import frc.robot.commands.Arm.ZeroArmEncoders;
+import frc.robot.commands.Arm.presets.ArmToPreset;
 import frc.robot.commands.Arm.sequences.FloorGrabSequence;
 import frc.robot.commands.Arm.sequences.TurretToHighLeft;
 import frc.robot.commands.Arm.sequences.TurretToHighRight;
@@ -173,7 +175,8 @@ public class OI {
     OperatorXboxController.getButtonA().onTrue(new frc.robot.commands.Arm.sequences.ArmToHomeState());
     OperatorXboxController.getButtonB().onTrue(new frc.robot.commands.Arm.sequences.HighPostCenterState());
     OperatorXboxController.getButtonX().onTrue(new frc.robot.commands.Arm.sequences.LowPostCenterState());
-    OperatorXboxController.getButtonY().onTrue(new frc.robot.commands.Arm.sequences.ConeGrabSequence());
+    OperatorXboxController.getButtonY().onTrue(new ArmToPreset(0, 0, -100, 205, false, true, true, true));
+    OperatorXboxController.getButtonBack().onTrue(new ZeroArmEncoders());
   }
 
   public void Mode2() {

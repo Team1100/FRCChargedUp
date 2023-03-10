@@ -9,8 +9,9 @@ package frc.robot.commands.Auto;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.commands.Arm.ArmToHomePosition;
 import frc.robot.commands.Arm.presets.ArmToPreset;
+import frc.robot.commands.Arm.sequences.ArmToHomeState;
+import frc.robot.commands.Arm.sequences.HighPostCenterState;
 import frc.robot.commands.Arm.sequences.HighPostCenterState;
 import frc.robot.commands.Drive.DriveDistance;
 import frc.robot.commands.Hand.ExpelCone;
@@ -19,7 +20,7 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drive;
 import frc.robot.testingdashboard.TestingDashboard;
 
-public class ScoreAndDriveBack extends CommandBase {
+public class ScoreConeAndDriveBack extends CommandBase {
   enum State {
     INIT,
     SCHEDULE_EXTEND_ARM,
@@ -35,28 +36,28 @@ public class ScoreAndDriveBack extends CommandBase {
 
   HighPostCenterState m_highPostCenter;
   ExpelConeTimed m_expelConeTimed;
-  ArmToHomePosition m_armToHome;
+  ArmToHomeState m_armToHome;
   DriveDistance m_driveBack;
 
 
   private boolean m_isFinished;
   private State m_state;
   /** Creates a new ReachForNextBarStatefully. */
-  public ScoreAndDriveBack(double driveBackDistance) {
+  public ScoreConeAndDriveBack(double driveBackDistance, double power) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_state = State.INIT;
     m_isFinished = false;
 
-    HighPostCenterState m_highPostCenter = new HighPostCenterState();
-    ExpelConeTimed m_expelConeTimed = new ExpelConeTimed(); 
-    ArmToHomePosition m_armToHome = new ArmToHomePosition();
-    DriveDistance m_driveBack = new DriveDistance(driveBackDistance, .6, .6, 0, true);
+    m_highPostCenter = new HighPostCenterState();
+    m_expelConeTimed = new ExpelConeTimed(); 
+    m_armToHome = new ArmToHomeState();
+    m_driveBack = new DriveDistance(driveBackDistance, power, power, 0, true);
   }
 
   //Register with TestingDashboard
   public static void registerWithTestingDashboard() {
     Arm climber = Arm.getInstance();
-    ScoreAndDriveBack cmd = new ScoreAndDriveBack(0);
+    ScoreConeAndDriveBack cmd = new ScoreConeAndDriveBack(0,0);
     TestingDashboard.getInstance().registerCommand(climber, "TestCommands", cmd);
   }
 

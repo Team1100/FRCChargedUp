@@ -39,10 +39,6 @@ public class Mode1 extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(OI.getInstance().getOperatorXboxController().getButtonStart().getAsBoolean()) {
-      OI.getInstance().getMode2().schedule();
-      m_isFinished = true;
-    } 
   }
   
 

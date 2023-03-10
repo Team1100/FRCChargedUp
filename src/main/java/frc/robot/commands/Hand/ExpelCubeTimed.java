@@ -11,12 +11,12 @@ import frc.robot.commands.Auto.Wait;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ExpelConeTimed extends ParallelDeadlineGroup {
+public class ExpelCubeTimed extends ParallelDeadlineGroup {
   /** Creates a new ExpelConeTimed. */
-  public ExpelConeTimed() {
+  public ExpelCubeTimed() {
     // Add the deadline command in the super() call. Add other commands using
     // addCommands().
-    super(new Wait(1.5, true));
-    addCommands(new ExpelCone(true));
+    super(new Wait(1, true));
+    addCommands(new ExpelCube(true));
   }
 }

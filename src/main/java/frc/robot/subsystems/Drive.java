@@ -124,9 +124,6 @@ public class Drive extends SubsystemBase {
 
     m_max_num_current_values = MOTOR_CURRENT_INITIAL_CAPACITY;
 
-    SmartDashboard.putNumber("FWD Accel Limit", 3);
-    SmartDashboard.putNumber("ROT Accel Limit", 3);
-
   }
 
   public void setIdleMode(IdleMode mode) {

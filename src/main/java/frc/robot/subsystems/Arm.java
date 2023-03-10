@@ -464,15 +464,22 @@ public class Arm extends SubsystemBase {
   }
 
   public boolean isElbowHalfFinishedGoingOut() {
-    boolean elbowFinished = Math.abs(getElbowAngle()) > Math.abs(getElbowTargetAngle() / 2);
+    boolean elbowFinished = Math.abs(getElbowAngle()) > Math.abs(getElbowTargetAngle() / 2  - 5);
+    
     System.out.println(elbowFinished);
     return elbowFinished;
   }
 
-  public boolean isElbowHalfFinishedGoingIn() {
-    boolean elbowFinished = Math.abs(getElbowAngle()) < Math.abs(getElbowTargetAngle() * 2);
+  public boolean isElbowHalfFinishedGoingIn(double startingAngle) {
+    boolean elbowFinished = Math.abs(getElbowAngle()) < Math.abs(startingAngle / 2 + 5);
     System.out.println(elbowFinished);
     return elbowFinished;
+  }
+
+  public boolean isShoulderHalfFinishedGoingIn(double startingAngle) {
+    boolean shoulderFinished = Math.abs(getShoulderAngle()) < Math.abs(startingAngle / 4  + 5);
+    System.out.println(shoulderFinished);
+    return shoulderFinished;
   }
 
   public double getHandX(/*double theta1, double theta2, double rotation*/) {
