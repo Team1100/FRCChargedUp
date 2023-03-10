@@ -18,6 +18,7 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.Arm.*;
 import frc.robot.commands.Arm.presets.*;
 import frc.robot.commands.Arm.sequences.ConeGrabSequence;
+import frc.robot.commands.Auto.ScoreAndDriveBack;
 import frc.robot.commands.Drive.ArcadeDrive;
 import frc.robot.commands.Drive.DriveDistance;
 import frc.robot.commands.Drive.ToggleIdleMode;
@@ -41,7 +42,7 @@ public class RobotContainer {
   private final Hand m_hand;
   private final ControllerMode m_controllerMode;
 
-  private final Command m_simpleAuto = new DriveDistance(-70, 0.55, 0.55, 0, true);
+  private final Command m_scoreAndDriveBack = new ScoreAndDriveBack(-144);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -59,7 +60,7 @@ public class RobotContainer {
     m_controllerMode.setDefaultCommand(OI.getInstance().getMode1());
 
     // Auto Routines: 
-    m_chooser.setDefaultOption("Very Simple Auto", m_simpleAuto);
+    m_chooser.setDefaultOption("Very Simple Auto", m_scoreAndDriveBack);
 
     // Configure the trigger bindings
     configureBindings();
