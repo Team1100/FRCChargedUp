@@ -10,14 +10,14 @@ import frc.robot.testingdashboard.TestingDashboard;
 
 public class ExpelCube extends SpinIntake {
   /** Creates a new ExpelCube. */
-  public ExpelCube(boolean parameterized) {
+  public ExpelCube(boolean reversed, boolean parameterized) {
     super(Constants.DEFAULT_EXPEL_CUBE_POWER, parameterized);
   }
 
   //Register with TestingDashboard
   public static void registerWithTestingDashboard() {
     Hand hand = Hand.getInstance();
-    ExpelCube cmd = new ExpelCube(false);
+    ExpelCube cmd = new ExpelCube(false, true);
     TestingDashboard.getInstance().registerCommand(hand, "Basic", cmd);
   }
 }

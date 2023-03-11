@@ -12,7 +12,7 @@ import frc.robot.testingdashboard.TestingDashboard;
 public class SpinIntake extends CommandBase {
 
   protected Hand m_hand;
-  private double m_power = Constants.DEFAULT_INTAKE_CONE_POWER;
+  private double m_power;
   private boolean m_parameterized;
   
   /** Creates a new IntakeBall. */

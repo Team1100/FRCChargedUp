@@ -17,6 +17,6 @@ public class ExpelCubeTimed extends ParallelDeadlineGroup {
     // Add the deadline command in the super() call. Add other commands using
     // addCommands().
     super(new Wait(1, true));
-    addCommands(new ExpelCube(true));
+    addCommands(new ExpelCube(true, true));
   }
 }

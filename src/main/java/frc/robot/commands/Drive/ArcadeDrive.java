@@ -54,9 +54,9 @@ public class ArcadeDrive extends CommandBase {
       boolean squareInputs = true;
 
       if (rotation < 0) {
-        rotation = rotation + Constants.XBOX_DEADBAND_LIMIT;
+        rotation = Constants.DRIVE_SENSITIVITY * (rotation + Constants.XBOX_DEADBAND_LIMIT);
       } else if (rotation > 0) {
-        rotation = rotation - Constants.XBOX_DEADBAND_LIMIT;
+        rotation = Constants.DRIVE_SENSITIVITY * (rotation - Constants.XBOX_DEADBAND_LIMIT);
       }
       
       m_drive.arcadeDrive(-speed, rotation, squareInputs);

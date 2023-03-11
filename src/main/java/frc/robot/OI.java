@@ -172,7 +172,7 @@ public class OI {
   }
 
   public void Mode1() {
-    OperatorXboxController.getButtonA().onTrue(new frc.robot.commands.Arm.sequences.ArmToHomeState());
+    OperatorXboxController.getButtonA().onTrue(new frc.robot.commands.Arm.ArmToHomePosition());
     OperatorXboxController.getButtonB().onTrue(new frc.robot.commands.Arm.sequences.HighPostCenterState());
     OperatorXboxController.getButtonX().onTrue(new frc.robot.commands.Arm.sequences.LowPostCenterState());
     OperatorXboxController.getButtonY().onTrue(new ArmToPreset(0, 0, -100, 205, false, true, true, true));

@@ -21,6 +21,7 @@ import frc.robot.commands.Arm.sequences.ConeGrabSequence;
 import frc.robot.commands.Auto.ScoreCone;
 import frc.robot.commands.Auto.ScoreConeAndDriveBack;
 import frc.robot.commands.Auto.ScoreCube;
+import frc.robot.commands.Auto.ScoreCubeAndDriveBack;
 import frc.robot.commands.Drive.ArcadeDrive;
 import frc.robot.commands.Drive.DriveDistance;
 import frc.robot.commands.Drive.ToggleIdleMode;
@@ -44,10 +45,10 @@ public class RobotContainer {
   private final Hand m_hand;
   private final ControllerMode m_controllerMode;
 
-  private final Command m_scoreConeAndDriveBack = new ScoreConeAndDriveBack(-160,0.6);
-  private final Command m_scoreConeAndPark = new ScoreConeAndDriveBack(-80.,0.5);
-  private final Command m_scoreCubeAndDriveBack = new ScoreConeAndDriveBack(-160,0.6);
-  private final Command m_scoreCubeAndPark = new ScoreConeAndDriveBack(-80.,0.5);
+  private final Command m_scoreConeAndDriveBack = new ScoreConeAndDriveBack(-220,0,0.6);
+  private final Command m_scoreConeAndPark = new ScoreConeAndDriveBack(-130,-36,0.6);
+  private final Command m_scoreCubeAndDriveBack = new ScoreCubeAndDriveBack(-220,0,0.6);
+  private final Command m_scoreCubeAndPark = new ScoreCubeAndDriveBack(-130,-36,0.6);
 
   private final Command m_scoreCone = new ScoreCone();
   private final Command m_scoreCube = new ScoreCube();
@@ -106,7 +107,7 @@ public class RobotContainer {
     CancelArmMovement.registerWithTestingDashboard();
 
     // Hand
-    SpinIntake.registerWithTestingDashboard();
+    // SpinIntake.registerWithTestingDashboard();
     ExpelCone.registerWithTestingDashboard();
     ExpelCube.registerWithTestingDashboard();
     IntakeCone.registerWithTestingDashboard();

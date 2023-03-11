@@ -19,6 +19,7 @@ import frc.robot.commands.Hand.ExpelConeTimed;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drive;
 import frc.robot.testingdashboard.TestingDashboard;
+import frc.robot.commands.Auto.Wait;
 
 public class ScoreConeAndDriveBack extends CommandBase {
   enum State {
@@ -31,6 +32,10 @@ public class ScoreConeAndDriveBack extends CommandBase {
     RETRACT_ARM,
     SCHEDULE_DRIVE_BACK,
     DRIVE_BACK,
+    SCHEDULE_WAIT,
+    WAIT,
+    SCHEDULE_DRIVE_BACK_2,
+    DRIVE_BACK_2,
     DONE
   }
 
@@ -38,12 +43,14 @@ public class ScoreConeAndDriveBack extends CommandBase {
   ExpelConeTimed m_expelConeTimed;
   ArmToHomeState m_armToHome;
   DriveDistance m_driveBack;
+  DriveDistance m_driveBack2;
+  Wait m_wait;
 
 
   private boolean m_isFinished;
   private State m_state;
   /** Creates a new ReachForNextBarStatefully. */
-  public ScoreConeAndDriveBack(double driveBackDistance, double power) {
+  public ScoreConeAndDriveBack(double driveBackDistance, double secondBackDistance, double power) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_state = State.INIT;
     m_isFinished = false;
@@ -52,12 +59,14 @@ public class ScoreConeAndDriveBack extends CommandBase {
     m_expelConeTimed = new ExpelConeTimed(); 
     m_armToHome = new ArmToHomeState();
     m_driveBack = new DriveDistance(driveBackDistance, power, power, 0, true);
+    m_driveBack2 = new DriveDistance(secondBackDistance, power, power, 0, true);
+    m_wait = new Wait(1, true);
   }
 
   //Register with TestingDashboard
   public static void registerWithTestingDashboard() {
     Arm climber = Arm.getInstance();
-    ScoreConeAndDriveBack cmd = new ScoreConeAndDriveBack(0,0);
+    ScoreConeAndDriveBack cmd = new ScoreConeAndDriveBack(0,0,0);
     TestingDashboard.getInstance().registerCommand(climber, "TestCommands", cmd);
   }
 
@@ -108,12 +117,37 @@ public class ScoreConeAndDriveBack extends CommandBase {
         m_state = State.DRIVE_BACK;
         break;
       case DRIVE_BACK:
-        if (m_driveBack.isFinished())
-          m_state = State.DONE;
+        if (m_driveBack.isFinished()) 
+          m_state = State.SCHEDULE_WAIT;
+          System.out.println("DRIVING BACK");
         break;
 
+      case SCHEDULE_WAIT:
+        m_wait.schedule();
+        m_state = State.WAIT;
+        System.out.println("SCHEDULING WAIT");
+        break;
+      case WAIT:
+        if (m_wait.isFinished()) {
+          m_state = State.SCHEDULE_DRIVE_BACK_2;
+          System.out.println("WAITING");
+        }
+        break;
+
+      case SCHEDULE_DRIVE_BACK_2:
+        m_driveBack2.schedule();
+        m_state = State.DRIVE_BACK_2;
+        System.out.println("SCHEDULING DRIVING BACK 2222");
+      case DRIVE_BACK_2:
+        if (m_driveBack2.isFinished()) {
+          m_state = State.DONE;
+          System.out.println("SCHEDULING DRIVING BACK 2222");
+        }
+        break;
       case DONE:
         m_isFinished = true;
+        for (int i = 0; i < 10; i++)
+          System.out.println("DONE");
         break;
       default:
         break;

@@ -52,6 +52,7 @@ public class Wait extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_timer.stop();
+    m_timer.reset();
     m_timer_running = false;
   }
 

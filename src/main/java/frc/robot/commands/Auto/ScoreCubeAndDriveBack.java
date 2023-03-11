@@ -32,6 +32,10 @@ public class ScoreCubeAndDriveBack extends CommandBase {
     RETRACT_ARM,
     SCHEDULE_DRIVE_BACK,
     DRIVE_BACK,
+    SCHEDULE_WAIT,
+    WAIT,
+    SCHEDULE_DRIVE_BACK_2,
+    DRIVE_BACK_2,
     DONE
   }
 
@@ -39,12 +43,14 @@ public class ScoreCubeAndDriveBack extends CommandBase {
   ExpelCubeTimed m_expelCubeTimed;
   ArmToHomeState m_armToHome;
   DriveDistance m_driveBack;
+  Wait m_wait;
+  DriveDistance m_driveBack2;
 
 
   private boolean m_isFinished;
   private State m_state;
   /** Creates a new ReachForNextBarStatefully. */
-  public ScoreCubeAndDriveBack(double driveBackDistance, double power) {
+  public ScoreCubeAndDriveBack(double driveBackDistance, double secondBackDistance, double power) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_state = State.INIT;
     m_isFinished = false;
@@ -53,12 +59,14 @@ public class ScoreCubeAndDriveBack extends CommandBase {
     m_expelCubeTimed = new ExpelCubeTimed(); 
     m_armToHome = new ArmToHomeState();
     m_driveBack = new DriveDistance(driveBackDistance, power, power, 0, true);
+    m_wait = new Wait(1, true);
+    m_driveBack2 = new DriveDistance(secondBackDistance, power, power, 0, true);
   }
 
   //Register with TestingDashboard
   public static void registerWithTestingDashboard() {
     Arm climber = Arm.getInstance();
-    ScoreCubeAndDriveBack cmd = new ScoreCubeAndDriveBack(0,0);
+    ScoreCubeAndDriveBack cmd = new ScoreCubeAndDriveBack(0,0,0);
     TestingDashboard.getInstance().registerCommand(climber, "TestCommands", cmd);
   }
 
@@ -108,8 +116,24 @@ public class ScoreCubeAndDriveBack extends CommandBase {
         m_driveBack.schedule();
         m_state = State.DRIVE_BACK;
         break;
-      case DRIVE_BACK:
-        if (m_driveBack.isFinished())
+        case DRIVE_BACK:
+        if (m_driveBack.isFinished()) {
+          m_state = State.SCHEDULE_WAIT;
+        }
+        break;
+      case SCHEDULE_WAIT:
+        m_wait.schedule();
+        m_state = State.WAIT;
+        break;
+      case WAIT:
+        if (m_wait.isFinished()) 
+          m_state = State.SCHEDULE_DRIVE_BACK_2;
+        break;
+      case SCHEDULE_DRIVE_BACK_2:
+        m_driveBack2.schedule();
+        m_state = State.DRIVE_BACK_2;
+      case DRIVE_BACK_2:
+        if (m_driveBack2.isFinished())
           m_state = State.DONE;
         break;
 
