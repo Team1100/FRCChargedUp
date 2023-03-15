@@ -59,7 +59,7 @@ public class ScoreCubeAndDriveBack extends CommandBase {
     m_expelCubeTimed = new ExpelCubeTimed(); 
     m_armToHome = new ArmToHomeState();
     m_driveBack = new DriveDistance(driveBackDistance, power, power, 0, true);
-    m_wait = new Wait(1, true);
+    m_wait = new Wait(2.5, true);
     m_driveBack2 = new DriveDistance(secondBackDistance, power, power, 0, true);
   }
 

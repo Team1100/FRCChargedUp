@@ -31,7 +31,7 @@ public class ConeGrabSequence extends SequentialCommandGroup {
     //TODO: figure out exactly what operators want and reprogram to match
     
     addCommands(
-      new ArmToPreset(0, 0, -100, 205, false, true, true, true)
+      new ArmToPreset(0, 0, -101, 205, false, true, true, true)
     );
   }
 

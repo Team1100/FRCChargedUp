@@ -45,10 +45,10 @@ public class RobotContainer {
   private final Hand m_hand;
   private final ControllerMode m_controllerMode;
 
-  private final Command m_scoreConeAndDriveBack = new ScoreConeAndDriveBack(-220,0,0.6);
-  private final Command m_scoreConeAndPark = new ScoreConeAndDriveBack(-130,-36,0.6);
-  private final Command m_scoreCubeAndDriveBack = new ScoreCubeAndDriveBack(-220,0,0.6);
-  private final Command m_scoreCubeAndPark = new ScoreCubeAndDriveBack(-130,-36,0.6);
+  private final Command m_scoreConeAndDriveBack = new ScoreConeAndDriveBack(-175,0,0.6);
+  private final Command m_scoreConeAndPark = new ScoreConeAndDriveBack(-45,-32,0.6);
+  private final Command m_scoreCubeAndDriveBack = new ScoreCubeAndDriveBack(-175,0,0.6);
+  private final Command m_scoreCubeAndPark = new ScoreCubeAndDriveBack(-45,-32,0.6);
 
   private final Command m_scoreCone = new ScoreCone();
   private final Command m_scoreCube = new ScoreCube();
