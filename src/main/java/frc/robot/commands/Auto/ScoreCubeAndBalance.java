@@ -129,25 +129,21 @@ public class ScoreCubeAndBalance extends CommandBase {
 
         case DRIVE_BACK:
         if (m_driveBack.isFinished()) {
-          m_state = State.SCHEDULE_WAIT;
+          m_state = State.BALANCE;
         }
         break;
 
-      case SCHEDULE_WAIT:
-        m_wait.schedule();
-        m_state = State.WAIT;
-        break;
-
-      case WAIT:
-        if (m_wait.isFinished()) 
-          m_state = State.BALANCE;
-        break;
-
       case BALANCE:
+        boolean dun = false;
+        while(!dun) {
          double speed = m_autoBalance.autoBalanceRoutine();
          m_drive.tankDrive(speed, speed);
-        if (m_autoBalance.isFinished())
+         System.out.println("Speed: " + speed);
+        if (m_autoBalance.isFinished()) {
+          dun = true;
           m_state = State.DONE;
+        }
+      }
         break;
 
       case DONE:

@@ -37,12 +37,12 @@ public class AutoBalance {
         robotSpeedSlow = 0.2;
 
         // Angle where the robot knows it is on the charge station, default = 13.0
-        onChargeStationDegree = 13.0;
+        onChargeStationDegree = 10.0;
 
         // Angle where the robot can assume it is level on the charging station
         // Used for exiting the drive forward sequence as well as for auto balancing,
         // default = 6.0
-        levelDegree = 6.0;
+        levelDegree = 4;
 
         // Amount of time a sensor condition needs to be met before changing states in
         // seconds
@@ -95,18 +95,19 @@ public class AutoBalance {
     // returns a value from -1.0 to 1.0, which left and right motors should be set
     // to.
     public double autoBalanceRoutine() {
+        System.out.println("Tilt: " + getTilt());
         switch (state) {
             // drive forwards to approach station, exit when tilt is detected
             case 0:
-                if (getTilt() > onChargeStationDegree) {
+                if (getTilt() > Math.abs(onChargeStationDegree)) {
                     debounceCount++;
                 }
                 if (debounceCount > secondsToTicks(debounceTime)) {
                     state = 1;
                     debounceCount = 0;
-                    return robotSpeedSlow;
+                    return -robotSpeedSlow;
                 }
-                return robotSpeedFast;
+                return -robotSpeedFast;
             // driving up charge station, drive slower, stopping when level
             case 1:
                 if (getTilt() < levelDegree) {
@@ -117,7 +118,7 @@ public class AutoBalance {
                     debounceCount = 0;
                     return 0;
                 }
-                return robotSpeedSlow;
+                return -robotSpeedSlow;
             // on charge station, stop motors and wait for end of auto
             case 2:
                 if (Math.abs(getTilt()) <= levelDegree / 2) {
@@ -126,6 +127,7 @@ public class AutoBalance {
                 if (debounceCount > secondsToTicks(debounceTime)) {
                     state = 4;
                     debounceCount = 0;
+                    m_isFinished = true;
                     return 0;
                 }
                 if (getTilt() >= levelDegree) {

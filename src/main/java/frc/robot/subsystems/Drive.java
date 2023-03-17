@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import frc.robot.Constants;
 import frc.robot.RoboRioAccelerometerHelper;
 import frc.robot.RobotMap;
+import frc.robot.commands.Drive.AutoBalance;
 import frc.robot.testingdashboard.TestingDashboard;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -46,12 +47,16 @@ public class Drive extends SubsystemBase {
   private double accelIntCount = 0;
   private IdleMode m_currentIdleMode;
 
+  private AutoBalance bal;
+
   public double fwdRateLimit = Constants.D_FWD_RATE_LIMIT; // limits rate change to a certain amount per second. Measured in units
   public  double rotRateLimit = Constants.D_ROT_RATE_LIMIT;
 
   // Motor current variables
   ArrayList<Double> m_left_motor_current_values;
   ArrayList<Double> m_right_motor_current_values;
+
+  ArrayList<Double> m_rio_accel_values;
   public static final int MOTOR_CURRENT_INITIAL_CAPACITY = 50; // This is 1000 miliseconds divided in 20 millisecond chunks
   private int m_max_num_current_values;
 
@@ -69,6 +74,8 @@ public class Drive extends SubsystemBase {
 
   /** Creates a new Drive. */
   private Drive() {
+
+    bal = new AutoBalance();
 
     m_backLeft = new CANSparkMax(RobotMap.D_BACK_LEFT, MotorType.kBrushless);
     m_backRight = new CANSparkMax(RobotMap.D_BACK_RIGHT, MotorType.kBrushless);
@@ -120,6 +127,11 @@ public class Drive extends SubsystemBase {
     m_right_motor_current_values = new ArrayList<Double>(MOTOR_CURRENT_INITIAL_CAPACITY);
     for (int i = 0; i < MOTOR_CURRENT_INITIAL_CAPACITY; i++) {
       m_right_motor_current_values.add(0.0);
+    }
+
+    m_rio_accel_values = new ArrayList<Double>(MOTOR_CURRENT_INITIAL_CAPACITY);
+    for (int i = 0; i < MOTOR_CURRENT_INITIAL_CAPACITY; i++) {
+      m_rio_accel_values.add(0.0);
     }
 
     m_max_num_current_values = MOTOR_CURRENT_INITIAL_CAPACITY;
@@ -205,6 +217,8 @@ public class Drive extends SubsystemBase {
       TestingDashboard.getInstance().registerString(m_drive, "Robot", "DriveIdleMode", "Coast");
       TestingDashboard.getInstance().registerNumber(m_drive, "Motors", "RotCurrentFilteringLimit", Constants.D_ROT_RATE_LIMIT);
       TestingDashboard.getInstance().registerNumber(m_drive, "Motors", "FwdCurrentFilteringLimit", Constants.D_FWD_RATE_LIMIT);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Accel", "RioTilt", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Accel", "MaxNumTiltValues", 50);
     }
     return m_drive;
   }
@@ -284,6 +298,10 @@ public class Drive extends SubsystemBase {
     return arrayListAverage(m_right_motor_current_values);
   }
 
+  public double getTotalAverageRioAccel() {
+    return arrayListAverage(m_rio_accel_values);
+  }
+
   void updateMotorCurrentAverages() {
     m_max_num_current_values = (int)TestingDashboard.getInstance().getNumber(m_drive, "MaxNumCurrentValues");
     double backLeftMotorCurrent = m_backLeft.getOutputCurrent();
@@ -307,6 +325,20 @@ public class Drive extends SubsystemBase {
     }
     TestingDashboard.getInstance().updateNumber(m_drive, "FrontLeftMotorCurrentAverage", getTotalAverageLeftMotorCurrent());
     TestingDashboard.getInstance().updateNumber(m_drive, "FrontRightMotorCurrentAverage", getTotalAverageRightMotorCurrent());
+  }
+
+  void updateRioTiltAverages() {
+    m_max_num_current_values = (int)TestingDashboard.getInstance().getNumber(m_drive, "MaxNumTiltValues");
+
+    m_rio_accel_values.add(bal.getTilt());
+    
+
+    // Trim current buffers until they contain the correct number of entries.
+    // Old entries are removed first.
+    while (m_rio_accel_values.size() > m_max_num_current_values) {
+      m_rio_accel_values.remove(0);
+    }
+    TestingDashboard.getInstance().updateNumber(m_drive, "RioTilt", getTotalAverageRioAccel());
   }
 
   public static double arrayListAverage(ArrayList<Double> arrayList) {
@@ -354,10 +386,13 @@ public class Drive extends SubsystemBase {
         TestingDashboard.getInstance().updateNumber(m_drive, "currentTime", m_accelHelper.getCurrentTime());
         TestingDashboard.getInstance().updateNumber(m_drive, "instantAccelMagnitudeInchesPerSecondSquared", m_accelHelper.getAccelerometerMagnitudeInchesPerSecondSquared());
         TestingDashboard.getInstance().updateNumber(m_drive, "instantAccelMagnitudeInchesPerSecondSquared", m_accelHelper.getAccelerometerMagnitudeInchesPerSecondSquared());
+        
       }
 
+      
+
       // Publish motor current values
-      updateMotorCurrentAverages();
+      updateRioTiltAverages();
     }
   }
 }
