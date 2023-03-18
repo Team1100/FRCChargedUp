@@ -24,6 +24,8 @@ import frc.robot.commands.Drive.ToggleIdleMode;
 import frc.robot.commands.Hand.ExpelCube;
 import frc.robot.commands.Hand.IntakeCube;
 import frc.robot.commands.Hand.SpinIntake;
+import frc.robot.commands.Lights.ConeLight;
+import frc.robot.commands.Lights.CubeLight;
 import frc.robot.commands.VisionAuto.TrackTarget;
 import frc.robot.input.ControllerModes.*;
 import frc.robot.input.XboxController.XboxAxis;
@@ -89,9 +91,9 @@ public class OI {
     ////////////////////////////////////////////////////
     if (Constants.XBOX_CONTROLLER_DRIVER_ENABLE) {
       DriverXboxController.getButtonBack().onTrue(new SwitchDriveIdleMode());
+      DriverXboxController.getButtonRightBumper().onTrue(new ConeLight());
+      DriverXboxController.getButtonLeftBumper().onTrue(new CubeLight());
       /* 
-      DriverXboxController.getButtonLeftBumper().onTrue(new TurretToHighLeft());
-      DriverXboxController.getButtonRightBumper().onTrue(new TurretToHighRight());
       DriverXboxController.getButtonX().onTrue(new TurretToLowLeft());
       DriverXboxController.getButtonB().onTrue(new TurretToLowRight());
       */

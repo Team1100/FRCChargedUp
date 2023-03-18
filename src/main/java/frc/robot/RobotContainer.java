@@ -27,6 +27,8 @@ import frc.robot.commands.Drive.ArcadeDrive;
 import frc.robot.commands.Drive.DriveDistance;
 import frc.robot.commands.Drive.ToggleIdleMode;
 import frc.robot.commands.Hand.*;
+import frc.robot.commands.Lights.ConeLight;
+import frc.robot.commands.Lights.CubeLight;
 import frc.robot.commands.VisionAuto.TrackTarget;
 import frc.robot.input.ControllerModes.Mode1;
 import frc.robot.input.ControllerModes.Mode2;
@@ -120,6 +122,10 @@ public class RobotContainer {
     // Controller Modes
     Mode1.registerWithTestingDashboard();
     Mode2.registerWithTestingDashboard();
+
+    // Lights
+    ConeLight.registerWithTestingDashboard();
+    CubeLight.registerWithTestingDashboard();
 
     // Create Testing Dashboard
     TestingDashboard.getInstance().createTestingDashboard();

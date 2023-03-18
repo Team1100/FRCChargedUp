@@ -11,6 +11,7 @@ import frc.robot.testingdashboard.TestingDashboard;
 import frc.robot.input.XboxController;
 import frc.robot.input.XboxController.XboxAxis;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.Vision;
 
 
@@ -22,6 +23,7 @@ public class ArcadeDrive extends CommandBase {
 
     // Vision object needs to be created once for it to show up on Shuffleboard 
     private final Vision m_vision;
+    private final Lights m_lights;
 
   public ArcadeDrive() {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -29,6 +31,7 @@ public class ArcadeDrive extends CommandBase {
     addRequirements(m_drive);
 
     m_vision = Vision.getInstance();
+    m_lights = Lights.getInstance();
     
   }
 
