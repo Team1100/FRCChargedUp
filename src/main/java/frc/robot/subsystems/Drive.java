@@ -57,7 +57,7 @@ public class Drive extends SubsystemBase {
   ArrayList<Double> m_right_motor_current_values;
 
   ArrayList<Double> m_rio_accel_values;
-  public static final int MOTOR_CURRENT_INITIAL_CAPACITY = 50; // This is 1000 miliseconds divided in 20 millisecond chunks
+  public static final int MOTOR_CURRENT_INITIAL_CAPACITY = 40; // This is 1000 miliseconds divided in 20 millisecond chunks
   private int m_max_num_current_values;
 
   double m_rightSpeed;
@@ -218,7 +218,7 @@ public class Drive extends SubsystemBase {
       TestingDashboard.getInstance().registerNumber(m_drive, "Motors", "RotCurrentFilteringLimit", Constants.D_ROT_RATE_LIMIT);
       TestingDashboard.getInstance().registerNumber(m_drive, "Motors", "FwdCurrentFilteringLimit", Constants.D_FWD_RATE_LIMIT);
       TestingDashboard.getInstance().registerNumber(m_drive, "Accel", "RioTilt", 0);
-      TestingDashboard.getInstance().registerNumber(m_drive, "Accel", "MaxNumTiltValues", 50);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Accel", "MaxNumTiltValues", 25);
     }
     return m_drive;
   }
@@ -303,7 +303,7 @@ public class Drive extends SubsystemBase {
   }
 
   public double getTotalAverageRioAccel() {
-    return arrayListAverage(m_rio_accel_values);
+    return -arrayListAverage(m_rio_accel_values);
   }
 
   void updateMotorCurrentAverages() {
@@ -331,7 +331,7 @@ public class Drive extends SubsystemBase {
     TestingDashboard.getInstance().updateNumber(m_drive, "FrontRightMotorCurrentAverage", getTotalAverageRightMotorCurrent());
   }
 
-  void updateRioTiltAverages() {
+  public void updateRioTiltAverages() {
     m_max_num_current_values = (int)TestingDashboard.getInstance().getNumber(m_drive, "MaxNumTiltValues");
 
     m_rio_accel_values.add(bal.getTilt());
@@ -397,6 +397,7 @@ public class Drive extends SubsystemBase {
 
       // Publish motor current values
       updateRioTiltAverages();
+      updateMotorCurrentAverages();
     }
   }
 }

@@ -164,7 +164,7 @@ public final class Constants {
 
   public static final int DEFAULT_AUTO_WAIT_TIME = 3;
 
-  public static final boolean ARM_PERIODIC_ENABLED = false;
+  public static final boolean ARM_PERIODIC_ENABLED = true;
   public static final boolean DRIVE_PERIODIC_ENABLED = true;
 
 

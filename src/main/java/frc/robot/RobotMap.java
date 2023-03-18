@@ -208,8 +208,8 @@ public class RobotMap {
 	public static final int A_TURRET_MOTOR = CAN_34;
 	public static final int A_WRIST_MOTOR = CAN_33;
 
-	public static final int A_SHOULDER_POTENTIOMETER_LEFT = ANALOG_0;
-	public static final int A_ELBOW_POTENTIOMETER_LEFT = ANALOG_1;
+	public static final int A_SHOULDER_POTENTIOMETER_LEFT = ANALOG_1;
+	public static final int A_ELBOW_POTENTIOMETER_LEFT = ANALOG_3;
 	public static final int A_TURRET_POTENTIOMETER = ANALOG_2;
 	public static final int A_SHOULDER_POTENTIOMETER_RIGHT = ANALOG_MXP_0;
 	public static final int A_ELBOW_POTENTIOMETER_RIGHT = ANALOG_MXP_1;

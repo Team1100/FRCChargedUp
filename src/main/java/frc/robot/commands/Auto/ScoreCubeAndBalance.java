@@ -14,6 +14,7 @@ import frc.robot.commands.Arm.sequences.ArmToHomeState;
 import frc.robot.commands.Arm.sequences.HighPostCenterState;
 import frc.robot.commands.Arm.sequences.HighPostCenterState;
 import frc.robot.commands.Drive.AutoBalance;
+import frc.robot.commands.Drive.AutoBalanceCommand;
 import frc.robot.commands.Drive.DriveDistance;
 import frc.robot.commands.Hand.ExpelCone;
 import frc.robot.commands.Hand.ExpelConeTimed;
@@ -34,8 +35,7 @@ public class ScoreCubeAndBalance extends CommandBase {
     RETRACT_ARM,
     SCHEDULE_DRIVE_BACK,
     DRIVE_BACK,
-    SCHEDULE_WAIT,
-    WAIT,
+    SCHEDULE_BALANCE,
     BALANCE,
     DONE
   }
@@ -47,7 +47,7 @@ public class ScoreCubeAndBalance extends CommandBase {
   Wait m_wait;
   DriveDistance m_driveBack2;
 
-  private AutoBalance m_autoBalance;
+  AutoBalanceCommand m_autoBalance;
   Drive m_drive;
 
   private boolean m_isFinished;
@@ -65,7 +65,7 @@ public class ScoreCubeAndBalance extends CommandBase {
     m_wait = new Wait(2.5, true);
     m_driveBack2 = new DriveDistance(secondBackDistance, power, power, 0, true);
 
-    m_autoBalance = new AutoBalance();
+    m_autoBalance = new AutoBalanceCommand();
     m_drive = Drive.getInstance();
   }
 
@@ -119,31 +119,17 @@ public class ScoreCubeAndBalance extends CommandBase {
 
       case RETRACT_ARM:
         if (m_armToHome.isFinished())
-          m_state = State.SCHEDULE_DRIVE_BACK;
+          m_state = State.SCHEDULE_BALANCE;
         break;
 
-      case SCHEDULE_DRIVE_BACK:
-        m_driveBack.schedule();
-        m_state = State.DRIVE_BACK;
+      case SCHEDULE_BALANCE:
+        m_autoBalance.schedule();
+        m_state = State.BALANCE;
         break;
-
-        case DRIVE_BACK:
-        if (m_driveBack.isFinished()) {
-          m_state = State.BALANCE;
-        }
-        break;
-
       case BALANCE:
-        boolean dun = false;
-        while(!dun) {
-         double speed = m_autoBalance.autoBalanceRoutine();
-         m_drive.tankDrive(speed, speed);
-         System.out.println("Speed: " + speed);
         if (m_autoBalance.isFinished()) {
-          dun = true;
           m_state = State.DONE;
         }
-      }
         break;
 
       case DONE:
@@ -156,8 +142,7 @@ public class ScoreCubeAndBalance extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
