@@ -298,6 +298,10 @@ public class Drive extends SubsystemBase {
     return arrayListAverage(m_right_motor_current_values);
   }
 
+  public double getInstantTotalMotorCurrent() {
+    return (((m_backLeft.getOutputCurrent() + m_frontLeft.getOutputCurrent()) / 2) + ((m_backRight.getOutputCurrent() + m_frontRight.getOutputCurrent()) / 2) / 2);
+  }
+
   public double getTotalAverageRioAccel() {
     return arrayListAverage(m_rio_accel_values);
   }
@@ -389,7 +393,7 @@ public class Drive extends SubsystemBase {
         
       }
 
-      
+      System.out.println("Avg Current: " + getInstantTotalMotorCurrent());
 
       // Publish motor current values
       updateRioTiltAverages();
