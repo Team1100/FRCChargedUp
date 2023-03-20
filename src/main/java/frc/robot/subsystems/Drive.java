@@ -303,7 +303,7 @@ public class Drive extends SubsystemBase {
   }
 
   public double getTotalAverageRioAccel() {
-    return -arrayListAverage(m_rio_accel_values);
+    return arrayListAverage(m_rio_accel_values);
   }
 
   void updateMotorCurrentAverages() {
@@ -392,9 +392,6 @@ public class Drive extends SubsystemBase {
         TestingDashboard.getInstance().updateNumber(m_drive, "instantAccelMagnitudeInchesPerSecondSquared", m_accelHelper.getAccelerometerMagnitudeInchesPerSecondSquared());
         
       }
-
-      System.out.println("Avg Current: " + getInstantTotalMotorCurrent());
-
       // Publish motor current values
       updateRioTiltAverages();
       updateMotorCurrentAverages();

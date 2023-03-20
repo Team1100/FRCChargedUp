@@ -130,6 +130,7 @@ public class ScoreCubeAndBalance extends CommandBase {
         if (m_autoBalance.isFinished()) {
           m_state = State.DONE;
         }
+        System.out.println("BALANCING!!!!");
         break;
 
       case DONE:
