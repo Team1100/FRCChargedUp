@@ -332,7 +332,7 @@ public class Drive extends SubsystemBase {
   }
 
   public void updateRioTiltAverages() {
-    m_max_num_current_values = (int)TestingDashboard.getInstance().getNumber(m_drive, "MaxNumTiltValues");
+    m_max_num_current_values = 5; //(int)TestingDashboard.getInstance().getNumber(m_drive, "MaxNumTiltValues");
 
     m_rio_accel_values.add(bal.getTilt());
     
@@ -393,7 +393,7 @@ public class Drive extends SubsystemBase {
         
       }
 
-      System.out.println("Avg Current: " + getInstantTotalMotorCurrent());
+      // System.out.println("Avg Current: " + getInstantTotalMotorCurrent());
 
       // Publish motor current values
       updateRioTiltAverages();
