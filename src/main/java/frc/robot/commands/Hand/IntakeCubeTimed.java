@@ -17,6 +17,6 @@ public class IntakeCubeTimed extends ParallelDeadlineGroup {
     // Add the deadline command in the super() call. Add other commands using
     // addCommands().
     super(new Wait(2, true));
-    addCommands(new IntakeCube(false, true));
+    addCommands(new IntakeCube(true));
   }
 }
