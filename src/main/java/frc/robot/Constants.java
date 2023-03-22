@@ -57,12 +57,12 @@ public final class Constants {
   public static final double A_TURRET_SOFTWARE_D = 0;
 
   public static final double A_SHOULDER_SOFTWARE_TOLERANCE = 3;
-  public static final double A_SHOULDER_SOFTWARE_P = 0.2;
+  public static final double A_SHOULDER_SOFTWARE_P = 0.05;
   public static final double A_SHOULDER_SOFTWARE_I = 0;
   public static final double A_SHOULDER_SOFTWARE_D = 0;
 
   public static final double A_ELBOW_SOFTWARE_TOLERANCE = 3;
-  public static final double A_ELBOW_SOFTWARE_P = 0.1;
+  public static final double A_ELBOW_SOFTWARE_P = 0.2;
   public static final double A_ELBOW_SOFTWARE_I = 0;
   public static final double A_ELBOW_SOFTWARE_D = 0;
 
@@ -73,8 +73,8 @@ public final class Constants {
 
   // Note that MAX POWER should be a value between 0 and 1
   public static final double A_TURRET_MAX_POWER = 0.3;
-  public static final double A_SHOULDER_MAX_POWER = 0.2;
-  public static final double A_ELBOW_MAX_POWER = 0.6;
+  public static final double A_SHOULDER_MAX_POWER = 0.3;
+  public static final double A_ELBOW_MAX_POWER = 0.7;
   public static final double A_WRIST_MAX_POWER = 0.6;
 
   // Resting Positions
