@@ -8,12 +8,12 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Lights;
 import frc.robot.testingdashboard.TestingDashboard;
 
-public class CubeLight extends CommandBase {
-  /** Creates a new cubeLight. */
+public class DisableLights extends CommandBase {
+  /** Creates a new DisableLights. */
   Lights m_lights;
   boolean m_isFinished;
 
-  public CubeLight() {
+  public DisableLights() {
     // Use addRequirements() here to declare subsystem dependencies.
     m_lights = Lights.getInstance();
     addRequirements(m_lights);
@@ -21,7 +21,7 @@ public class CubeLight extends CommandBase {
 
   public static void registerWithTestingDashboard() {
     Lights lights = Lights.getInstance();
-    CubeLight cmd = new CubeLight();
+    DisableLights cmd = new DisableLights();
     TestingDashboard.getInstance().registerCommand(lights, "Lights", cmd);
   }
 
@@ -34,7 +34,7 @@ public class CubeLight extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_lights.enableCubeLight();
+    m_lights.disableLights();
     m_isFinished = true;
   }
 

@@ -17,7 +17,7 @@ public class IntakeCube extends SpinIntake {
   //Register with TestingDashboard
   public static void registerWithTestingDashboard() {
     Hand hand = Hand.getInstance();
-    IntakeCube cmd = new IntakeCube(false);
+    IntakeCube cmd = new IntakeCube(true);
     TestingDashboard.getInstance().registerCommand(hand, "Basic", cmd);
   }
 }

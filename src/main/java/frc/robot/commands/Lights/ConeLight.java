@@ -10,8 +10,8 @@ import frc.robot.testingdashboard.TestingDashboard;
 
 public class ConeLight extends CommandBase {
   /** Creates a new coneLight. */
-
   Lights m_lights;
+  boolean m_isFinished;
 
   public ConeLight() {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -28,12 +28,15 @@ public class ConeLight extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_lights.enableConeLight();
+    m_isFinished = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    m_lights.enableConeLight();
+    m_isFinished = true;
+  }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -42,6 +45,6 @@ public class ConeLight extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_isFinished;
   }
 }

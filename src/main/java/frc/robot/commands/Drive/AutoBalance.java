@@ -30,15 +30,15 @@ public class AutoBalance {
          * CONFIG *
          **********/
         // Speed the robot drives while scoring/approaching station, default = 0.4
-        robotSpeedFast = -0.57;
+        robotSpeedFast = 0.53;
 
         // Speed the robot drives while balancing itself on the charge station.
         // Should be roughly half the fast speed, to make the robot more accurate,
         // default = 0.2
-        robotSpeedSlow = -0.35;
+        robotSpeedSlow = 0.3;
 
         // Angle where the robot knows it is on the charge station, default = 13.0
-        onChargeStationDegree = 14;
+        onChargeStationDegree = 14.5;
 
         // Angle where the robot can assume it is level on the charging station
         // Used for exiting the drive forward sequence as well as for auto balancing,
@@ -185,7 +185,7 @@ public class AutoBalance {
                 return robotSpeedSlow;
             // on charge station, ensure robot is flat, then end auto
             case 3:
-                if (Math.abs(getTilt()) <= levelDegree / 2) {
+                if (Math.abs(getTilt()) <= 2* levelDegree / 3) {
                     debounceCount++;
                 }
                 if (debounceCount > secondsToTicks(debounceTime)) {
@@ -206,6 +206,8 @@ public class AutoBalance {
     }
 
     public void clearFinished() {
+        state = 0;
+        debounceCount = 0;
         m_isFinished = false;
     }
 

@@ -303,7 +303,7 @@ public class Drive extends SubsystemBase {
   }
 
   public double getTotalAverageRioAccel() {
-    return -arrayListAverage(m_rio_accel_values);
+    return arrayListAverage(m_rio_accel_values);
   }
 
   void updateMotorCurrentAverages() {

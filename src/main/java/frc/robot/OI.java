@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.commands.Arm.ArmToPositionXY;
 import frc.robot.commands.Arm.ZeroArmEncoders;
+import frc.robot.commands.Arm.ReversedSequences.ReversedFloorGrabSequenceCone;
+import frc.robot.commands.Arm.ReversedSequences.ReversedFloorGrabSequenceCube;
 import frc.robot.commands.Arm.presets.ArmToPreset;
 import frc.robot.commands.Arm.sequences.FloorGrabSequence;
 import frc.robot.commands.Arm.sequences.TurretToHighLeft;
@@ -26,6 +28,8 @@ import frc.robot.commands.Hand.IntakeCube;
 import frc.robot.commands.Hand.SpinIntake;
 import frc.robot.commands.Lights.ConeLight;
 import frc.robot.commands.Lights.CubeLight;
+import frc.robot.commands.Lights.DisableLights;
+import frc.robot.commands.Lights.EnableLights;
 import frc.robot.commands.VisionAuto.TrackTarget;
 import frc.robot.input.ControllerModes.*;
 import frc.robot.input.XboxController.XboxAxis;
@@ -91,14 +95,18 @@ public class OI {
     ////////////////////////////////////////////////////
     if (Constants.XBOX_CONTROLLER_DRIVER_ENABLE) {
       DriverXboxController.getButtonBack().onTrue(new SwitchDriveIdleMode());
-      DriverXboxController.getButtonRightBumper().onTrue(new ConeLight());
-      DriverXboxController.getButtonLeftBumper().onTrue(new CubeLight());
+      DriverXboxController.getButtonLeftBumper().onTrue(new ConeLight());
+      DriverXboxController.getButtonRightBumper().onTrue(new CubeLight());
+      DriverXboxController.getDPad().getDown().onTrue(new DisableLights());
+
       /* 
       DriverXboxController.getButtonX().onTrue(new TurretToLowLeft());
       DriverXboxController.getButtonB().onTrue(new TurretToLowRight());
       */
       DriverXboxController.getButtonY().onTrue(new TrackTarget());
       DriverXboxController.getButtonA().onTrue(new FloorGrabSequence());
+      DriverXboxController.getButtonB().onTrue(new ReversedFloorGrabSequenceCone());
+      DriverXboxController.getButtonX().onTrue(new ReversedFloorGrabSequenceCube());
 
     }
     if (Constants.XBOX_CONTROLLER_OPERATOR_ENABLE) {
