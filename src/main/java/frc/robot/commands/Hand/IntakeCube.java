@@ -10,14 +10,14 @@ import frc.robot.testingdashboard.TestingDashboard;
 
 public class IntakeCube extends SpinIntake {
   /** Creates a new Intake. */
-  public IntakeCube(boolean reversed, boolean parameterized) {
+  public IntakeCube(boolean parameterized) {
     super(Constants.DEFAULT_INTAKE_CUBE_POWER, parameterized);
   }
 
   //Register with TestingDashboard
   public static void registerWithTestingDashboard() {
     Hand hand = Hand.getInstance();
-    IntakeCube cmd = new IntakeCube(false, true);
+    IntakeCube cmd = new IntakeCube(true);
     TestingDashboard.getInstance().registerCommand(hand, "Basic", cmd);
   }
 }
