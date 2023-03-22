@@ -54,6 +54,19 @@ public class Lights extends SubsystemBase {
     m_rightLED.set(true);
   }
 
+  public void pulseLights() {
+    m_leftLED.pulse(0.25);
+    m_rightLED.pulse(0.25);
+  }
+
+  public DigitalOutput getLeftLED() {
+    return m_leftLED;
+  }
+
+  public DigitalOutput getRightLED() {
+    return m_rightLED;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

@@ -227,8 +227,8 @@ public class RobotMap {
 	public static final int U_KEYBOARD_BOX = 5;
 
 	//[L]ights
-	public static final int L_LEFT_LED = DIO_0;
-	public static final int L_RIGHT_LED = DIO_1;
+	public static final int L_LEFT_LED = DIO_8;
+	public static final int L_RIGHT_LED = DIO_9;
 
 
 

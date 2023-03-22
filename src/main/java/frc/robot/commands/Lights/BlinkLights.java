@@ -8,12 +8,13 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Lights;
 import frc.robot.testingdashboard.TestingDashboard;
 
-public class CubeLight extends CommandBase {
-  /** Creates a new cubeLight. */
+public class BlinkLights extends CommandBase {
+  /** Creates a new BlinkLights. */
+  private int counter;
   Lights m_lights;
   boolean m_isFinished;
 
-  public CubeLight() {
+  public BlinkLights() {
     // Use addRequirements() here to declare subsystem dependencies.
     m_lights = Lights.getInstance();
     addRequirements(m_lights);
@@ -21,7 +22,7 @@ public class CubeLight extends CommandBase {
 
   public static void registerWithTestingDashboard() {
     Lights lights = Lights.getInstance();
-    CubeLight cmd = new CubeLight();
+    BlinkLights cmd = new BlinkLights();
     TestingDashboard.getInstance().registerCommand(lights, "Lights", cmd);
   }
 
@@ -34,8 +35,17 @@ public class CubeLight extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_lights.enableCubeLight();
-    m_isFinished = true;
+    if(m_lights.getLeftLED().get() && ((counter % 5) == 0)) {
+      m_lights.enableCubeLight();
+    } else if(m_lights.getRightLED().get() && ((counter % 5) == 5)) {
+      m_lights.enableConeLight();
+    }
+
+    if(counter > 1500) {
+      m_isFinished = true;
+    } else {
+      counter++;
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -45,6 +55,6 @@ public class CubeLight extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_isFinished;
   }
 }
