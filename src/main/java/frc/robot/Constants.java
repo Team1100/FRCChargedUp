@@ -154,6 +154,7 @@ public final class Constants {
   public static final boolean DRIVE_PERIODIC_ENABLE = true;
   public static final double DRIVE_RAMP_RATE = 0.5; // Limit changes in power to require 2 secons to go from zero to full
   public static final double DRIVE_SENSITIVITY = 0.85;
+  public static final double DRIVE_MAX_MOTOR_RPM = 5500;
 
   // Motor current limits
   public static final double TURRET_MOTOR_CURRENT_LIMIT = 10;
