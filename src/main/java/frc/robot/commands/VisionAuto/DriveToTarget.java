@@ -26,8 +26,10 @@ public class DriveToTarget extends CommandBase {
 
   private Timer m_timer;
   double ENCODER_INITIAL_POSITION = 0;
-  private final double NUDGE_FACTOR = 0.015;
+  private final double NUDGE_FACTOR = 0.027;
   private static final double TARGET_TOLERANCE = 10;
+  double defaultLeftPower;
+  double defaultRightPower;
 
   static Vision m_vision;
 
@@ -39,7 +41,8 @@ public class DriveToTarget extends CommandBase {
   public DriveToTarget(double distance, double lPower, double rPower, double brakeDelay, boolean parameterized) {
     m_drive = Drive.getInstance();
     m_vision = Vision.getInstance();
-
+    defaultLeftPower = lPower;
+    defaultRightPower = rPower;
     m_leftPower = lPower;
     m_rightPower = rPower;
     m_parameterized = parameterized;
@@ -76,17 +79,19 @@ public class DriveToTarget extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    double m_nudgeFactor = NUDGE_FACTOR;
     if (!m_parameterized) {
       m_distance = TestingDashboard.getInstance().getNumber(m_drive, "DistanceToTravelInInches");
-      m_leftPower = TestingDashboard.getInstance().getNumber(m_drive, "PowerToTravelLeft");
-      m_rightPower = TestingDashboard.getInstance().getNumber(m_drive, "PowerToTravelRight");
+      m_nudgeFactor = TestingDashboard.getInstance().getNumber(m_drive, "NudgeFactor");
       m_brakeDelay = Constants.D_BRAKE_DELAY;
     }
+    m_leftPower = defaultLeftPower;
+    m_rightPower = defaultRightPower;
     double offset = m_vision.getTargetOffset();
     if (!(offset < TARGET_TOLERANCE && offset > -TARGET_TOLERANCE)) {
       double direction = (int) Math.abs(m_vision.getTargetOffset())/m_vision.getTargetOffset();
-      m_leftPower -= NUDGE_FACTOR * direction;
-      m_rightPower += NUDGE_FACTOR * direction;
+      m_leftPower += m_nudgeFactor * direction;
+      m_rightPower -= m_nudgeFactor * direction;
     }
       
     if (m_distance >= 0) {
