@@ -90,7 +90,6 @@ public class RobotContainer {
     // Register commands with TestingDashboard commands
 
     // Auto
-    TrackTarget.registerWithTestingDashboard();
 
     // Drive
     ArcadeDrive.registerWithTestingDashboard();
