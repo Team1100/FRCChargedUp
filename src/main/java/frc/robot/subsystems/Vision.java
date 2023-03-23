@@ -75,7 +75,7 @@ public class Vision extends SubsystemBase {
   }
 
   public double getTargetOffset() {
-    return m_Ntable.getEntry("offset").getDouble(0);
+    return m_Ntable.getEntry("offset").getDouble(-1000);
   }
 
   public double getTargetYaw() {
