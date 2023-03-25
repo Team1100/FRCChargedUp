@@ -56,7 +56,6 @@ public class Drive extends SubsystemBase {
   ArrayList<Double> m_left_motor_current_values;
   ArrayList<Double> m_right_motor_current_values;
 
-  ArrayList<Double> m_rio_accel_values;
   public static final int MOTOR_CURRENT_INITIAL_CAPACITY = 40; // This is 1000 miliseconds divided in 20 millisecond chunks
   private int m_max_num_current_values;
 
@@ -127,11 +126,6 @@ public class Drive extends SubsystemBase {
     m_right_motor_current_values = new ArrayList<Double>(MOTOR_CURRENT_INITIAL_CAPACITY);
     for (int i = 0; i < MOTOR_CURRENT_INITIAL_CAPACITY; i++) {
       m_right_motor_current_values.add(0.0);
-    }
-
-    m_rio_accel_values = new ArrayList<Double>(MOTOR_CURRENT_INITIAL_CAPACITY);
-    for (int i = 0; i < MOTOR_CURRENT_INITIAL_CAPACITY; i++) {
-      m_rio_accel_values.add(0.0);
     }
 
     m_max_num_current_values = MOTOR_CURRENT_INITIAL_CAPACITY;
@@ -218,6 +212,7 @@ public class Drive extends SubsystemBase {
       TestingDashboard.getInstance().registerNumber(m_drive, "Motors", "RotCurrentFilteringLimit", Constants.D_ROT_RATE_LIMIT);
       TestingDashboard.getInstance().registerNumber(m_drive, "Motors", "FwdCurrentFilteringLimit", Constants.D_FWD_RATE_LIMIT);
       TestingDashboard.getInstance().registerNumber(m_drive, "Accel", "RioTilt", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Accel", "TiltDerivative", 0);
       TestingDashboard.getInstance().registerNumber(m_drive, "Accel", "MaxNumTiltValues", 25);
     }
     return m_drive;
@@ -303,7 +298,7 @@ public class Drive extends SubsystemBase {
   }
 
   public double getTotalAverageRioAccel() {
-    return arrayListAverage(m_rio_accel_values);
+    return arrayListAverage(m_accelHelper.m_rio_accel_values);
   }
 
   void updateMotorCurrentAverages() {
@@ -334,13 +329,13 @@ public class Drive extends SubsystemBase {
   public void updateRioTiltAverages() {
     m_max_num_current_values = 5; //(int)TestingDashboard.getInstance().getNumber(m_drive, "MaxNumTiltValues");
 
-    m_rio_accel_values.add(bal.getTilt());
+    m_accelHelper.m_rio_accel_values.add(bal.getTilt());
     
 
     // Trim current buffers until they contain the correct number of entries.
     // Old entries are removed first.
-    while (m_rio_accel_values.size() > m_max_num_current_values) {
-      m_rio_accel_values.remove(0);
+    while (m_accelHelper.m_rio_accel_values.size() > m_max_num_current_values) {
+      m_accelHelper.m_rio_accel_values.remove(0);
     }
     TestingDashboard.getInstance().updateNumber(m_drive, "RioTilt", getTotalAverageRioAccel());
   }
@@ -393,7 +388,7 @@ public class Drive extends SubsystemBase {
         
       }
 
-      // System.out.println("Avg Current: " + getInstantTotalMotorCurrent());
+      System.out.println("Avg Current: " + getInstantTotalMotorCurrent());
 
       // Publish motor current values
       updateRioTiltAverages();

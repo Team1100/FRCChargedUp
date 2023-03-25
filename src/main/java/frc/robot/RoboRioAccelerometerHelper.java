@@ -1,6 +1,8 @@
 package frc.robot;
 
 
+import java.util.ArrayList;
+
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 
 import edu.wpi.first.wpilibj.Timer;
@@ -18,6 +20,8 @@ public class RoboRioAccelerometerHelper {
     private Vector[] velocityVec;
     private Vector[] distanceVec;
     private double m_accelIntCount;
+
+    public ArrayList<Double> m_rio_accel_values;
     
 
     private BuiltInAccelerometer m_accelerometer;
@@ -43,12 +47,30 @@ public class RoboRioAccelerometerHelper {
         velocityVec = new Vector[] {new Vector(), new Vector()};
         distanceVec = new Vector[] {new Vector(), new Vector()};
         timeValues = new double[2];
+
+        m_rio_accel_values = new ArrayList<Double>(Drive.MOTOR_CURRENT_INITIAL_CAPACITY);
+        for (int i = 0; i < Drive.MOTOR_CURRENT_INITIAL_CAPACITY; i++) {
+          m_rio_accel_values.add(0.0);
+        }
     }
 
     public static double integrate(double tInitial, double tFinal, double vInitial, double vFinal) { // v for value
         double tInterval = tFinal - tInitial;
         double area = (tInterval * (vInitial + vFinal)) / 2;
         return area;
+    }
+
+    public double derivative(double tInitial, double tFinal, double aInitial, double aFinal) {
+        double tInterval = tFinal - tInitial;
+        double aInterval = aFinal - aInitial;
+        return aInterval / tInterval;
+    }
+
+    public double getTotalAverageRioAccelDerivative() {
+        double da = derivative(timeValues[0], timeValues[1], m_rio_accel_values.get(38), m_rio_accel_values.get(39));
+        Drive drive = Drive.getInstance();
+        TestingDashboard.getInstance().updateNumber(drive, "TiltDerivative", da);
+        return da;
     }
 
 

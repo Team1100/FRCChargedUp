@@ -47,7 +47,7 @@ public class AutoBalance {
 
         // Amount of time a sensor condition needs to be met before changing states in
         // seconds
-        // Reduces the impact of sensor noice, but too high can make the auto run
+        // Reduces the impact of sensor noise, but too high can make the auto run
         // slower, default = 0.2
         debounceTime = 0.15;
 
@@ -112,7 +112,7 @@ public class AutoBalance {
                 return -robotSpeedFast;
             // driving up charge station, drive slower, stopping when level
             case 1:
-                if (Drive.getInstance().getTotalAverageRioAccel() < levelDegree && Drive.getInstance().getTotalAverageRioAccel() > -10) {
+                if (Drive.getInstance().getTotalAverageRioAccel() < levelDegree && Drive.getInstance().getTotalAverageRioAccel() > -levelDegree) {
                     debounceCount++;
                 }
                 if (debounceCount > secondsToTicks(debounceTime)) {
@@ -127,15 +127,15 @@ public class AutoBalance {
                     debounceCount++;
                 }
                 if (debounceCount > secondsToTicks(debounceTime)) {
-                    state = 4;
+                    state = 3;
                     debounceCount = 0;
                     m_isFinished = true;
                     return 0;
                 }
                 if (getTilt() >= levelDegree) {
-                    return -0.3;
+                    return -robotSpeedSlow;
                 } else if (getTilt() <= -levelDegree) {
-                    return 0.3;
+                    return robotSpeedSlow;
                 }
             case 3:
                 return 0;
