@@ -23,12 +23,6 @@ public class TrackTarget extends CommandBase {
     addRequirements(Arm.getInstance());
   }
 
-  public static void registerWithTestingDashboard() {
-    Vision vision = Vision.getInstance();
-    TrackTarget cmd = new TrackTarget();
-    TestingDashboard.getInstance().registerCommand(vision, "Automatic", cmd);
-  }
-
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {

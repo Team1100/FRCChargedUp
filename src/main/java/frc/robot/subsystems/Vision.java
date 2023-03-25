@@ -12,8 +12,9 @@ import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import frc.robot.Robot;
 import frc.robot.testingdashboard.TestingDashboard;
 
 public class Vision extends SubsystemBase {
@@ -38,7 +39,9 @@ public class Vision extends SubsystemBase {
       TestingDashboard.getInstance().registerSubsystem(m_vision, "Vision");
 
       Shuffleboard.getTab("Vision")
-          .add("aprilTagTargetID", 0);
+          .add("aprilTagTargetID", 1);
+
+      //SmartDashboard.putNumber("aprilTagTargetID", 0);
       
       Shuffleboard.getTab("Vision")
           .add("hueMin", 0)
@@ -75,7 +78,9 @@ public class Vision extends SubsystemBase {
   }
 
   public double getTargetOffset() {
-    return m_Ntable.getEntry("offset").getDouble(0);
+    double offset = m_Ntable.getEntry("offset").getDouble(-1000);
+    SmartDashboard.putNumber("offset", offset);
+    return offset;
   }
 
   public double getTargetYaw() {
@@ -106,5 +111,7 @@ public class Vision extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    double offset = m_Ntable.getEntry("offset").getDouble(-1000);
+    SmartDashboard.putNumber("offset", offset);
   }
 }

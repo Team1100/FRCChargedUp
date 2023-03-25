@@ -119,16 +119,16 @@ class VisionApplication(object):
 
         #TODO: Fill out values below if distance calculation is desired
         #Vertical Field of View (Degrees)
-        vertFOV = 1
+        vertFOV = 48.94175846
 
         #Horizontal Field of View (Degrees)
-        horizFOV = 1
+        horizFOV = 134.3449419
 
         #Height of the target off the ground (feet)
-        elevationOfTarget = 1
+        elevationOfTarget = 18.25/12
 
         #Height of the Camera off the ground (feet)
-        elevationOfCamera = 1
+        elevationOfCamera = 11.5/12
 
         #Angle the camera makes relative to the horizontal (degrees)
         angleFromHoriz = 1
@@ -326,7 +326,7 @@ class VisionApplication(object):
                     
 
             processingTape = False
-            if processingTap:
+            if processingTape:
                 self.processImgForTape(input_img1)
 
                 # sorts the list of tape targets from left to right
@@ -339,12 +339,12 @@ class VisionApplication(object):
                     self.vision_nt.putNumber('BoundingArea',self.garea)
                     self.vision_nt.putNumber('Area Ratio',self.largestAreaRatio)
                     self.vision_nt.putNumber('Aspect Ratio',self.largestAspectRatio)
+                    self.cvmask.putFrame(self.mask)
                 else: # only sets updates the targetDetected if a certain amount of time has passed
                     if timeDiff > targetDetTol:
                         self.vision_nt.putNumber('tapeTargetDetected',0)
 
             self.cvsrc.putFrame(self.imgResult)
-            self.cvmask.putFrame(self.mask)
 
 def main():
     visionApp = VisionApplication()

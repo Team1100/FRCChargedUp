@@ -176,6 +176,7 @@ public class Drive extends SubsystemBase {
     if (m_drive == null) {
       m_drive = new Drive();
       TestingDashboard.getInstance().registerSubsystem(m_drive, "Drive");
+      TestingDashboard.getInstance().registerNumber(m_drive, "Auto", "NudgeFactor", .02);
       TestingDashboard.getInstance().registerNumber(m_drive, "Output", "InitialAngle", 0);
       TestingDashboard.getInstance().registerNumber(m_drive, "Input", "SpeedWhenTurning", 0.3);
       TestingDashboard.getInstance().registerNumber(m_drive, "Input", "TurnAngleInDegrees", 0);
@@ -214,6 +215,8 @@ public class Drive extends SubsystemBase {
       TestingDashboard.getInstance().registerNumber(m_drive, "Accel", "RioTilt", 0);
       TestingDashboard.getInstance().registerNumber(m_drive, "Accel", "TiltDerivative", 0);
       TestingDashboard.getInstance().registerNumber(m_drive, "Accel", "MaxNumTiltValues", 25);
+      
+
     }
     return m_drive;
   }
