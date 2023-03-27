@@ -20,9 +20,15 @@ import frc.robot.testingdashboard.TestingDashboard;
 public class Vision extends SubsystemBase {
   private static Vision m_vision;
   private static int aprilTagTarget;
+  private static int detectionMode;
+
   NetworkTable m_Ntable;
 
   PowerDistribution m_pDBoard;
+
+  public static final int DETECTING_NOTHING = 0;
+  public static final int DETECTING_COLOR = 1;
+  public static final int DETECTING_APRILTAG = 2;
 
   /**
    * Creates a new Vision.
@@ -31,6 +37,7 @@ public class Vision extends SubsystemBase {
     m_Ntable = NetworkTableInstance.getDefault().getTable("Shuffleboard/Vision");
     m_pDBoard =  new PowerDistribution();
     aprilTagTarget = 0;
+    detectionMode = 0;
   }
 
   public static Vision getInstance() {
@@ -40,6 +47,8 @@ public class Vision extends SubsystemBase {
 
       Shuffleboard.getTab("Vision")
           .add("aprilTagTargetID", 1);
+      Shuffleboard.getTab("Vision")
+          .add("detectionMode", 1);
 
       //SmartDashboard.putNumber("aprilTagTargetID", 0);
       
@@ -78,7 +87,7 @@ public class Vision extends SubsystemBase {
   }
 
   public double getTargetOffset() {
-    double offset = m_Ntable.getEntry("offset").getDouble(-1000);
+    double offset = m_Ntable.getEntry("offset").getDouble(0);
     SmartDashboard.putNumber("offset", offset);
     return offset;
   }
@@ -101,6 +110,15 @@ public class Vision extends SubsystemBase {
   public void setTargetAprilTag(int apriltagID) {
     aprilTagTarget = apriltagID;
     m_Ntable.getEntry("aprilTagTargetID").setInteger(aprilTagTarget);
+  }
+
+  /**
+   * 
+   * @param detectMode
+   */
+  public void setDetectionMode(int detectMode) {
+    detectionMode = detectMode;
+    m_Ntable.getEntry("detectionMode").setInteger(detectionMode);
   }
 
   public int getTargetAprilTag() {

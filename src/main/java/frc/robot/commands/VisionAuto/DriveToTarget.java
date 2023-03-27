@@ -107,6 +107,25 @@ public class DriveToTarget extends CommandBase {
   public void end(boolean interrupted) {
     m_drive.tankDrive(0, 0);
   }
+  /**
+   * 
+   * @param percentComplete  The percent that will be driven before returning true
+   * @return This will return true when the cammand has driven the robot this percent of its total distance
+   */
+  public boolean isPartiallyFinished(double percentComplete) {
+    boolean isPartiallyFinished = false;
+    double partialDistance = m_distance * percentComplete;
+    if (partialDistance >= 0) {
+      if (m_leftEncoder.getPosition() >= partialDistance || m_rightEncoder.getPosition() >= partialDistance) {
+        isPartiallyFinished = true;
+      }
+    } else if (partialDistance < 0) {
+      if (m_leftEncoder.getPosition() <= partialDistance || m_rightEncoder.getPosition() <= partialDistance) {
+        isPartiallyFinished = true;
+      }
+    }
+    return isPartiallyFinished;
+  }
 
   // Returns true when the command should end.
   @Override

@@ -27,6 +27,7 @@ class CameraView(object):
 class AprilTagTarget(object):
     def __init__(self, camera, coor, id):
         self.id = id
+        self.offset = coor[0] - camera.cameraCenter
         self.normalizedY = (coor[1] - camera.height/2)/(camera.height/2) * -1
         self.normalizedX = (coor[0] - camera.width/2)/(camera.width/2)
         self.pitch = (self.normalizedY/2) * camera.vertFOV
@@ -35,7 +36,7 @@ class AprilTagTarget(object):
         self.distanceToTarget = (camera.elevationOfTarget - camera.elevationOfCamera) / math.tan(math.radians(self.pitch + camera.angleFromHoriz))
 
     def calculateAdjustedYaw(self, radiusFromAxisOfRotation):
-        return self.yaw * (radiusFromAxisOfRotation/(distanceToTarget+radiusFromAxisOfRotation))
+        return self.yaw * (radiusFromAxisOfRotation/(self.distanceToTarget+radiusFromAxisOfRotation))
         
 
 class TapeTarget(object):
@@ -50,6 +51,7 @@ class TapeTarget(object):
         self.normalizedX = (self.x - camera.width/2)/(camera.width/2)
         self.pitch = (self.normalizedY/2) * camera.vertFOV
         self.yaw = (self.normalizedX/2) * camera.horizFOV
+        self.offset = self.x + self.w - camera.cameraCenter
         #(height of target [feet] - height of camera [feet])/tan(pitch [degrees] + angle of camera [degrees])
         self.distanceToTarget = (camera.elevationOfTarget - camera.elevationOfCamera) / math.tan(math.radians(self.pitch + camera.angleFromHoriz))
 
@@ -86,7 +88,8 @@ class VisionApplication(object):
 
         self.distanceFromTarget = 0
         self.vision_nt = None 
-
+        self.processingForAprilTags = False
+        self.processingForColor = True
         self.usingComputerIP = False 
 
         # Initialize configuration
@@ -96,13 +99,15 @@ class VisionApplication(object):
         self.imgResult = None
         self.mask = None
 
-        self.aprilTagTargetID = 0
+        self.cameraInUse = 1
 
-        self.hueMin = 13
-        self.hueMax = 255
-        self.satMin = 1
-        self.satMax = 66
-        self.valMin = 235
+        self.aprilTagTargetID = 1
+
+        self.hueMin = 106
+        self.hueMax = 126
+        self.satMin = 55
+        self.satMax = 180
+        self.valMin = 100
         self.valMax = 255
        
         self.myColors = [[self.hueMin,self.satMin,self.valMin,self.hueMax,self.satMax,self.valMax]]
@@ -114,8 +119,8 @@ class VisionApplication(object):
 
         self.garea = 0
         self.contours = None
-        self.targets = [None]
-        self.tapeTargetList = [None]
+        self.targets = []
+        self.tapeTargetList = []
 
         #TODO: Fill out values below if distance calculation is desired
         #Vertical Field of View (Degrees)
@@ -150,14 +155,20 @@ class VisionApplication(object):
 
     def initializeCameraServer(self):
         cserver = CameraServer.getInstance()
-        camera = cserver.startAutomaticCapture()
-        camera.setResolution(self.camera.width,self.camera.height)
+        camera1 = cserver.startAutomaticCapture(name="cam1", path='/dev/v4l/by-id/usb-046d_HD_Pro_Webcam_C920_AE5D327F-video-index0')
+        camera1.setResolution(self.camera.width,self.camera.height)
+
+        camera2 = cserver.startAutomaticCapture(name="cam2", path='/dev/v4l/by-id/usb-Ingenic_Semiconductor_CO.__LTD._HD_Web_Camera_Ucamera001-video-index0')
+        camera2.setResolution(self.camera.width,self.camera.height)
+
+        
 
 
         self.cvsrc = cserver.putVideo("visionCam", self.camera.width,self.camera.height)
         self.cvmask = cserver.putVideo("maskCam", self.camera.width, self.camera.height)
         
-        self.sink = CameraServer.getInstance().getVideo()
+        self.sink = cserver.getVideo(name="cam1")
+        self.sink2 = cserver.getVideo(name="cam2")
 
     def initializeNetworkTables(self):
         # Table for vision output information
@@ -202,16 +213,31 @@ class VisionApplication(object):
         self.vision_nt.putNumber('valMax',self.valMax)
 
     def getMaskingValues(self):
-        self.hueMin = int(self.vision_nt.getNumber('hueMin',255))
+        self.hueMin = int(self.vision_nt.getNumber('hueMin',0))
         self.hueMax = int(self.vision_nt.getNumber('hueMax',255))
-        self.satMin = int(self.vision_nt.getNumber('satMin',255))
+        self.satMin = int(self.vision_nt.getNumber('satMin',0))
         self.satMax = int(self.vision_nt.getNumber('satMax',255))
-        self.valMin = int(self.vision_nt.getNumber('valMin',255))
+        self.valMin = int(self.vision_nt.getNumber('valMin',0))
         self.valMax = int(self.vision_nt.getNumber('valMax',255))
         self.myColors = [[self.hueMin,self.satMin,self.valMin,self.hueMax,self.satMax,self.valMax]]
 
     def getAprilTagTargetID(self):
-        self.aprilTagTargetID = self.vision_nt.getNumber('aprilTagTargetID',0)
+        self.aprilTagTargetID = self.vision_nt.getNumber('aprilTagTargetID',1)
+
+    def getDetectionMode(self):
+        detectionMode = self.vision_nt.getNumber('detectionMode',0)
+        if detectionMode == 0:
+            self.processingForColor = False
+            self.processingForAprilTags = False
+            self.cameraInUse = 0
+        elif detectionMode == 1:
+            self.processingForColor = True
+            self.processingForAprilTags = False
+            self.cameraInUse = 1
+        elif detectionMode == 2:
+            self.processingForColor = False
+            self.processingForAprilTags = True
+            self.cameraInUse = 2
 
     def getImageMask(self, img, myColors):
         imgHSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  
@@ -222,17 +248,17 @@ class VisionApplication(object):
 
 
     def getContours(self, img):
-        contours, hierarchy = cv2.findContours(img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        tempImg, contours, hierarchy = cv2.findContours(img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         return contours
 
     def isolateTarget(self, contours):
         aspectTolerance = .225
         idealAreaRatio = 0.7 # this is the ideal ratio for the area ratio value.
-        idealAspectRatio = 1.66/5 # this is the ideal aspect ratio based off of the diagram but can be changed as needed.
+        idealAspectRatio = 1.1 # this is the ideal aspect ratio based off of the diagram but can be changed as needed.
         aspectTolerance = .44 # this is the tolerance for finding the target with the right aspect ratio
         # start off with a large tolerance, and if the ideal ratio is correct, lower the tolerance as needed. 
         self.garea = 0
-        self.targets = [None] # Default to the "old" targets
+        self.targets = [] 
         
         self.tapeTargetDetected = False
         if len(contours) > 0:
@@ -242,7 +268,7 @@ class VisionApplication(object):
                 contourArea = cv2.contourArea(contour) #area of the particle
                 x, y, w, h, = cv2.boundingRect(contour)
                 boundingArea = w * h
-                if (boundingArea > 2000):
+                if (boundingArea < 500):
                     continue
                 self.areaRatio = contourArea/boundingArea
                 self.aspectRatio = w/h
@@ -254,21 +280,22 @@ class VisionApplication(object):
                         self.largestAspectRatio = self.aspectRatio
                         self.tapeTargetDetected = True
                         self.garea = area
-                        self.targets.append(largest)
+                        self.targets.append(contour)
                         # Draw the contours
                         cv2.drawContours(self.imgResult, largest, -1, (255,0,0), 3)
 
     def drawBoundingBox(self):
         if self.tapeTargetDetected:
             for target in self.targets:
-                peri = cv2.arcLength(target, True)
+                try:
+                    peri = cv2.arcLength(target, True)
+                except:
+                    print("CV2 Error")
+                    continue
                 approx = cv2.approxPolyDP(target, 0.02 * peri, True)
-                tapeTarget = TapeTarget(self.imgResult, approx, self.tapeTargetDetected, self.camera)
-                self.tapeTargetList.append(tapeTarget)
-                tapeTarget.drawRectangle()
+                self.tapeTargetList.append(TapeTarget(self.imgResult, approx, self.tapeTargetDetected, self.camera))
         else:
             approx = None
-
 
     def processImgForTape(self, input_img):
         self.getMaskingValues()
@@ -283,10 +310,12 @@ class VisionApplication(object):
         t1 = 0
         t2 = 0
         while True:
-            #self.getAprilTagTargetID()
-            camCenter = (self.camera.width)/2
-            
-            frame_time1, input_img1 = self.sink.grabFrame(input_img1)
+            self.getDetectionMode()
+            print(self.cameraInUse)
+            if self.cameraInUse == 1:
+                frame_time1, input_img1 = self.sink.grabFrame(input_img1)
+            else:
+                frame_time1, input_img1 = self.sink2.grabFrame(input_img1)
             input_img1 = cv2.resize(input_img1, (self.camera.width,self.camera.height), interpolation = cv2.INTER_AREA)
             
             self.imgResult = input_img1.copy()
@@ -295,47 +324,56 @@ class VisionApplication(object):
                 self.cvsrc.notifyError(self.sink.getError())
                 print("Error on line 135 with grabbing frame")
                 continue
-
-            greys = cv2.cvtColor(input_img1, cv2.COLOR_BGR2GRAY)
-            dets = self.detector.detect(greys)
-
-            # array of AprilTagTarget classes
-            aprilTagTargets = dict()
-
-            for det in dets:
-                if det["margin"] >= self.MIN_MARGIN:
-                    rect = det["lb-rb-rt-lt"].astype(int).reshape((-1,1,2))
-                    cv2.polylines(self.imgResult, [rect], True, self.RED, 2)
-                    ident = str(det["id"])
-                    pos = det["center"].astype(int) + (-10,10)
-                    aprilTagTargets.update({det["id"]:AprilTagTarget(self.camera,pos,det["id"])})
-                    cv2.putText(self.imgResult, ident, tuple(pos), self.FONT, 1, self.RED, 2)
             
-            if not aprilTagTargets: 
-                # If no apriltags are detected, targetDetected is set to false
-                self.vision_nt.putNumber('aprilTagTargetDetected',0)
-            else:
-                if self.aprilTagTargetID in aprilTagTargets:
-                    # If AprilTags are detected, targetDetected is set to true 
-                    self.vision_nt.putNumber('aprilTagTargetDetected',1)
-                    # Publishes data to Network Tables
-                    self.vision_nt.putNumber('targetX',aprilTagTargets[self.aprilTagTargetID].normalizedX)
-                    self.vision_nt.putNumber('robotYaw',aprilTagTargets[self.aprilTagTargetID].calculateAdjustedYaw(self.camera.radiusFromAxisOfRotation))
-                    # If you want to calculate distance, make sure to fill out the appropriate variables starting on line 59
-                    self.vision_nt.putNumber('distanceToTarget',aprilTagTargets[self.aprilTagTargetID].distanceToTarget)
+            if self.processingForAprilTags:
+                self.getAprilTagTargetID()
+                try:
+                    greys = cv2.cvtColor(input_img1, cv2.COLOR_BGR2GRAY)
+                    dets = self.detector.detect(greys)
+                except RuntimeError:
+                    print("RuntimeError with detector")
+                    continue
+                aprilTagTargets = dict()
+            
+                for det in dets:
+                    if det["margin"] >= self.MIN_MARGIN:
+                        rect = det["lb-rb-rt-lt"].astype(int).reshape((-1,1,2))
+                        cv2.polylines(self.imgResult, [rect], True, self.RED, 2)
+                        ident = str(det["id"])
+                        pos = det["center"].astype(int) + (-10,10)
+                        aprilTagTargets.update({det["id"]:AprilTagTarget(self.camera,pos,det["id"])})
+                        cv2.putText(self.imgResult, ident, tuple(pos), self.FONT, 1, self.RED, 2)
+
+                if not aprilTagTargets: 
+                    # If no apriltags are detected, targetDetected is set to false
+                    self.vision_nt.putNumber('aprilTagTargetDetected',0)
+                else:
+                    if self.aprilTagTargetID in aprilTagTargets:
+                        # If AprilTags are detected, targetDetected is set to true 
+                        self.vision_nt.putNumber('aprilTagTargetDetected',1)
+                        # Publishes data to Network Tables
+                        self.vision_nt.putNumber('offset',aprilTagTargets[self.aprilTagTargetID].offset)
+                        self.vision_nt.putNumber('targetX',aprilTagTargets[self.aprilTagTargetID].normalizedX)
+                        #self.vision_nt.putNumber('robotYaw',aprilTagTargets[self.aprilTagTargetID].calculateAdjustedYaw(self.camera.radiusFromAxisOfRotation))
+                        # If you want to calculate distance, make sure to fill out the appropriate variables starting on line 59
+                        #self.vision_nt.putNumber('distanceToTarget',aprilTagTargets[self.aprilTagTargetID].distanceToTarget)
+                        NetworkTables.flush()
                     
 
-            processingTape = False
-            if processingTape:
+            if self.processingForColor:
+                self.tapeTargetList = []
+                self.targets = []
                 self.processImgForTape(input_img1)
-
                 # sorts the list of tape targets from left to right
                 t2 = time.clock_gettime(time.CLOCK_MONOTONIC) # gets the current "time"
                 timeDiff = t2-t1 # difference between the most recent time and the time recorded when the target was last seen
                 if self.tapeTargetDetected:
+                    self.tapeTargetList.sort(key=lambda target: target.x)
+                    self.vision_nt.putNumber('offset',self.tapeTargetList[len(self.tapeTargetList)-1].offset)
+                    self.tapeTargetList[len(self.tapeTargetList)-1].drawRectangle()
+
                     t1 = t2
                     self.vision_nt.putNumber('tapeTargetDetected',1)
-                    #self.tapeTargetList.sort(key=lambda x: x.normalizedX)
                     self.vision_nt.putNumber('BoundingArea',self.garea)
                     self.vision_nt.putNumber('Area Ratio',self.largestAreaRatio)
                     self.vision_nt.putNumber('Aspect Ratio',self.largestAspectRatio)
