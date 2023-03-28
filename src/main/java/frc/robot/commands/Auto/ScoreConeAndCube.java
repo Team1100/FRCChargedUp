@@ -5,24 +5,18 @@ package frc.robot.commands.Auto;
 // the WPILib BSD license file in the root directory of this project.
 
 
-
-import com.revrobotics.CANSparkMax.IdleMode;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.commands.Arm.ReversedSequences.ReversedFloorGrabSequenceCube;
-import frc.robot.commands.Arm.presets.ArmToPreset;
 import frc.robot.commands.Arm.sequences.ArmToHomeState;
-import frc.robot.commands.Arm.sequences.FloorGrabSequence;
 import frc.robot.commands.Arm.sequences.HighPostCenterState;
 import frc.robot.commands.Drive.DriveDistance;
 import frc.robot.commands.Hand.ExpelConeTimed;
 import frc.robot.commands.Hand.ExpelCubeTimed;
-import frc.robot.commands.Hand.IntakeCubeTimed;
+import frc.robot.commands.Hand.SmartIntakeCube;
 import frc.robot.commands.VisionAuto.DriveToTarget;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Vision;
 import frc.robot.testingdashboard.TestingDashboard;
-import frc.robot.commands.Auto.Wait;
 
 public class ScoreConeAndCube extends CommandBase {
   enum State {
@@ -37,14 +31,15 @@ public class ScoreConeAndCube extends CommandBase {
     SCHEDULE_DRIVE_TO_CUBE,
     DRIVE_TO_CUBE,
     // Part 2: pickup cube off the floor
-    SCHEDULE_ARM_TO_FLOOR,
-    ARM_TO_FLOOR,
-    SCHEDULE_TIMED_PICKUP,
-    TIMED_PICKUP,
+    SCHEDULE_PICK_UP_CUBE,
+    PICK_UP_CUBE,
+
     // Part 3: drive back, turn, score the cube
-    SCHEDULE_DRIVE_TO_CUBE_2,
-    DRIVE_BACK_2,
+    SCHEDULE_DRIVE_BACK,
+    DRIVE_BACK,
     //Add a turn command
+    SCHEDULE_DRIVE_TO_TAG,
+    DRIVE_TO_TAG,
     SCHEDULE_EXTEND_ARM_2,
     EXTEND_ARM_2,
     SCHEDULE_SCORE_2,
@@ -60,7 +55,7 @@ public class ScoreConeAndCube extends CommandBase {
   DriveDistance m_driveBack;
   ReversedFloorGrabSequenceCube m_floorGrabSequence;
   TimedFloorPickup m_timedFloorPickup;
-  IntakeCubeTimed m_intakeCubeTimed;
+  SmartIntakeCube m_smartIntakeCube;
   DriveDistance m_driveBack2;
   //Add the turn command
   ExpelCubeTimed m_expelCubeTimed;
@@ -72,7 +67,7 @@ public class ScoreConeAndCube extends CommandBase {
   private boolean m_isFinished;
   private State m_state;
   /** Creates a new ReachForNextBarStatefully. */
-  public ScoreConeAndCube(double driveBackDistance, double secondBackDistance, double power) {
+  public ScoreConeAndCube(double power) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_state = State.INIT;
     m_isFinished = false;
@@ -81,16 +76,17 @@ public class ScoreConeAndCube extends CommandBase {
     m_highPostCenter = new HighPostCenterState();
     m_expelConeTimed = new ExpelConeTimed(); 
     m_armToHome = new ArmToHomeState();
-    m_driveBack = new DriveDistance(driveBackDistance, power, power, 0, true);
+    m_driveBack = new DriveDistance(-36, power, power, 0, true);
+    m_driveToCube = new DriveToTarget(-264, power, power, 0, true);
     // Part 2 of the sequence
     m_floorGrabSequence = new ReversedFloorGrabSequenceCube();
-    m_timedFloorPickup = new TimedFloorPickup();
+    m_smartIntakeCube = new SmartIntakeCube();
     // Part 3 of the sequence
-    m_driveBack2 = new DriveDistance(secondBackDistance, power, power, 0, true);
+    m_driveBack2 = new DriveDistance(36, power, power, 0, true);
+    m_driveToTag = new DriveToTarget(264, power, power, 0, true);
+
     m_expelCubeTimed = new ExpelCubeTimed();
 
-    DriveToTarget m_driveToCube = new DriveToTarget(secondBackDistance, -power, -power, 0, true);
-    DriveToTarget m_driveToTag = new DriveToTarget(secondBackDistance, power, power, 0, true);
   }
 
   //Register with TestingDashboard
@@ -150,42 +146,47 @@ public class ScoreConeAndCube extends CommandBase {
         break;
 
       case SCHEDULE_DRIVE_TO_CUBE:
+        Vision.getInstance().setDetectionMode(Vision.DETECTING_COLOR);
         m_driveToCube.schedule();
         m_state = State.DRIVE_TO_CUBE;
         break;
       case DRIVE_TO_CUBE:
-        if (m_driveBack.isFinished()) {
-          m_state = State.SCHEDULE_ARM_TO_FLOOR;
+        if (m_driveToCube.isPartiallyFinished(.75)) {
+          m_state = State.SCHEDULE_PICK_UP_CUBE;
         }
         break;
 
       // Part 2 of the sequence, states to pick up cube
-      case SCHEDULE_ARM_TO_FLOOR:
+      case SCHEDULE_PICK_UP_CUBE:
         m_floorGrabSequence.schedule();
-        m_state = State.ARM_TO_FLOOR;
+        m_smartIntakeCube.schedule();
+        m_driveToCube.setPower(0.2, 0.2);
+        m_state = State.PICK_UP_CUBE;
         break;
-      case ARM_TO_FLOOR:
-        if (m_floorGrabSequence.isFinished()) {
-          m_state = State.SCHEDULE_TIMED_PICKUP;
+      case PICK_UP_CUBE:
+        if (m_smartIntakeCube.isFinished() || m_driveToCube.isFinished()) {
+          m_state = State.SCHEDULE_DRIVE_BACK;
         }
         break;
 
-      case SCHEDULE_TIMED_PICKUP:
-        m_timedFloorPickup.schedule();
-        m_state = State.TIMED_PICKUP;
-        break;
-      case TIMED_PICKUP:
-        if (m_timedFloorPickup.isFinished()) {
-          m_state = State.SCHEDULE_DRIVE_TO_CUBE_2;
-        }
-        break;
-
-      // Part 3 of the sequence, states to drive back, turn, score
-      case SCHEDULE_DRIVE_TO_CUBE_2:
+      // Part 3 of the sequence, states to drive back and score
+      case SCHEDULE_DRIVE_BACK:
+        Vision.getInstance().setDetectionMode(Vision.DETECTING_APRILTAG);
         m_driveBack2.schedule();
-        m_state = State.DRIVE_BACK_2;
-      case DRIVE_BACK_2:
+        m_armToHome.schedule();
+        m_state = State.DRIVE_BACK;
+      case DRIVE_BACK:
         if (m_driveBack2.isFinished()) {
+          m_state = State.SCHEDULE_DRIVE_TO_TAG;
+        }
+        break;
+      case SCHEDULE_DRIVE_TO_TAG:
+          m_driveToTag.schedule();
+          m_state = State.DRIVE_TO_TAG;
+        
+        break;
+      case DRIVE_TO_TAG:
+        if (m_driveToTag.isPartiallyFinished(.75)) {
           m_state = State.SCHEDULE_EXTEND_ARM_2;
         }
         break;
@@ -195,7 +196,7 @@ public class ScoreConeAndCube extends CommandBase {
         m_state = State.EXTEND_ARM_2;
         break;
       case EXTEND_ARM_2:
-        if (m_highPostCenter.isFinished()) {
+        if (m_highPostCenter.isFinished() && m_driveToTag.isFinished()) {
           m_state = State.SCHEDULE_SCORE_2;
         }
         break;

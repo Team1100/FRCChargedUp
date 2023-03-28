@@ -27,7 +27,7 @@ public class DriveToTarget extends CommandBase {
   private Timer m_timer;
   double ENCODER_INITIAL_POSITION = 0;
   private final double NUDGE_FACTOR = 0.027;
-  private static final double TARGET_TOLERANCE = 20;
+  private static final double TARGET_TOLERANCE = 15;
   double defaultLeftPower;
   double defaultRightPower;
 
@@ -130,6 +130,11 @@ public class DriveToTarget extends CommandBase {
       }
     }
     return isPartiallyFinished;
+  }
+
+  public void setPower(double leftp, double rightp) {
+    defaultLeftPower = leftp;
+    defaultRightPower = rightp;
   }
 
   // Returns true when the command should end.

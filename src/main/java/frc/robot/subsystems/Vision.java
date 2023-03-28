@@ -50,7 +50,7 @@ public class Vision extends SubsystemBase {
       Shuffleboard.getTab("Vision")
           .add("detectionMode", 1);
 
-      //SmartDashboard.putNumber("aprilTagTargetID", 0);
+      SmartDashboard.putNumber("Target AprilTag ID", 1);
       
       Shuffleboard.getTab("Vision")
           .add("hueMin", 0)
@@ -131,5 +131,6 @@ public class Vision extends SubsystemBase {
     // This method will be called once per scheduler run
     double offset = m_Ntable.getEntry("offset").getDouble(-1000);
     SmartDashboard.putNumber("offset", offset);
+    setTargetAprilTag((int)SmartDashboard.getNumber("Target AprilTag ID", 1));
   }
 }
