@@ -27,7 +27,7 @@ public class DriveToTarget extends CommandBase {
   private Timer m_timer;
   double ENCODER_INITIAL_POSITION = 0;
   private final double NUDGE_FACTOR = 0.027;
-  private static final double TARGET_TOLERANCE = 10;
+  private static final double TARGET_TOLERANCE = 20;
   double defaultLeftPower;
   double defaultRightPower;
 
@@ -88,15 +88,20 @@ public class DriveToTarget extends CommandBase {
     m_leftPower = defaultLeftPower;
     m_rightPower = defaultRightPower;
     double offset = m_vision.getTargetOffset();
-    if (!(offset < TARGET_TOLERANCE && offset > -TARGET_TOLERANCE)) {
-      double direction = (int) Math.abs(m_vision.getTargetOffset())/m_vision.getTargetOffset();
-      m_leftPower += m_nudgeFactor * direction;
-      m_rightPower -= m_nudgeFactor * direction;
-    }
       
     if (m_distance >= 0) {
+      if (!(offset < TARGET_TOLERANCE && offset > -TARGET_TOLERANCE)) {
+        double direction = (int) Math.abs(m_vision.getTargetOffset())/m_vision.getTargetOffset();
+        m_leftPower += m_nudgeFactor * direction;
+        m_rightPower -= m_nudgeFactor * direction;
+      }
       m_drive.tankDrive(m_leftPower, m_rightPower);
     } else {
+      if (!(offset < TARGET_TOLERANCE && offset > -TARGET_TOLERANCE)) {
+        double direction = -(int) Math.abs(m_vision.getTargetOffset())/m_vision.getTargetOffset();
+        m_leftPower += m_nudgeFactor * direction;
+        m_rightPower -= m_nudgeFactor * direction;
+      }
       m_drive.tankDrive(-m_leftPower, -m_rightPower);
     }
     System.out.println(m_leftEncoder.getPosition() + "   " + m_rightEncoder.getPosition());

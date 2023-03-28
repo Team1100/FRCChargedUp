@@ -18,6 +18,7 @@ import frc.robot.commands.Drive.DriveDistance;
 import frc.robot.commands.Hand.ExpelConeTimed;
 import frc.robot.commands.Hand.ExpelCubeTimed;
 import frc.robot.commands.Hand.IntakeCubeTimed;
+import frc.robot.commands.VisionAuto.DriveToTarget;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drive;
 import frc.robot.testingdashboard.TestingDashboard;
@@ -31,17 +32,17 @@ public class ScoreConeAndCube extends CommandBase {
     EXTEND_ARM,
     SCHEDULE_SCORE,
     SCORE,
-    SCHEDULE_RETRACT_ARM,
-    RETRACT_ARM,
-    SCHEDULE_DRIVE_BACK,
-    DRIVE_BACK,
+    SCHEDULE_RETRACT_ARM_AND_DRIVE_BACK,
+    RETRACT_ARM_AND_DRIVE_BACK,
+    SCHEDULE_DRIVE_TO_CUBE,
+    DRIVE_TO_CUBE,
     // Part 2: pickup cube off the floor
     SCHEDULE_ARM_TO_FLOOR,
     ARM_TO_FLOOR,
     SCHEDULE_TIMED_PICKUP,
     TIMED_PICKUP,
     // Part 3: drive back, turn, score the cube
-    SCHEDULE_DRIVE_BACK_2,
+    SCHEDULE_DRIVE_TO_CUBE_2,
     DRIVE_BACK_2,
     //Add a turn command
     SCHEDULE_EXTEND_ARM_2,
@@ -64,6 +65,9 @@ public class ScoreConeAndCube extends CommandBase {
   //Add the turn command
   ExpelCubeTimed m_expelCubeTimed;
 
+  DriveToTarget m_driveToCube;
+  DriveToTarget m_driveToTag;
+
 
   private boolean m_isFinished;
   private State m_state;
@@ -84,6 +88,9 @@ public class ScoreConeAndCube extends CommandBase {
     // Part 3 of the sequence
     m_driveBack2 = new DriveDistance(secondBackDistance, power, power, 0, true);
     m_expelCubeTimed = new ExpelCubeTimed();
+
+    DriveToTarget m_driveToCube = new DriveToTarget(secondBackDistance, -power, -power, 0, true);
+    DriveToTarget m_driveToTag = new DriveToTarget(secondBackDistance, power, power, 0, true);
   }
 
   //Register with TestingDashboard
@@ -127,25 +134,26 @@ public class ScoreConeAndCube extends CommandBase {
         break;
       case SCORE:
         if (m_expelConeTimed.isFinished()) {
-          m_state = State.SCHEDULE_RETRACT_ARM;
+          m_state = State.SCHEDULE_RETRACT_ARM_AND_DRIVE_BACK;
         }
         break;
       
-      case SCHEDULE_RETRACT_ARM:
+      case SCHEDULE_RETRACT_ARM_AND_DRIVE_BACK:
         m_armToHome.schedule();
-        m_state = State.RETRACT_ARM;
+        m_driveBack.schedule();
+        m_state = State.RETRACT_ARM_AND_DRIVE_BACK;
         break;
-      case RETRACT_ARM:
-        if (m_armToHome.isFinished()) {
-          m_state = State.SCHEDULE_DRIVE_BACK;
+      case RETRACT_ARM_AND_DRIVE_BACK:
+        if (m_driveBack.isFinished()) {
+          m_state = State.SCHEDULE_DRIVE_TO_CUBE;
         }
         break;
 
-      case SCHEDULE_DRIVE_BACK:
-        m_driveBack.schedule();
-        m_state = State.DRIVE_BACK;
+      case SCHEDULE_DRIVE_TO_CUBE:
+        m_driveToCube.schedule();
+        m_state = State.DRIVE_TO_CUBE;
         break;
-      case DRIVE_BACK:
+      case DRIVE_TO_CUBE:
         if (m_driveBack.isFinished()) {
           m_state = State.SCHEDULE_ARM_TO_FLOOR;
         }
@@ -168,12 +176,12 @@ public class ScoreConeAndCube extends CommandBase {
         break;
       case TIMED_PICKUP:
         if (m_timedFloorPickup.isFinished()) {
-          m_state = State.SCHEDULE_DRIVE_BACK_2;
+          m_state = State.SCHEDULE_DRIVE_TO_CUBE_2;
         }
         break;
 
       // Part 3 of the sequence, states to drive back, turn, score
-      case SCHEDULE_DRIVE_BACK_2:
+      case SCHEDULE_DRIVE_TO_CUBE_2:
         m_driveBack2.schedule();
         m_state = State.DRIVE_BACK_2;
       case DRIVE_BACK_2:
