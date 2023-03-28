@@ -67,7 +67,13 @@ public class RoboRioAccelerometerHelper {
     }
 
     public double getTotalAverageRioAccelDerivative() {
-        double da = derivative(timeValues[0], timeValues[1], m_rio_accel_values.get(38), m_rio_accel_values.get(39));
+        double da1 = derivative(timeValues[0], timeValues[1], m_rio_accel_values.get(3), m_rio_accel_values.get(4));
+        double da2 = derivative(timeValues[1], timeValues[2], m_rio_accel_values.get(2), m_rio_accel_values.get(3));
+        double da3 = derivative(timeValues[2], timeValues[3], m_rio_accel_values.get(1), m_rio_accel_values.get(2));
+        double da4 = derivative(timeValues[3], timeValues[4], m_rio_accel_values.get(0), m_rio_accel_values.get(1));
+
+        double da = (da1 + da2 + da3 + da4) / 4;
+        
         Drive drive = Drive.getInstance();
         TestingDashboard.getInstance().updateNumber(drive, "TiltDerivative", da);
         return da;
