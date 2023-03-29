@@ -53,27 +53,27 @@ public class Vision extends SubsystemBase {
       SmartDashboard.putNumber("Target AprilTag ID", 1);
       
       Shuffleboard.getTab("Vision")
-          .add("hueMin", 0)
+          .add("hueMin", 76)
           .withWidget(BuiltInWidgets.kNumberSlider)
           .withProperties(Map.of("min", 0, "max", 255)) // specify widget properties here
           .getEntry();
       Shuffleboard.getTab("Vision")
-          .add("hueMax", 255)
+          .add("hueMax", 127)
           .withWidget(BuiltInWidgets.kNumberSlider)
           .withProperties(Map.of("min", 0, "max", 255)) // specify widget properties here
           .getEntry();
       Shuffleboard.getTab("Vision")
-          .add("satMin", 0)
+          .add("satMin", 53)
           .withWidget(BuiltInWidgets.kNumberSlider)
           .withProperties(Map.of("min", 0, "max", 255)) // specify widget properties here
           .getEntry();
       Shuffleboard.getTab("Vision")
-          .add("satMax", 255)
+          .add("satMax", 212)
           .withWidget(BuiltInWidgets.kNumberSlider)
           .withProperties(Map.of("min", 0, "max", 255)) // specify widget properties here
           .getEntry();
       Shuffleboard.getTab("Vision")
-          .add("valMin", 0)
+          .add("valMin", 89)
           .withWidget(BuiltInWidgets.kNumberSlider)
           .withProperties(Map.of("min", 0, "max", 255)) // specify widget properties here
           .getEntry();
@@ -118,7 +118,7 @@ public class Vision extends SubsystemBase {
    */
   public void setDetectionMode(int detectMode) {
     detectionMode = detectMode;
-    m_Ntable.getEntry("detectionMode").setInteger(detectionMode);
+    m_Ntable.getEntry("detectionMode").setInteger(detectMode);
   }
 
   public int getTargetAprilTag() {

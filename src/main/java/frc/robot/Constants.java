@@ -62,7 +62,7 @@ public final class Constants {
   public static final double A_SHOULDER_SOFTWARE_D = 0;
 
   public static final double A_ELBOW_SOFTWARE_TOLERANCE = 3;
-  public static final double A_ELBOW_SOFTWARE_P = 0.2;
+  public static final double A_ELBOW_SOFTWARE_P = 0.15;
   public static final double A_ELBOW_SOFTWARE_I = 0;
   public static final double A_ELBOW_SOFTWARE_D = 0;
 

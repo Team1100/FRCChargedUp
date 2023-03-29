@@ -388,12 +388,9 @@ public class Drive extends SubsystemBase {
         TestingDashboard.getInstance().updateNumber(m_drive, "currentTime", m_accelHelper.getCurrentTime());
         TestingDashboard.getInstance().updateNumber(m_drive, "instantAccelMagnitudeInchesPerSecondSquared", m_accelHelper.getAccelerometerMagnitudeInchesPerSecondSquared());
         TestingDashboard.getInstance().updateNumber(m_drive, "instantAccelMagnitudeInchesPerSecondSquared", m_accelHelper.getAccelerometerMagnitudeInchesPerSecondSquared());
-        TestingDashboard.getInstance().updateNumber(m_drive, "tiltDerivative", m_accelHelper.getTotalAverageRioAccelDerivative());
+        TestingDashboard.getInstance().updateNumber(m_drive, "TiltDerivative", m_accelHelper.getTotalAverageRioAccelDerivative());
         
       }
-
-      System.out.println("Avg Current: " + getInstantTotalMotorCurrent());
-
       // Publish motor current values
       updateRioTiltAverages();
       updateMotorCurrentAverages();
