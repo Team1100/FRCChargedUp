@@ -123,7 +123,7 @@ public class RobotContainer {
     IntakeCone.registerWithTestingDashboard();
     IntakeCube.registerWithTestingDashboard();
     HandOperatorPowerControl.registerWithTestingDashboard();
-
+    SmartIntakeCube.registerWithTestingDashboard();
     // Controller Modes
     Mode1.registerWithTestingDashboard();
     Mode2.registerWithTestingDashboard();

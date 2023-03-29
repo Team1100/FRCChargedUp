@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
 
+import java.util.ArrayList;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 
@@ -21,6 +23,10 @@ public class Hand extends SubsystemBase {
 
   private static Hand m_hand;
 
+  ArrayList<Double> m_hand_motor_current_values;
+  public static final int HAND_MOTOR_CURRENT_INITIAL_CAPACITY = 20; // This is 1000 miliseconds divided in 20 millisecond chunks
+
+
   /** Creates a new Claw. */
   private Hand() {
 
@@ -29,6 +35,12 @@ public class Hand extends SubsystemBase {
     m_handMotor.restoreFactoryDefaults();
 
     m_handMotor.setIdleMode(IdleMode.kBrake);
+
+    // initialize motor current variables
+    m_hand_motor_current_values = new ArrayList<Double>(HAND_MOTOR_CURRENT_INITIAL_CAPACITY);
+    for (int i = 0; i < HAND_MOTOR_CURRENT_INITIAL_CAPACITY; i++) {
+      m_hand_motor_current_values.add(0.0);
+    }
 
   }
 
@@ -42,9 +54,31 @@ public class Hand extends SubsystemBase {
     return m_hand;
   }
 
-  public double getHandOutputCurrent() {
-    return m_handMotor.getOutputCurrent();
+  void updateMotorCurrentAverages() {
+    double handMotorCurrent = m_handMotor.getOutputCurrent();
+    m_hand_motor_current_values.add(handMotorCurrent);
+
+
+    // Trim current buffers until they contain the correct number of entries.
+    // Old entries are removed first.
+    while (m_hand_motor_current_values.size() > HAND_MOTOR_CURRENT_INITIAL_CAPACITY) {
+      m_hand_motor_current_values.remove(0);
+    }
+
   }
+
+  public double getTotalAverageHandCurrent() {
+    return arrayListAverage(m_hand_motor_current_values);
+  }
+
+  public static double arrayListAverage(ArrayList<Double> arrayList) {
+    double sum = 0;
+    for (int i = 0; i < arrayList.size(); i++) {
+      sum += arrayList.get(i);
+    }
+    return sum / arrayList.size();
+  }
+
 
   public void setHandMotorPower(double value) {
     m_handMotor.set(value);
@@ -52,7 +86,8 @@ public class Hand extends SubsystemBase {
 
   @Override
   public void periodic() {
+    updateMotorCurrentAverages();
     // This method will be called once per scheduler run
-    TestingDashboard.getInstance().updateNumber(m_hand, "HandOutputCurrent", getHandOutputCurrent());
+    TestingDashboard.getInstance().updateNumber(m_hand, "HandOutputCurrent", getTotalAverageHandCurrent());
   }
 }

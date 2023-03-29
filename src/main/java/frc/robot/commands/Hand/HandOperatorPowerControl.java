@@ -41,12 +41,12 @@ public class HandOperatorPowerControl extends CommandBase {
     double h_power = 0;
 
     if(m_xbox.getAxis(XboxAxis.kRightTrigger) > 0) {
-      if (Math.abs(m_hand.getHandOutputCurrent()) < Constants.HAND_MOTOR_CURRENT_LIMIT) {
+      if (Math.abs(m_hand.getTotalAverageHandCurrent()) < Constants.HAND_MOTOR_CURRENT_LIMIT) {
         h_power = m_xbox.getAxis(XboxAxis.kRightTrigger)*Constants.HAND_MAX_POWER;
       }
     }
     if(m_xbox.getAxis(XboxAxis.kLeftTrigger) > 0) {
-      if (Math.abs(m_hand.getHandOutputCurrent()) < Constants.HAND_MOTOR_CURRENT_LIMIT) {
+      if (Math.abs(m_hand.getTotalAverageHandCurrent()) < Constants.HAND_MOTOR_CURRENT_LIMIT) {
         h_power = m_xbox.getAxis(XboxAxis.kLeftTrigger)*-Constants.HAND_MAX_POWER;
       }
     }

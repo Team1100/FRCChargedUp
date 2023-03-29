@@ -6,6 +6,8 @@ package frc.robot.commands.Hand;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import frc.robot.subsystems.Hand;
+import frc.robot.testingdashboard.TestingDashboard;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -18,4 +20,11 @@ public class SmartIntakeCube extends ParallelDeadlineGroup {
     super(new CheckForCurrentSpike());
     addCommands(new IntakeCube(true));
   }
+
+    //Register with TestingDashboard
+    public static void registerWithTestingDashboard() {
+      Hand hand = Hand.getInstance();
+      SmartIntakeCube cmd = new SmartIntakeCube();
+      TestingDashboard.getInstance().registerCommand(hand, "Basic", cmd);
+    }
 }

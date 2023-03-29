@@ -30,6 +30,7 @@ public class CheckForCurrentSpike extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Hand.getInstance().getHandOutputCurrent() > Constants.HAND_MOTOR_CURRENT_LIMIT;
+    return Math.abs(Hand.getInstance().getTotalAverageHandCurrent())
+     > Constants.HAND_MOTOR_CURRENT_LIMIT;
   }
 }
