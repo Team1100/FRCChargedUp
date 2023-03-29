@@ -10,14 +10,17 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.OI;
 import frc.robot.subsystems.Hand;
+import frc.robot.subsystems.Lights;
 import frc.robot.testingdashboard.TestingDashboard;
 
 public class HandOperatorPowerControl extends CommandBase {
   Hand m_hand;
+  Lights m_lights;
   XboxController m_xbox;
   /** Creates a new HandOperatorPowerControl. */
   public HandOperatorPowerControl() {
     m_hand = Hand.getInstance();
+    m_lights = Lights.getInstance();
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(Hand.getInstance());
   }
@@ -51,6 +54,10 @@ public class HandOperatorPowerControl extends CommandBase {
       }
     }
 
+    if(Math.abs(m_hand.getTotalAverageHandCurrent()) > Constants.HAND_MOTOR_CURRENT_LIMIT) {
+      m_lights.blinkLights();
+    }
+    
     m_hand.setHandMotorPower(h_power);
   }
 
