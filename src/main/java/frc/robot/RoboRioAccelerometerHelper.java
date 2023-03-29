@@ -46,7 +46,7 @@ public class RoboRioAccelerometerHelper {
         accelVec = new Vector[] {new Vector(), new Vector()};
         velocityVec = new Vector[] {new Vector(), new Vector()};
         distanceVec = new Vector[] {new Vector(), new Vector()};
-        timeValues = new double[2];
+        timeValues = new double[5];
 
         m_rio_accel_values = new ArrayList<Double>(Drive.MOTOR_CURRENT_INITIAL_CAPACITY);
         for (int i = 0; i < Drive.MOTOR_CURRENT_INITIAL_CAPACITY; i++) {
@@ -82,7 +82,10 @@ public class RoboRioAccelerometerHelper {
 
     public void captureTimeData() {
         timeValues[0] = timeValues[1];
-        timeValues[1] = Timer.getFPGATimestamp();
+        timeValues[1] = timeValues[2];
+        timeValues[2] = timeValues[3];
+        timeValues[3] = timeValues[4];
+        timeValues[4] = Timer.getFPGATimestamp();
     }
 
     public void captureAccelerometerData() {
