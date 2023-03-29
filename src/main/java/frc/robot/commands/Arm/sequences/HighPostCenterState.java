@@ -24,8 +24,8 @@ public class HighPostCenterState extends CommandBase {
     DONE
   }
 
-  ArmToPreset m_extendElbow = new ArmToPreset(0, 0, -142.5, 0, false, false, true, false);
-  ArmToPreset m_extendArm = new ArmToPreset(0, 45, -142.5, -112, false, true, true, true);
+  ArmToPreset m_extendElbow = new ArmToPreset(0, 0, -115, 0, false, false, true, false);
+  ArmToPreset m_extendArm = new ArmToPreset(0, 42.5, -115, -113, false, true, true, true);
 
   private boolean m_isFinished;
   private State m_state;
