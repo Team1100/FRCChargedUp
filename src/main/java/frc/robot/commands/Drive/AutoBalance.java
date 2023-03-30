@@ -19,6 +19,7 @@ public class AutoBalance {
     private double singleTapTime;
     private double scoringBackUpTime;
     private double doubleTapTime;
+    private double onPlatformROC;
     boolean m_isFinished;
 
     public AutoBalance() {
@@ -62,6 +63,10 @@ public class AutoBalance {
 
         // Amount of time to drive forward to secure the scoring of the gamepiece
         doubleTapTime = 0.3;
+
+        // Rate of change of the angle for the robot to assume it is on top of the platform
+        // and stop; Calculated by the derivative of the angle measurements v. time.
+        onPlatformROC = 0;
 
         m_isFinished = false;
 

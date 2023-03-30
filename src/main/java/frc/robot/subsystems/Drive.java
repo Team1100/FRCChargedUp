@@ -214,6 +214,7 @@ public class Drive extends SubsystemBase {
       TestingDashboard.getInstance().registerNumber(m_drive, "Motors", "FwdCurrentFilteringLimit", Constants.D_FWD_RATE_LIMIT);
       TestingDashboard.getInstance().registerNumber(m_drive, "Accel", "RioTilt", 0);
       TestingDashboard.getInstance().registerNumber(m_drive, "Accel", "TiltDerivative", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Accel", "TiltSecondDerivative", 0);
       TestingDashboard.getInstance().registerNumber(m_drive, "Accel", "MaxNumTiltValues", 25);
       
 
@@ -388,11 +389,12 @@ public class Drive extends SubsystemBase {
         TestingDashboard.getInstance().updateNumber(m_drive, "currentTime", m_accelHelper.getCurrentTime());
         TestingDashboard.getInstance().updateNumber(m_drive, "instantAccelMagnitudeInchesPerSecondSquared", m_accelHelper.getAccelerometerMagnitudeInchesPerSecondSquared());
         TestingDashboard.getInstance().updateNumber(m_drive, "instantAccelMagnitudeInchesPerSecondSquared", m_accelHelper.getAccelerometerMagnitudeInchesPerSecondSquared());
-        TestingDashboard.getInstance().updateNumber(m_drive, "tiltDerivative", m_accelHelper.getTotalAverageRioAccelDerivative());
         
       }
 
-      System.out.println("Avg Current: " + getInstantTotalMotorCurrent());
+      //System.out.println("Avg Current: " + getInstantTotalMotorCurrent());
+
+      m_accelHelper.getTotalAverageRioAccelSecondDerivative();
 
       // Publish motor current values
       updateRioTiltAverages();
