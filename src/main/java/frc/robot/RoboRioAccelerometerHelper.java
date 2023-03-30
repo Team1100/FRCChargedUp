@@ -66,7 +66,7 @@ public class RoboRioAccelerometerHelper {
     }
 
     public double derivative(double tInitial, double tFinal, double aInitial, double aFinal) {
-        double tInterval = tFinal - tInitial;
+        double tInterval = tFinal - tInitial;   
         double aInterval = aFinal - aInitial;
         return aInterval / tInterval;
     }

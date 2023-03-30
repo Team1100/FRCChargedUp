@@ -35,9 +35,9 @@ public class BlinkLights extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(m_lights.getLeftLED().get() && ((counter % 5) == 0)) {
+    if(m_lights.getLeftLED().get() && ((counter % 20) == 0)) {
       m_lights.enableCubeLight();
-    } else if(m_lights.getRightLED().get() && ((counter % 5) == 5)) {
+    } else if(m_lights.getRightLED().get() && ((counter % 20) == 19)) {
       m_lights.enableConeLight();
     }
 

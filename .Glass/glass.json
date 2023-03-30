@@ -1,0 +1,76 @@
+{
+  "NetworkTables": {
+    "Persistent Values": {
+      "open": false
+    },
+    "Retained Values": {
+      "open": false
+    },
+    "transitory": {
+      "CameraPublisher": {
+        "cam1": {
+          "open": true
+        },
+        "open": true
+      },
+      "Shuffleboard": {
+        "Vision": {
+          "open": true
+        },
+        "open": true
+      }
+    },
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/Shuffleboard/Arm/Automatic/ArmToHomePosition": "Command",
+      "/Shuffleboard/Arm/Automatic/CancelArmMovement": "Command",
+      "/Shuffleboard/Arm/Automatic/ConeGrabSequence": "Command",
+      "/Shuffleboard/Arm/Manual/ArmDashboardAngleControl": "Command",
+      "/Shuffleboard/Arm/Manual/ArmOperatorAngleControl": "Command",
+      "/Shuffleboard/Arm/Manual/ArmOperatorPowerControl": "Command",
+      "/Shuffleboard/Arm/Manual/ArmOperatorRelativeAngleControl": "Command",
+      "/Shuffleboard/Arm/Manual/ZeroArmEncoders": "Command",
+      "/Shuffleboard/Arm/PidJointControl/DisableElbowPid": "Command",
+      "/Shuffleboard/Arm/PidJointControl/DisableShoulderPid": "Command",
+      "/Shuffleboard/Arm/PidJointControl/DisableTurretPid": "Command",
+      "/Shuffleboard/Arm/PidJointControl/DisableWristPid": "Command",
+      "/Shuffleboard/Arm/PidJointControl/EnableElbowPid": "Command",
+      "/Shuffleboard/Arm/PidJointControl/EnableShoulderPid": "Command",
+      "/Shuffleboard/Arm/PidJointControl/EnableTurretPid": "Command",
+      "/Shuffleboard/Arm/PidJointControl/EnableWristPid": "Command",
+      "/Shuffleboard/Arm/PidMasterControl/DisableArmPid": "Command",
+      "/Shuffleboard/Arm/PidMasterControl/EnableArmPid": "Command",
+      "/Shuffleboard/ControllerMode/Modes/Mode1": "Command",
+      "/Shuffleboard/ControllerMode/Modes/Mode2": "Command",
+      "/Shuffleboard/Drive/Basic/ArcadeDrive": "Command",
+      "/Shuffleboard/Drive/Basic/DriveToTarget": "Command",
+      "/Shuffleboard/Drive/Basic/ToggleIdleMode": "Command",
+      "/Shuffleboard/Hand/Basic/ExpelCone": "Command",
+      "/Shuffleboard/Hand/Basic/ExpelCube": "Command",
+      "/Shuffleboard/Hand/Basic/IntakeCone": "Command",
+      "/Shuffleboard/Hand/Basic/IntakeCube": "Command",
+      "/Shuffleboard/Hand/Basic/SmartIntakeCube": "Command",
+      "/Shuffleboard/Hand/Manual/HandOperatorPowerControl": "Command",
+      "/Shuffleboard/Vision/TargetTracking/SetDetectionMode": "Command",
+      "/Shuffleboard/Vision/TargetTracking/TurnToTarget": "Command",
+      "/Shuffleboard/lights/Lights/ConeLight": "Command",
+      "/Shuffleboard/lights/Lights/CubeLight": "Command",
+      "/SmartDashboard/SendableChooser[0]": "String Chooser"
+    },
+    "windows": {
+      "/Shuffleboard/Drive/Basic/DriveToTarget": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/Shuffleboard/Vision/TargetTracking/SetDetectionMode": {
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables Settings": {
+    "mode": "Client (NT3)"
+  }
+}

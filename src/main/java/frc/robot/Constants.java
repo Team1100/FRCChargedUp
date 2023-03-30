@@ -62,7 +62,7 @@ public final class Constants {
   public static final double A_SHOULDER_SOFTWARE_D = 0;
 
   public static final double A_ELBOW_SOFTWARE_TOLERANCE = 3;
-  public static final double A_ELBOW_SOFTWARE_P = 0.2;
+  public static final double A_ELBOW_SOFTWARE_P = 0.15;
   public static final double A_ELBOW_SOFTWARE_I = 0;
   public static final double A_ELBOW_SOFTWARE_D = 0;
 
@@ -160,7 +160,7 @@ public final class Constants {
   public static final double SHOULDER_MOTOR_CURRENT_LIMIT = 10;
   public static final double ELBOW_MOTOR_CURRENT_LIMIT = 10;
   public static final double WRIST_MOTOR_CURRENT_LIMIT = 10;
-  public static final double HAND_MOTOR_CURRENT_LIMIT = 35;
+  public static final double HAND_MOTOR_CURRENT_LIMIT = 40;
 
   public static final int DEFAULT_AUTO_WAIT_TIME = 3;
 

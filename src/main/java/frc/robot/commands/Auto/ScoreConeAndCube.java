@@ -76,14 +76,14 @@ public class ScoreConeAndCube extends CommandBase {
     m_highPostCenter = new HighPostCenterState();
     m_expelConeTimed = new ExpelConeTimed(); 
     m_armToHome = new ArmToHomeState();
-    m_driveBack = new DriveDistance(-36, power, power, 0, true);
-    m_driveToCube = new DriveToTarget(-264, power, power, 0, true);
+    m_driveBack = new DriveDistance(-12, power, power, 0, true);
+    m_driveToCube = new DriveToTarget(-224, power, power, 0, true);
     // Part 2 of the sequence
     m_floorGrabSequence = new ReversedFloorGrabSequenceCube();
     m_smartIntakeCube = new SmartIntakeCube();
     // Part 3 of the sequence
-    m_driveBack2 = new DriveDistance(36, power, power, 0, true);
-    m_driveToTag = new DriveToTarget(264, power, power, 0, true);
+    m_driveBack2 = new DriveDistance(70, power, power+0.01, 0, true);
+    m_driveToTag = new DriveToTarget(165, power, power, 0, true);
 
     m_expelCubeTimed = new ExpelCubeTimed();
 
@@ -101,6 +101,7 @@ public class ScoreConeAndCube extends CommandBase {
   public void initialize() {
     m_state = State.INIT;
     m_isFinished = false;
+    Vision.getInstance().setDetectionMode(Vision.DETECTING_COLOR);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -146,12 +147,11 @@ public class ScoreConeAndCube extends CommandBase {
         break;
 
       case SCHEDULE_DRIVE_TO_CUBE:
-        Vision.getInstance().setDetectionMode(Vision.DETECTING_COLOR);
         m_driveToCube.schedule();
         m_state = State.DRIVE_TO_CUBE;
         break;
       case DRIVE_TO_CUBE:
-        if (m_driveToCube.isPartiallyFinished(.75)) {
+        if (m_driveToCube.isPartiallyFinished(.48)) {
           m_state = State.SCHEDULE_PICK_UP_CUBE;
         }
         break;
@@ -160,7 +160,6 @@ public class ScoreConeAndCube extends CommandBase {
       case SCHEDULE_PICK_UP_CUBE:
         m_floorGrabSequence.schedule();
         m_smartIntakeCube.schedule();
-        m_driveToCube.setPower(0.2, 0.2);
         m_state = State.PICK_UP_CUBE;
         break;
       case PICK_UP_CUBE:
@@ -186,7 +185,7 @@ public class ScoreConeAndCube extends CommandBase {
         
         break;
       case DRIVE_TO_TAG:
-        if (m_driveToTag.isPartiallyFinished(.75)) {
+        if (m_driveToTag.isPartiallyFinished(.6)) {
           m_state = State.SCHEDULE_EXTEND_ARM_2;
         }
         break;

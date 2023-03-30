@@ -31,6 +31,7 @@ import frc.robot.commands.Hand.*;
 import frc.robot.commands.Lights.ConeLight;
 import frc.robot.commands.Lights.CubeLight;
 import frc.robot.commands.VisionAuto.DriveToTarget;
+import frc.robot.commands.VisionAuto.SetDetectionMode;
 import frc.robot.commands.VisionAuto.TrackTarget;
 import frc.robot.commands.VisionAuto.TurnToTarget;
 import frc.robot.input.ControllerModes.Mode1;
@@ -56,7 +57,7 @@ public class RobotContainer {
   private final Command m_scoreCubeAndDriveBack = new ScoreCubeAndDriveBack(-175,0,0.6);
   private final Command m_scoreCubeAndPark = new ScoreCubeAndDriveBack(-45,-32,0.6);
   private final Command m_scoreCubeAndBalance = new ScoreCubeAndBalance(0,0,0.6);
-  private final Command m_scoreConeAndCube = new ScoreConeAndCube(0.4);
+  private final Command m_scoreConeAndCube = new ScoreConeAndCube(0.55);
 
   private final Command m_scoreCone = new ScoreCone();
   private final Command m_scoreCube = new ScoreCube();
@@ -134,6 +135,7 @@ public class RobotContainer {
 
     // Vision
     TurnToTarget.registerWithTestingDashboard();
+    SetDetectionMode.registerWithTestingDashboard();
 
     // Create Testing Dashboard
     TestingDashboard.getInstance().createTestingDashboard();

@@ -6,7 +6,10 @@ package frc.robot.subsystems;
 
 import java.util.Map;
 
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.IntegerPublisher;
 import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -25,6 +28,7 @@ public class Vision extends SubsystemBase {
   NetworkTable m_Ntable;
 
   PowerDistribution m_pDBoard;
+  GenericEntry detectionEntry;
 
   public static final int DETECTING_NOTHING = 0;
   public static final int DETECTING_COLOR = 1;
@@ -38,6 +42,7 @@ public class Vision extends SubsystemBase {
     m_pDBoard =  new PowerDistribution();
     aprilTagTarget = 0;
     detectionMode = 0;
+    detectionEntry = Shuffleboard.getTab("Vision").add("detectionMode", 1).getEntry();
   }
 
   public static Vision getInstance() {
@@ -47,33 +52,33 @@ public class Vision extends SubsystemBase {
 
       Shuffleboard.getTab("Vision")
           .add("aprilTagTargetID", 1);
-      Shuffleboard.getTab("Vision")
-          .add("detectionMode", 1);
+      
+      
 
       SmartDashboard.putNumber("Target AprilTag ID", 1);
       
       Shuffleboard.getTab("Vision")
-          .add("hueMin", 0)
+          .add("hueMin", 76)
           .withWidget(BuiltInWidgets.kNumberSlider)
           .withProperties(Map.of("min", 0, "max", 255)) // specify widget properties here
           .getEntry();
       Shuffleboard.getTab("Vision")
-          .add("hueMax", 255)
+          .add("hueMax", 127)
           .withWidget(BuiltInWidgets.kNumberSlider)
           .withProperties(Map.of("min", 0, "max", 255)) // specify widget properties here
           .getEntry();
       Shuffleboard.getTab("Vision")
-          .add("satMin", 0)
+          .add("satMin", 53)
           .withWidget(BuiltInWidgets.kNumberSlider)
           .withProperties(Map.of("min", 0, "max", 255)) // specify widget properties here
           .getEntry();
       Shuffleboard.getTab("Vision")
-          .add("satMax", 255)
+          .add("satMax", 212)
           .withWidget(BuiltInWidgets.kNumberSlider)
           .withProperties(Map.of("min", 0, "max", 255)) // specify widget properties here
           .getEntry();
       Shuffleboard.getTab("Vision")
-          .add("valMin", 0)
+          .add("valMin", 89)
           .withWidget(BuiltInWidgets.kNumberSlider)
           .withProperties(Map.of("min", 0, "max", 255)) // specify widget properties here
           .getEntry();
@@ -118,7 +123,7 @@ public class Vision extends SubsystemBase {
    */
   public void setDetectionMode(int detectMode) {
     detectionMode = detectMode;
-    m_Ntable.getEntry("detectionMode").setInteger(detectionMode);
+    detectionEntry.setInteger(detectMode);
   }
 
   public int getTargetAprilTag() {

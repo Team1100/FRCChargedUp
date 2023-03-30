@@ -26,6 +26,7 @@ import frc.robot.commands.Drive.ToggleIdleMode;
 import frc.robot.commands.Hand.ExpelCube;
 import frc.robot.commands.Hand.IntakeCube;
 import frc.robot.commands.Hand.SpinIntake;
+import frc.robot.commands.Lights.BlinkLights;
 import frc.robot.commands.Lights.ConeLight;
 import frc.robot.commands.Lights.CubeLight;
 import frc.robot.commands.Lights.DisableLights;
@@ -98,11 +99,14 @@ public class OI {
       DriverXboxController.getButtonLeftBumper().onTrue(new ConeLight());
       DriverXboxController.getButtonRightBumper().onTrue(new CubeLight());
       DriverXboxController.getDPad().getDown().onTrue(new DisableLights());
+      DriverXboxController.getDPad().getUp().onTrue(new EnableLights());
+      DriverXboxController.getDPad().getLeft().onTrue(new BlinkLights());
 
       /* 
       DriverXboxController.getButtonX().onTrue(new TurretToLowLeft());
       DriverXboxController.getButtonB().onTrue(new TurretToLowRight());
       */
+      
       DriverXboxController.getButtonY().onTrue(new TrackTarget());
       DriverXboxController.getButtonA().onTrue(new FloorGrabSequence());
       DriverXboxController.getButtonB().onTrue(new ReversedFloorGrabSequenceCone());
@@ -185,7 +189,7 @@ public class OI {
     OperatorXboxController.getButtonA().onTrue(new frc.robot.commands.Arm.ArmToHomePosition());
     OperatorXboxController.getButtonB().onTrue(new frc.robot.commands.Arm.sequences.HighPostCenterState());
     OperatorXboxController.getButtonX().onTrue(new frc.robot.commands.Arm.sequences.LowPostCenterState());
-    OperatorXboxController.getButtonY().onTrue(new ArmToPreset(0, 0, -100, 205, false, true, true, true));
+    OperatorXboxController.getButtonY().onTrue(new ArmToPreset(0, 0, -89, -135, false, true, true, true));
     OperatorXboxController.getButtonBack().onTrue(new ZeroArmEncoders());
   }
 
