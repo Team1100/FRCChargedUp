@@ -10,6 +10,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.drive.RobotDriveBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.AnalogInput;
@@ -17,7 +18,8 @@ import frc.robot.Constants;
 import frc.robot.RoboRioAccelerometerHelper;
 import frc.robot.RobotMap;
 import frc.robot.commands.Drive.AutoBalance;
-import frc.robot.subsystems.VelocityDriveSparkMax.DriveMode;
+import frc.robot.helpers.VelocityDriveSparkMax;
+import frc.robot.helpers.VelocityDriveSparkMax.DriveMode;
 import frc.robot.testingdashboard.TestingDashboard;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -80,8 +82,8 @@ public class Drive extends SubsystemBase {
 
     m_backLeft = new CANSparkMax(RobotMap.D_BACK_LEFT, MotorType.kBrushless);
     m_backRight = new CANSparkMax(RobotMap.D_BACK_RIGHT, MotorType.kBrushless);
-    m_frontLeft = new VelocityDriveSparkMax(RobotMap.D_FRONT_LEFT, MotorType.kBrushless, 0, 0, 0);
-    m_frontRight = new VelocityDriveSparkMax(RobotMap.D_FRONT_RIGHT, MotorType.kBrushless, 0, 0, 0);
+    m_frontLeft = new VelocityDriveSparkMax(RobotMap.D_FRONT_LEFT, MotorType.kBrushless, Constants.DRIVE_CLOSED_LOOP_P, Constants.DRIVE_CLOSED_LOOP_I, Constants.DRIVE_CLOSED_LOOP_D);
+    m_frontRight = new VelocityDriveSparkMax(RobotMap.D_FRONT_RIGHT, MotorType.kBrushless, Constants.DRIVE_CLOSED_LOOP_P, Constants.DRIVE_CLOSED_LOOP_I, Constants.DRIVE_CLOSED_LOOP_D);
 
     m_backLeftEncoder = m_backLeft.getEncoder();
     m_backRightEncoder = m_backRight.getEncoder();
@@ -219,9 +221,9 @@ public class Drive extends SubsystemBase {
       TestingDashboard.getInstance().registerNumber(m_drive, "Accel", "TiltDerivative", 0);
       TestingDashboard.getInstance().registerNumber(m_drive, "Accel", "MaxNumTiltValues", 25);
       
-      TestingDashboard.getInstance().registerNumber(m_drive, "PIDValues", "driveP", 0);
-      TestingDashboard.getInstance().registerNumber(m_drive, "PIDValues", "driveI", 0);
-      TestingDashboard.getInstance().registerNumber(m_drive, "PIDValues", "driveD", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "PIDValues", "driveP", Constants.DRIVE_CLOSED_LOOP_P);
+      TestingDashboard.getInstance().registerNumber(m_drive, "PIDValues", "driveI", Constants.DRIVE_CLOSED_LOOP_I);
+      TestingDashboard.getInstance().registerNumber(m_drive, "PIDValues", "driveD", Constants.DRIVE_CLOSED_LOOP_D);
 
       TestingDashboard.getInstance().registerString(m_drive, "Basic", "DriveMode", "Power");
       TestingDashboard.getInstance().registerNumber(m_drive, "Basic", "DriveSpeedRPM", 0);
@@ -305,11 +307,23 @@ public class Drive extends SubsystemBase {
     drivetrain.arcadeDrive(fwd, -rot);
   }
 
+ 
+
   public void tankDrive(double leftSpeed, double rightSpeed) {
+    tankDrive(leftSpeed, rightSpeed, true);
+  }
+  public void tankDrive(double leftSpeed, double rightSpeed, boolean sqInputs){
     m_rightSpeed = rightSpeed;
     m_leftSpeed = leftSpeed;
-    drivetrain.tankDrive(m_leftSpeed, m_rightSpeed);
+    drivetrain.tankDrive(m_leftSpeed, m_rightSpeed, sqInputs);
     TestingDashboard.getInstance().updateNumber(m_drive, "SpeedOfTravel", leftSpeed);
+  }
+  public void tankDriveRPM(double leftRPM, double rightRPM)
+  {
+    double leftSpeed = leftRPM/Constants.DRIVE_MAX_MOTOR_RPM + RobotDriveBase.kDefaultDeadband;
+    double rightSpeed = leftRPM/Constants.DRIVE_MAX_MOTOR_RPM + RobotDriveBase.kDefaultDeadband;
+
+    tankDrive(leftSpeed, rightSpeed, false);
   }
 
   //Encoder Methods

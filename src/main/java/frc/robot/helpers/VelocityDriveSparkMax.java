@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.helpers;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxPIDController;
@@ -19,16 +19,18 @@ public class VelocityDriveSparkMax extends CANSparkMax
     private SparkMaxPIDController m_PidController;
     private DriveMode m_driveMode;
 
-    enum DriveMode 
+    public enum DriveMode 
     {
         kPower, //Normal duty cycle based drive
         kPIDVelocity //Translates to PID Velocity
     }
 
-    VelocityDriveSparkMax(int deviceId, MotorType type, double P, double I, double D)
+    public VelocityDriveSparkMax(int deviceId, MotorType type, double P, double I, double D)
     {
         super(deviceId, type);
+        super.setClosedLoopRampRate(Constants.DRIVE_RAMP_RATE);
         m_PidController = super.getPIDController();
+        m_PidController.setOutputRange(-Constants.DRIVE_CLOSED_LOOP_MAX_OUTPUT, Constants.DRIVE_CLOSED_LOOP_MAX_OUTPUT);
         setPID(P, I, D);
         m_driveMode = DriveMode.kPower;
     }
@@ -40,17 +42,11 @@ public class VelocityDriveSparkMax extends CANSparkMax
 
     public void setPID(double P, double I, double D, double FF, double Iz)
     {
-        m_P = P;
-        m_I = I;
-        m_D = D;
-        m_FF = FF;
-        m_Iz = Iz;
-
-        m_PidController.setP(m_P);
-        m_PidController.setI(m_I);
-        m_PidController.setD(m_D);
-        m_PidController.setFF(m_FF);
-        m_PidController.setIZone(m_Iz);
+        if(P != m_P){m_P=P; m_PidController.setP(m_P);}
+        if(I != m_I){m_I=I; m_PidController.setI(m_I);}
+        if(D != m_D){m_D=D; m_PidController.setD(m_D);}
+        if(FF != m_FF){m_FF=FF; m_PidController.setFF(m_FF);}
+        if(Iz != m_Iz){m_Iz=Iz; m_PidController.setIZone(m_Iz);}
     }
 
     public DriveMode getDriveMode(){return m_driveMode;}
@@ -58,18 +54,6 @@ public class VelocityDriveSparkMax extends CANSparkMax
     public void setDriveMode(DriveMode mode)
     {
         m_driveMode = mode;
-    }
-
-    public void toggleDriveMode()
-    {
-        if(m_driveMode == DriveMode.kPower)
-        {
-            m_driveMode = DriveMode.kPIDVelocity;
-        }
-        else
-        {
-            m_driveMode = DriveMode.kPower;
-        }
     }
 
     @Override

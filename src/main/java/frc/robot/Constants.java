@@ -155,6 +155,10 @@ public final class Constants {
   public static final double DRIVE_RAMP_RATE = 0.5; // Limit changes in power to require 2 secons to go from zero to full
   public static final double DRIVE_SENSITIVITY = 0.85;
   public static final double DRIVE_MAX_MOTOR_RPM = 5500;
+  public static final double DRIVE_CLOSED_LOOP_MAX_OUTPUT = 0.8;
+  public static final double DRIVE_CLOSED_LOOP_P = 0.0003;
+  public static final double DRIVE_CLOSED_LOOP_I = 0;
+  public static final double DRIVE_CLOSED_LOOP_D = 0.00001;
 
   // Motor current limits
   public static final double TURRET_MOTOR_CURRENT_LIMIT = 10;
