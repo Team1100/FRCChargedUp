@@ -29,6 +29,7 @@ public class Vision extends SubsystemBase {
 
   PowerDistribution m_pDBoard;
   GenericEntry detectionEntry;
+  GenericEntry tagNumEntry;
 
   public static final int DETECTING_NOTHING = 0;
   public static final int DETECTING_COLOR = 1;
@@ -43,6 +44,7 @@ public class Vision extends SubsystemBase {
     aprilTagTarget = 0;
     detectionMode = 0;
     detectionEntry = Shuffleboard.getTab("Vision").add("detectionMode", 1).getEntry();
+    tagNumEntry = Shuffleboard.getTab("Vision").add("aprilTagTargetID", 1).getEntry();
   }
 
   public static Vision getInstance() {
@@ -50,8 +52,7 @@ public class Vision extends SubsystemBase {
       m_vision = new Vision();
       TestingDashboard.getInstance().registerSubsystem(m_vision, "Vision");
 
-      Shuffleboard.getTab("Vision")
-          .add("aprilTagTargetID", 1);
+      
       
       
 
@@ -114,7 +115,7 @@ public class Vision extends SubsystemBase {
 
   public void setTargetAprilTag(int apriltagID) {
     aprilTagTarget = apriltagID;
-    m_Ntable.getEntry("aprilTagTargetID").setInteger(aprilTagTarget);
+    tagNumEntry.setInteger(aprilTagTarget);
   }
 
   /**

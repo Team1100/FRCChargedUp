@@ -33,7 +33,6 @@ import frc.robot.commands.Intake.IntakePowerControl;
 import frc.robot.commands.Lights.ConeLight;
 import frc.robot.commands.Lights.CubeLight;
 import frc.robot.commands.VisionAuto.DriveToTarget;
-import frc.robot.commands.VisionAuto.SetDetectionMode;
 import frc.robot.commands.VisionAuto.TrackTarget;
 import frc.robot.commands.VisionAuto.TurnToTarget;
 import frc.robot.input.ControllerModes.Mode1;
@@ -141,7 +140,6 @@ public class RobotContainer {
 
     // Vision
     TurnToTarget.registerWithTestingDashboard();
-    SetDetectionMode.registerWithTestingDashboard();
 
     // Create Testing Dashboard
     TestingDashboard.getInstance().createTestingDashboard();
