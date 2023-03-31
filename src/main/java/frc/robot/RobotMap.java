@@ -214,9 +214,12 @@ public class RobotMap {
 	public static final int A_SHOULDER_POTENTIOMETER_RIGHT = ANALOG_MXP_0;
 	public static final int A_ELBOW_POTENTIOMETER_RIGHT = ANALOG_MXP_1;
 
-
 	//[H]and
 	public static final int H_MOTOR = CAN_30;
+
+	//[I]ntake
+	public static final int I_MOTOR_LEFT = CAN_28;
+	public static final int I_MOTOR_RIGHT = CAN_8;
 
 	//[U]ser Input
 	public static final int U_DRIVER_XBOX_CONTROLLER = 0;

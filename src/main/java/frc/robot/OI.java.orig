@@ -98,6 +98,8 @@ public class OI {
       DriverXboxController.getButtonBack().onTrue(new SwitchDriveIdleMode());
       DriverXboxController.getButtonLeftBumper().onTrue(new ConeLight());
       DriverXboxController.getButtonRightBumper().onTrue(new CubeLight());
+      DriverXboxController.getDPad().getDown().onTrue(new DisableLights());
+      DriverXboxController.getDPad().getUp().onTrue(new EnableLights());
       DriverXboxController.getDPad().getLeft().onTrue(new BlinkLights());
 
       /* 

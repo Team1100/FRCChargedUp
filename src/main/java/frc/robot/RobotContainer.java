@@ -8,6 +8,7 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.ControllerMode;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Hand;
+import frc.robot.subsystems.Intake;
 import frc.robot.testingdashboard.TestingDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,6 +29,7 @@ import frc.robot.commands.Drive.ArcadeDrive;
 import frc.robot.commands.Drive.DriveDistance;
 import frc.robot.commands.Drive.ToggleIdleMode;
 import frc.robot.commands.Hand.*;
+import frc.robot.commands.Intake.IntakePowerControl;
 import frc.robot.commands.Lights.ConeLight;
 import frc.robot.commands.Lights.CubeLight;
 import frc.robot.commands.VisionAuto.DriveToTarget;
@@ -50,6 +52,7 @@ public class RobotContainer {
   private final Drive m_drive;
   private final Arm m_arm;
   private final Hand m_hand;
+  private final Intake m_intake;
   private final ControllerMode m_controllerMode;
 
   private final Command m_scoreConeAndDriveBack = new ScoreConeAndDriveBack(-175,0,0.6);
@@ -73,6 +76,9 @@ public class RobotContainer {
 
     m_hand = Hand.getInstance();
     m_hand.setDefaultCommand(new HandOperatorPowerControl());
+
+    m_intake = Intake.getInstance();
+    m_intake.setDefaultCommand(new IntakePowerControl());
 
     m_controllerMode = ControllerMode.getInstance();
     m_controllerMode.setDefaultCommand(OI.getInstance().getMode1());

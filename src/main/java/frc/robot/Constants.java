@@ -46,6 +46,9 @@ public final class Constants {
 
   public static final double HAND_MAX_POWER = 0.7;
 
+  // Defines Intake command constants
+  public static final double INTAKE_MAX_POWER = 0.5;
+  public static final double WINCH_MAX_POWER = 0.2;
 
   // Defines Arm command constants
 
