@@ -41,9 +41,8 @@ public class IntakePowerControl extends CommandBase {
   @Override
   public void execute() {
     double m_power = 0;
-    double w_power = 0;
+    double w_power = -Constants.WINCH_MAX_POWER;;
     m_intake.setWinchBrake();
-    w_power = -Constants.WINCH_MAX_POWER;
     if(m_xbox.getAxis(XboxAxis.kRightTrigger) > 0) {
       m_power = m_xbox.getAxis(XboxAxis.kRightTrigger)*-Constants.INTAKE_MAX_POWER;
       w_power = 0;

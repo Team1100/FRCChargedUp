@@ -22,7 +22,7 @@ public class Intake extends SubsystemBase {
   private static Intake m_intake;
 
   public Intake() {
-    inAuto = true;
+    inAuto = false;
     m_intakeMotor = new CANSparkMax(RobotMap.I_MOTOR_LEFT, MotorType.kBrushless);
     m_intakeWinch = new CANSparkMax(RobotMap.I_MOTOR_RIGHT, MotorType.kBrushless);
 
