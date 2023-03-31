@@ -15,6 +15,7 @@ import frc.robot.commands.Hand.ExpelCubeTimed;
 import frc.robot.commands.Hand.SmartIntakeCube;
 import frc.robot.commands.VisionAuto.DriveToTarget;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Vision;
 import frc.robot.testingdashboard.TestingDashboard;
 
@@ -76,13 +77,13 @@ public class ScoreConeAndCube extends CommandBase {
     m_highPostCenter = new HighPostCenterState();
     m_expelConeTimed = new ExpelConeTimed(); 
     m_armToHome = new ArmToHomeState();
-    m_driveBack = new DriveDistance(-12, power * (3/4), power * (3/4), 0, true);
+    m_driveBack = new DriveDistance(-12, power, power, 0, true);
     m_driveToCube = new DriveToTarget(-224, power, power, 0, true);
     // Part 2 of the sequence
     m_floorGrabSequence = new ReversedFloorGrabSequenceCube();
     m_smartIntakeCube = new SmartIntakeCube();
     // Part 3 of the sequence
-    m_driveBack2 = new DriveDistance(70, power * (3/4), (power *3/4)+0.01, 0, true);
+    m_driveBack2 = new DriveDistance(70, power, power, 0, true);
     m_driveToTag = new DriveToTarget(165, power, power, 0, true);
 
     m_expelCubeTimed = new ExpelCubeTimed();
@@ -191,6 +192,7 @@ public class ScoreConeAndCube extends CommandBase {
         break;
       
       case SCHEDULE_EXTEND_ARM_2:
+        Intake.getInstance().setInAuto(true);
         m_highPostCenter.schedule();
         m_state = State.EXTEND_ARM_2;
         break;
@@ -233,6 +235,7 @@ public class ScoreConeAndCube extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    Intake.getInstance().setInAuto(false);
   }
 
   // Returns true when the command should end.

@@ -17,11 +17,12 @@ public class Intake extends SubsystemBase {
 
   private CANSparkMax m_intakeMotor;
   private CANSparkMax m_intakeWinch;
+  public boolean inAuto;
 
   private static Intake m_intake;
 
   public Intake() {
-
+    inAuto = true;
     m_intakeMotor = new CANSparkMax(RobotMap.I_MOTOR_LEFT, MotorType.kBrushless);
     m_intakeWinch = new CANSparkMax(RobotMap.I_MOTOR_RIGHT, MotorType.kBrushless);
 
@@ -31,6 +32,10 @@ public class Intake extends SubsystemBase {
     m_intakeMotor.setIdleMode(IdleMode.kBrake);
     m_intakeWinch.setIdleMode(IdleMode.kCoast);
 
+  }
+
+  public void setInAuto(boolean auto) {
+    inAuto = auto;
   }
 
   public static Intake getInstance() {

@@ -42,21 +42,24 @@ public class IntakePowerControl extends CommandBase {
   public void execute() {
     double m_power = 0;
     double w_power = 0;
-
+    m_intake.setWinchBrake();
+    w_power = -Constants.WINCH_MAX_POWER;
     if(m_xbox.getAxis(XboxAxis.kRightTrigger) > 0) {
       m_power = m_xbox.getAxis(XboxAxis.kRightTrigger)*-Constants.INTAKE_MAX_POWER;
+      w_power = 0;
+      m_intake.setWinchCoast();
     }
     if(m_xbox.getAxis(XboxAxis.kLeftTrigger) > 0) {
       m_power = m_xbox.getAxis(XboxAxis.kLeftTrigger)*Constants.INTAKE_MAX_POWER;
-    }
-
-    if(m_xbox.getDPad().getUp().getAsBoolean()) {
-      w_power = -Constants.WINCH_MAX_POWER;
-      m_intake.setWinchBrake();
-    }
-    if(m_xbox.getDPad().getDown().getAsBoolean()) {
+      w_power = 0;
       m_intake.setWinchCoast();
     }
+
+    if (m_intake.inAuto) {
+      w_power = 0;
+      m_intake.setWinchCoast();
+    }
+
     
     m_intake.setIntakeMotorPower(m_power);
     m_intake.setIntakeWinchPower(w_power);
