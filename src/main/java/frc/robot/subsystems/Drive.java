@@ -9,9 +9,13 @@ import java.util.ArrayList;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.ADIS16448_IMU.IMUAxis;
+import edu.wpi.first.wpilibj.ADXL345_I2C.Axes;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.ADIS16470_IMU;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.AnalogInput;
 import frc.robot.Constants;
 import frc.robot.RoboRioAccelerometerHelper;
@@ -49,6 +53,8 @@ public class Drive extends SubsystemBase {
 
   private AutoBalance bal;
 
+  public static ADIS16470_IMU m_gyro;
+
   public double fwdRateLimit = Constants.D_FWD_RATE_LIMIT; // limits rate change to a certain amount per second. Measured in units
   public  double rotRateLimit = Constants.D_ROT_RATE_LIMIT;
 
@@ -75,6 +81,8 @@ public class Drive extends SubsystemBase {
   private Drive() {
 
     bal = new AutoBalance();
+
+    m_gyro = new ADIS16470_IMU();
 
     m_backLeft = new CANSparkMax(RobotMap.D_BACK_LEFT, MotorType.kBrushless);
     m_backRight = new CANSparkMax(RobotMap.D_BACK_RIGHT, MotorType.kBrushless);
@@ -130,6 +138,8 @@ public class Drive extends SubsystemBase {
 
     m_max_num_current_values = MOTOR_CURRENT_INITIAL_CAPACITY;
 
+    m_gyro.calibrate();
+    m_gyro.setYawAxis(edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis.kY);
   }
 
   public void setIdleMode(IdleMode mode) {
@@ -216,7 +226,8 @@ public class Drive extends SubsystemBase {
       TestingDashboard.getInstance().registerNumber(m_drive, "Accel", "TiltDerivative", 0);
       TestingDashboard.getInstance().registerNumber(m_drive, "Accel", "TiltSecondDerivative", 0);
       TestingDashboard.getInstance().registerNumber(m_drive, "Accel", "MaxNumTiltValues", 25);
-      
+      TestingDashboard.getInstance().registerNumber(m_drive, "Gyro", "Angle", 0);
+      TestingDashboard.getInstance().registerNumber(m_drive, "Gyro", "AngleRateOfChange", 0);
 
     }
     return m_drive;
@@ -389,10 +400,14 @@ public class Drive extends SubsystemBase {
         TestingDashboard.getInstance().updateNumber(m_drive, "currentTime", m_accelHelper.getCurrentTime());
         TestingDashboard.getInstance().updateNumber(m_drive, "instantAccelMagnitudeInchesPerSecondSquared", m_accelHelper.getAccelerometerMagnitudeInchesPerSecondSquared());
         TestingDashboard.getInstance().updateNumber(m_drive, "instantAccelMagnitudeInchesPerSecondSquared", m_accelHelper.getAccelerometerMagnitudeInchesPerSecondSquared());
+        TestingDashboard.getInstance().updateNumber(m_drive, "Angle", m_gyro.getAngle());
+        TestingDashboard.getInstance().updateNumber(m_drive, "AngleRateOfChange", m_gyro.getRate());
         
       }
 
       //System.out.println("Avg Current: " + getInstantTotalMotorCurrent());
+      //System.out.println("Angle: " + m_gyro.getAngle());
+      //System.out.println("ROC: " + m_gyro.getRate());
 
       m_accelHelper.getTotalAverageRioAccelSecondDerivative();
 
