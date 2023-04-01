@@ -40,18 +40,21 @@ class AprilTagTarget(object):
         
 
 class TapeTarget(object):
-    def __init__(self, imageResult, approx, tapeTargetDetected, camera):
+    def __init__(self, imageResult, approx, tapeTargetDetected, camera, areaR):
         self.tapeTargetDetected = tapeTargetDetected
         self.imageResult = imageResult
         if self.tapeTargetDetected:
             self.x, self.y, self.w, self.h, = cv2.boundingRect(approx)
         else:
             self.x, self.y, self.w, self.h, = 1, 1, 1, 1 
+        self.boundingArea = self.w * self.h
         self.normalizedY = (self.y - camera.height/2)/(camera.height/2) * -1
         self.normalizedX = (self.x - camera.width/2)/(camera.width/2)
         self.pitch = (self.normalizedY/2) * camera.vertFOV
         self.yaw = (self.normalizedX/2) * camera.horizFOV
-        self.offset = self.x + self.w - camera.cameraCenter
+        self.offset = self.x + self.w/2 - camera.cameraCenter
+        self.aspectRatio = self.w/self.h
+        self.areaRatio = areaR
         #(height of target [feet] - height of camera [feet])/tan(pitch [degrees] + angle of camera [degrees])
         self.distanceToTarget = (camera.elevationOfTarget - camera.elevationOfCamera) / math.tan(math.radians(self.pitch + camera.angleFromHoriz))
 
@@ -103,11 +106,11 @@ class VisionApplication(object):
 
         self.aprilTagTargetID = 1
 
-        self.hueMin = 106
-        self.hueMax = 126
-        self.satMin = 55
-        self.satMax = 180
-        self.valMin = 100
+        self.hueMin = 76
+        self.hueMax = 127
+        self.satMin = 53
+        self.satMax = 212
+        self.valMin = 89
         self.valMax = 255
        
         self.myColors = [[self.hueMin,self.satMin,self.valMin,self.hueMax,self.satMax,self.valMax]]
@@ -117,7 +120,7 @@ class VisionApplication(object):
         self.aspectRatio = 0 # this is the aspectRatio of every contour that is seen by the camera (width/height)
         self.largestAspectRatio = 0 # this is the aspectRatio fo the target once it has been isolated
 
-        self.garea = 0
+        self.garea = 150
         self.contours = None
         self.targets = []
         self.tapeTargetList = []
@@ -140,6 +143,8 @@ class VisionApplication(object):
         
 
         self.camera = CameraView(self.config['cameras'][0], vertFOV, horizFOV, elevationOfTarget, elevationOfCamera, angleFromHoriz)
+        self.camera2 = CameraView(self.config['cameras'][1], vertFOV, horizFOV, elevationOfTarget, elevationOfCamera, angleFromHoriz)
+
 
         # Initialize Camera Server
         self.initializeCameraServer()
@@ -159,7 +164,7 @@ class VisionApplication(object):
         camera1.setResolution(self.camera.width,self.camera.height)
 
         camera2 = cserver.startAutomaticCapture(name="cam2", path='/dev/v4l/by-id/usb-Ingenic_Semiconductor_CO.__LTD._HD_Web_Camera_Ucamera001-video-index0')
-        camera2.setResolution(self.camera.width,self.camera.height)
+        camera2.setResolution(self.camera2.width,self.camera2.height)
 
         
 
@@ -213,12 +218,12 @@ class VisionApplication(object):
         self.vision_nt.putNumber('valMax',self.valMax)
 
     def getMaskingValues(self):
-        self.hueMin = int(self.vision_nt.getNumber('hueMin',0))
-        self.hueMax = int(self.vision_nt.getNumber('hueMax',255))
-        self.satMin = int(self.vision_nt.getNumber('satMin',0))
-        self.satMax = int(self.vision_nt.getNumber('satMax',255))
-        self.valMin = int(self.vision_nt.getNumber('valMin',0))
-        self.valMax = int(self.vision_nt.getNumber('valMax',255))
+        self.hueMin = int(self.vision_nt.getNumber('hueMin',self.hueMin))
+        self.hueMax = int(self.vision_nt.getNumber('hueMax',self.hueMax))
+        self.satMin = int(self.vision_nt.getNumber('satMin',self.satMin))
+        self.satMax = int(self.vision_nt.getNumber('satMax',self.satMax))
+        self.valMin = int(self.vision_nt.getNumber('valMin',self.valMin))
+        self.valMax = int(self.vision_nt.getNumber('valMax',self.valMax))
         self.myColors = [[self.hueMin,self.satMin,self.valMin,self.hueMax,self.satMax,self.valMax]]
 
     def getAprilTagTargetID(self):
@@ -252,12 +257,19 @@ class VisionApplication(object):
         return contours
 
     def isolateTarget(self, contours):
-        aspectTolerance = .225
+        aspectTolerance = .2
         idealAreaRatio = 0.7 # this is the ideal ratio for the area ratio value.
         idealAspectRatio = 1.1 # this is the ideal aspect ratio based off of the diagram but can be changed as needed.
-        aspectTolerance = .44 # this is the tolerance for finding the target with the right aspect ratio
+        areaTolerance = .2 # this is the tolerance for finding the target with the right aspect ratio
+        
+        idealYCoor = 100
+        yCoorTolerance = 15
+
+        idealXCoor = self.camera.width/2
+        xCoorTolerance = 80
+
+        deltaAreaTolerance = 400
         # start off with a large tolerance, and if the ideal ratio is correct, lower the tolerance as needed. 
-        self.garea = 0
         self.targets = [] 
         
         self.tapeTargetDetected = False
@@ -268,18 +280,21 @@ class VisionApplication(object):
                 contourArea = cv2.contourArea(contour) #area of the particle
                 x, y, w, h, = cv2.boundingRect(contour)
                 boundingArea = w * h
-                if (boundingArea < 500):
+                if (boundingArea < 100):
+                    continue
+                if not (y < (idealYCoor + yCoorTolerance)) and (y > (idealYCoor - yCoorTolerance)):
+                    continue
+                if not (x < (idealXCoor + xCoorTolerance)) and (x > (idealXCoor - xCoorTolerance)):
+                    continue
+                if not (boundingArea < (self.garea + deltaAreaTolerance)) and (boundingArea > (self.garea - deltaAreaTolerance/2)):
                     continue
                 self.areaRatio = contourArea/boundingArea
                 self.aspectRatio = w/h
-                if self.areaRatio > idealAreaRatio - aspectTolerance and self.areaRatio < idealAreaRatio + aspectTolerance: # if the targets is within the right area ratio range, it is possibly the correct target
+                if self.areaRatio > idealAreaRatio - areaTolerance and self.areaRatio < idealAreaRatio + areaTolerance: # if the targets is within the right area ratio range, it is possibly the correct target
                     if self.aspectRatio > idealAspectRatio - aspectTolerance and self.aspectRatio < idealAspectRatio + aspectTolerance: # if the target is within the correct aspect ratio range aswell, it is definitely the right target
                         largest = contour
-                        area = boundingArea
-                        self.largestAreaRatio = self.areaRatio
-                        self.largestAspectRatio = self.aspectRatio
                         self.tapeTargetDetected = True
-                        self.garea = area
+                        self.garea = boundingArea
                         self.targets.append(contour)
                         # Draw the contours
                         cv2.drawContours(self.imgResult, largest, -1, (255,0,0), 3)
@@ -293,7 +308,10 @@ class VisionApplication(object):
                     print("CV2 Error")
                     continue
                 approx = cv2.approxPolyDP(target, 0.02 * peri, True)
-                self.tapeTargetList.append(TapeTarget(self.imgResult, approx, self.tapeTargetDetected, self.camera))
+                x, y, w, h, = cv2.boundingRect(target)
+                boundingArea = w * h
+                contourArea = cv2.contourArea(target)
+                self.tapeTargetList.append(TapeTarget(self.imgResult, approx, self.tapeTargetDetected, self.camera,(contourArea/boundingArea)))
         else:
             approx = None
 
@@ -314,9 +332,10 @@ class VisionApplication(object):
             print(self.cameraInUse)
             if self.cameraInUse == 1:
                 frame_time1, input_img1 = self.sink.grabFrame(input_img1)
+                input_img1 = cv2.resize(input_img1, (self.camera.width,self.camera.height), interpolation = cv2.INTER_AREA)
             else:
                 frame_time1, input_img1 = self.sink2.grabFrame(input_img1)
-            input_img1 = cv2.resize(input_img1, (self.camera.width,self.camera.height), interpolation = cv2.INTER_AREA)
+                input_img1 = cv2.resize(input_img1, (self.camera2.width,self.camera2.height), interpolation = cv2.INTER_AREA)
             
             self.imgResult = input_img1.copy()
             # Notify output of error and skip iteration
@@ -341,7 +360,7 @@ class VisionApplication(object):
                         cv2.polylines(self.imgResult, [rect], True, self.RED, 2)
                         ident = str(det["id"])
                         pos = det["center"].astype(int) + (-10,10)
-                        aprilTagTargets.update({det["id"]:AprilTagTarget(self.camera,pos,det["id"])})
+                        aprilTagTargets.update({det["id"]:AprilTagTarget(self.camera2,pos,det["id"])})
                         cv2.putText(self.imgResult, ident, tuple(pos), self.FONT, 1, self.RED, 2)
 
                 if not aprilTagTargets: 
@@ -368,19 +387,21 @@ class VisionApplication(object):
                 t2 = time.clock_gettime(time.CLOCK_MONOTONIC) # gets the current "time"
                 timeDiff = t2-t1 # difference between the most recent time and the time recorded when the target was last seen
                 if self.tapeTargetDetected:
-                    self.tapeTargetList.sort(key=lambda target: target.x)
+                    self.tapeTargetList.sort(key=lambda target: target.boundingArea)
                     self.vision_nt.putNumber('offset',self.tapeTargetList[len(self.tapeTargetList)-1].offset)
                     self.tapeTargetList[len(self.tapeTargetList)-1].drawRectangle()
+                    self.vision_nt.putNumber('ycoor',self.tapeTargetList[len(self.tapeTargetList)-1].y)
+                    self.vision_nt.putNumber('areaRatio',self.tapeTargetList[len(self.tapeTargetList)-1].areaRatio)
+                    self.vision_nt.putNumber('aspectRatio',self.tapeTargetList[len(self.tapeTargetList)-1].aspectRatio)
 
                     t1 = t2
                     self.vision_nt.putNumber('tapeTargetDetected',1)
                     self.vision_nt.putNumber('BoundingArea',self.garea)
-                    self.vision_nt.putNumber('Area Ratio',self.largestAreaRatio)
-                    self.vision_nt.putNumber('Aspect Ratio',self.largestAspectRatio)
-                    self.cvmask.putFrame(self.mask)
+                
                 else: # only sets updates the targetDetected if a certain amount of time has passed
                     if timeDiff > targetDetTol:
                         self.vision_nt.putNumber('tapeTargetDetected',0)
+                self.cvmask.putFrame(self.mask)
 
             self.cvsrc.putFrame(self.imgResult)
 

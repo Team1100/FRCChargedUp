@@ -29,6 +29,7 @@ public class Vision extends SubsystemBase {
 
   PowerDistribution m_pDBoard;
   GenericEntry detectionEntry;
+  GenericEntry tagNumEntry;
 
   public static final int DETECTING_NOTHING = 0;
   public static final int DETECTING_COLOR = 1;
@@ -43,6 +44,7 @@ public class Vision extends SubsystemBase {
     aprilTagTarget = 0;
     detectionMode = 0;
     detectionEntry = Shuffleboard.getTab("Vision").add("detectionMode", 1).getEntry();
+    tagNumEntry = Shuffleboard.getTab("Vision").add("aprilTagTargetID", 1).getEntry();
   }
 
   public static Vision getInstance() {
@@ -50,35 +52,34 @@ public class Vision extends SubsystemBase {
       m_vision = new Vision();
       TestingDashboard.getInstance().registerSubsystem(m_vision, "Vision");
 
-      Shuffleboard.getTab("Vision")
-          .add("aprilTagTargetID", 1);
+      
       
       
 
       SmartDashboard.putNumber("Target AprilTag ID", 1);
       
       Shuffleboard.getTab("Vision")
-          .add("hueMin", 76)
+          .add("hueMin", 97)
           .withWidget(BuiltInWidgets.kNumberSlider)
           .withProperties(Map.of("min", 0, "max", 255)) // specify widget properties here
           .getEntry();
       Shuffleboard.getTab("Vision")
-          .add("hueMax", 127)
+          .add("hueMax", 153)
           .withWidget(BuiltInWidgets.kNumberSlider)
           .withProperties(Map.of("min", 0, "max", 255)) // specify widget properties here
           .getEntry();
       Shuffleboard.getTab("Vision")
-          .add("satMin", 53)
+          .add("satMin", 50)
           .withWidget(BuiltInWidgets.kNumberSlider)
           .withProperties(Map.of("min", 0, "max", 255)) // specify widget properties here
           .getEntry();
       Shuffleboard.getTab("Vision")
-          .add("satMax", 212)
+          .add("satMax", 255)
           .withWidget(BuiltInWidgets.kNumberSlider)
           .withProperties(Map.of("min", 0, "max", 255)) // specify widget properties here
           .getEntry();
       Shuffleboard.getTab("Vision")
-          .add("valMin", 89)
+          .add("valMin", 103)
           .withWidget(BuiltInWidgets.kNumberSlider)
           .withProperties(Map.of("min", 0, "max", 255)) // specify widget properties here
           .getEntry();
@@ -114,7 +115,7 @@ public class Vision extends SubsystemBase {
 
   public void setTargetAprilTag(int apriltagID) {
     aprilTagTarget = apriltagID;
-    m_Ntable.getEntry("aprilTagTargetID").setInteger(aprilTagTarget);
+    tagNumEntry.setInteger(aprilTagTarget);
   }
 
   /**

@@ -16,7 +16,7 @@ public class ExpelConeTimed extends ParallelDeadlineGroup {
   public ExpelConeTimed() {
     // Add the deadline command in the super() call. Add other commands using
     // addCommands().
-    super(new Wait(1, true));
+    super(new Wait(.6, true));
     addCommands(new ExpelCone(true));
   }
 }

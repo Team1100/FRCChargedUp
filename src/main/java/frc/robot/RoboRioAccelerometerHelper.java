@@ -22,6 +22,8 @@ public class RoboRioAccelerometerHelper {
     private double m_accelIntCount;
 
     public ArrayList<Double> m_rio_accel_values;
+    private double[] m_rioAvgAccel;
+    private double[] m_tiltVelocity;
     
 
     private BuiltInAccelerometer m_accelerometer;
@@ -46,12 +48,15 @@ public class RoboRioAccelerometerHelper {
         accelVec = new Vector[] {new Vector(), new Vector()};
         velocityVec = new Vector[] {new Vector(), new Vector()};
         distanceVec = new Vector[] {new Vector(), new Vector()};
-        timeValues = new double[5];
+        timeValues = new double[2];
 
         m_rio_accel_values = new ArrayList<Double>(Drive.MOTOR_CURRENT_INITIAL_CAPACITY);
         for (int i = 0; i < Drive.MOTOR_CURRENT_INITIAL_CAPACITY; i++) {
           m_rio_accel_values.add(0.0);
         }
+
+        m_rioAvgAccel = new double[2];
+        m_tiltVelocity = new double[2];
     }
 
     public static double integrate(double tInitial, double tFinal, double vInitial, double vFinal) { // v for value
@@ -67,25 +72,35 @@ public class RoboRioAccelerometerHelper {
     }
 
     public double getTotalAverageRioAccelDerivative() {
-        double da1 = derivative(timeValues[0], timeValues[1], m_rio_accel_values.get(3), m_rio_accel_values.get(4));
-        double da2 = derivative(timeValues[1], timeValues[2], m_rio_accel_values.get(2), m_rio_accel_values.get(3));
-        double da3 = derivative(timeValues[2], timeValues[3], m_rio_accel_values.get(1), m_rio_accel_values.get(2));
-        double da4 = derivative(timeValues[3], timeValues[4], m_rio_accel_values.get(0), m_rio_accel_values.get(1));
-
-        double da = (da1 + da2 + da3 + da4) / 4;
         
+        double da = derivative(timeValues[0], timeValues[1], m_rioAvgAccel[0], m_rioAvgAccel[1]);
+
         Drive drive = Drive.getInstance();
         TestingDashboard.getInstance().updateNumber(drive, "TiltDerivative", da);
         return da;
     }
 
+    public double getTotalAverageRioAccelSecondDerivative() {
+        
+        double da = derivative(timeValues[0], timeValues[1], m_tiltVelocity[0], m_tiltVelocity[1]);
+
+        Drive drive = Drive.getInstance();
+        TestingDashboard.getInstance().updateNumber(drive, "TiltSecondDerivative", da);
+        return da;
+    }
+
 
     public void captureTimeData() {
+        Drive drive = Drive.getInstance();
+
         timeValues[0] = timeValues[1];
-        timeValues[1] = timeValues[2];
-        timeValues[2] = timeValues[3];
-        timeValues[3] = timeValues[4];
-        timeValues[4] = Timer.getFPGATimestamp();
+        timeValues[1] = Timer.getFPGATimestamp();
+
+        m_rioAvgAccel[0] = m_rioAvgAccel[1];
+        m_rioAvgAccel[1] = drive.getTotalAverageRioAccel();
+
+        m_tiltVelocity[0] = m_tiltVelocity[1];
+        m_tiltVelocity[1] = getTotalAverageRioAccelDerivative();
     }
 
     public void captureAccelerometerData() {

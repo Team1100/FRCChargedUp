@@ -4,10 +4,14 @@
 
 package frc.robot.commands.Drive;
 
+import edu.wpi.first.wpilibj.ADIS16470_IMU;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
+import frc.robot.Constants;
 import frc.robot.subsystems.Drive;
 
 public class AutoBalance {
+    //private ADIS16470_IMU m_gyro;
     private BuiltInAccelerometer mRioAccel;
     private int state;
     private int debounceCount;
@@ -19,10 +23,17 @@ public class AutoBalance {
     private double singleTapTime;
     private double scoringBackUpTime;
     private double doubleTapTime;
+    private double onPlatformROC;
     boolean m_isFinished;
+    final boolean USE_GYRO_ALL;
 
     public AutoBalance() {
         mRioAccel = new BuiltInAccelerometer();
+
+        USE_GYRO_ALL = false;
+
+        // m_gyro = Drive.m_gyro;
+
         state = 0;
         debounceCount = 0;
 
@@ -37,19 +48,19 @@ public class AutoBalance {
         // default = 0.2
         robotSpeedSlow = 0.3;
 
-        // Angle where the robot knows it is on the charge station, default = 13.0
-        onChargeStationDegree = 14.5;
+        // Angle where the robot knows it is on the charge station, default = 14.5
+        onChargeStationDegree = 8;
 
         // Angle where the robot can assume it is level on the charging station
         // Used for exiting the drive forward sequence as well as for auto balancing,
-        // default = 6.0
-        levelDegree = 10;
+        // default = 10.0
+        levelDegree = 6;
 
         // Amount of time a sensor condition needs to be met before changing states in
         // seconds
         // Reduces the impact of sensor noise, but too high can make the auto run
-        // slower, default = 0.2
-        debounceTime = 0.15;
+        // slower, default = 0.15
+        debounceTime = 0.1;
 
         // Amount of time to drive towards to scoring target when trying to bump the
         // game piece off
@@ -62,6 +73,10 @@ public class AutoBalance {
 
         // Amount of time to drive forward to secure the scoring of the gamepiece
         doubleTapTime = 0.3;
+
+        // Rate of change of the angle for the robot to assume it is on top of the platform
+        // and stop; Calculated by the derivative of the angle measurements v. time.
+        onPlatformROC = 0;
 
         m_isFinished = false;
 
@@ -78,7 +93,13 @@ public class AutoBalance {
 
     // returns the magnititude of the robot's tilt calculated by the root of
     // pitch^2 + roll^2, used to compensate for diagonally mounted rio
+
+
     public double getTilt() {
+        if(Constants.D_ENABLE_GYRO_BALANCE) {
+            // Jack and Dan's alternate sensor readings, as of 3/30/23
+            return Drive.m_gyro.getAngle();
+        } else {
         double pitch = getPitch();
         double roll = getRoll();
         if ((pitch + roll) >= 0) {
@@ -86,6 +107,7 @@ public class AutoBalance {
         } else {
             return -Math.sqrt(pitch * pitch + roll * roll);
         }
+      }
     }
 
     public int secondsToTicks(double time) {
@@ -112,7 +134,7 @@ public class AutoBalance {
                 return -robotSpeedFast;
             // driving up charge station, drive slower, stopping when level
             case 1:
-                if (Drive.getInstance().getTotalAverageRioAccel() < levelDegree && Drive.getInstance().getTotalAverageRioAccel() > -levelDegree) {
+                if (Drive.m_gyro.getAngle() < levelDegree && Drive.m_gyro.getAngle() > -levelDegree) {
                     debounceCount++;
                 }
                 if (debounceCount > secondsToTicks(debounceTime)) {
@@ -120,22 +142,36 @@ public class AutoBalance {
                     debounceCount = 0;
                     return 0;
                 }
+                if (Drive.m_gyro.getRate() <= -11) {
+                    return 0;
+                }
                 return -robotSpeedSlow;
             // on charge station, stop motors and wait for end of auto
             case 2:
+
+            if(!Constants.D_ENABLE_GYRO_BALANCE && !USE_GYRO_ALL) {
                 if (Math.abs(getTilt()) <= levelDegree / 2) {
                     debounceCount++;
                 }
+            }
+                //Shortcut to using the Gyro (if enabled):
+            if(Constants.D_ENABLE_GYRO_BALANCE && USE_GYRO_ALL) {
+                if (Drive.m_gyro.getRate() <= -15) {
+                    debounceCount++;
+                    return 0.1;
+                }
+            }
                 if (debounceCount > secondsToTicks(debounceTime)) {
                     state = 3;
                     debounceCount = 0;
                     m_isFinished = true;
                     return 0;
                 }
+
                 if (getTilt() >= levelDegree) {
-                    return -robotSpeedSlow;
+                    return -robotSpeedSlow * 0.8;
                 } else if (getTilt() <= -levelDegree) {
-                    return robotSpeedSlow;
+                    return robotSpeedSlow * 0.8;
                 }
             case 3:
                 return 0;

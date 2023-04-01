@@ -15,6 +15,7 @@ import frc.robot.commands.Hand.ExpelCubeTimed;
 import frc.robot.commands.Hand.SmartIntakeCube;
 import frc.robot.commands.VisionAuto.DriveToTarget;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Vision;
 import frc.robot.testingdashboard.TestingDashboard;
 
@@ -67,7 +68,7 @@ public class ScoreConeAndCube extends CommandBase {
   private boolean m_isFinished;
   private State m_state;
   /** Creates a new ReachForNextBarStatefully. */
-  public ScoreConeAndCube(double power) {
+  public ScoreConeAndCube(double power, double slowPower) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_state = State.INIT;
     m_isFinished = false;
@@ -76,14 +77,14 @@ public class ScoreConeAndCube extends CommandBase {
     m_highPostCenter = new HighPostCenterState();
     m_expelConeTimed = new ExpelConeTimed(); 
     m_armToHome = new ArmToHomeState();
-    m_driveBack = new DriveDistance(-12, power, power, 0, true);
+    m_driveBack = new DriveDistance(-12, slowPower, slowPower, 0, true);
     m_driveToCube = new DriveToTarget(-224, power, power, 0, true);
     // Part 2 of the sequence
     m_floorGrabSequence = new ReversedFloorGrabSequenceCube();
     m_smartIntakeCube = new SmartIntakeCube();
     // Part 3 of the sequence
-    m_driveBack2 = new DriveDistance(70, power, power+0.01, 0, true);
-    m_driveToTag = new DriveToTarget(165, power, power, 0, true);
+    m_driveBack2 = new DriveDistance(50, slowPower, slowPower, 0, true);
+    m_driveToTag = new DriveToTarget(185, power, power, 0, true);
 
     m_expelCubeTimed = new ExpelCubeTimed();
 
@@ -151,7 +152,7 @@ public class ScoreConeAndCube extends CommandBase {
         m_state = State.DRIVE_TO_CUBE;
         break;
       case DRIVE_TO_CUBE:
-        if (m_driveToCube.isPartiallyFinished(.48)) {
+        if (m_driveToCube.isPartiallyFinished(.43)) {
           m_state = State.SCHEDULE_PICK_UP_CUBE;
         }
         break;
@@ -163,8 +164,12 @@ public class ScoreConeAndCube extends CommandBase {
         m_state = State.PICK_UP_CUBE;
         break;
       case PICK_UP_CUBE:
-        if (m_smartIntakeCube.isFinished() || m_driveToCube.isFinished()) {
+        if (m_smartIntakeCube.isFinished()) {
           m_state = State.SCHEDULE_DRIVE_BACK;
+        }
+        if (m_driveToCube.isFinished() && !m_smartIntakeCube.isFinished()) {
+          m_state = State.DONE;
+          m_smartIntakeCube.cancel();
         }
         break;
 
@@ -173,6 +178,7 @@ public class ScoreConeAndCube extends CommandBase {
         Vision.getInstance().setDetectionMode(Vision.DETECTING_APRILTAG);
         m_driveBack2.schedule();
         m_armToHome.schedule();
+        Intake.getInstance().setInAuto(true);
         m_state = State.DRIVE_BACK;
       case DRIVE_BACK:
         if (m_driveBack2.isFinished()) {
@@ -233,6 +239,7 @@ public class ScoreConeAndCube extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    Intake.getInstance().setInAuto(false);
   }
 
   // Returns true when the command should end.

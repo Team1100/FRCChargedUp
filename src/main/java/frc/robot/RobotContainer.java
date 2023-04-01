@@ -8,6 +8,7 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.ControllerMode;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Hand;
+import frc.robot.subsystems.Intake;
 import frc.robot.testingdashboard.TestingDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,6 +20,7 @@ import frc.robot.commands.Arm.*;
 import frc.robot.commands.Arm.presets.*;
 import frc.robot.commands.Arm.sequences.ConeGrabSequence;
 import frc.robot.commands.Auto.ScoreCone;
+import frc.robot.commands.Auto.ScoreConeAndBalance;
 import frc.robot.commands.Auto.ScoreConeAndCube;
 import frc.robot.commands.Auto.ScoreConeAndDriveBack;
 import frc.robot.commands.Auto.ScoreCube;
@@ -30,10 +32,10 @@ import frc.robot.commands.Drive.DriveFixedSpeed;
 import frc.robot.commands.Drive.SwitchDrivePIDMode;
 import frc.robot.commands.Drive.ToggleIdleMode;
 import frc.robot.commands.Hand.*;
+import frc.robot.commands.Intake.IntakePowerControl;
 import frc.robot.commands.Lights.ConeLight;
 import frc.robot.commands.Lights.CubeLight;
 import frc.robot.commands.VisionAuto.DriveToTarget;
-import frc.robot.commands.VisionAuto.SetDetectionMode;
 import frc.robot.commands.VisionAuto.TrackTarget;
 import frc.robot.commands.VisionAuto.TurnToTarget;
 import frc.robot.input.ControllerModes.Mode1;
@@ -52,6 +54,7 @@ public class RobotContainer {
   private final Drive m_drive;
   private final Arm m_arm;
   private final Hand m_hand;
+  private final Intake m_intake;
   private final ControllerMode m_controllerMode;
 
   private final Command m_scoreConeAndDriveBack = new ScoreConeAndDriveBack(-175,0,0.6);
@@ -59,7 +62,8 @@ public class RobotContainer {
   private final Command m_scoreCubeAndDriveBack = new ScoreCubeAndDriveBack(-175,0,0.6);
   private final Command m_scoreCubeAndPark = new ScoreCubeAndDriveBack(-45,-32,0.6);
   private final Command m_scoreCubeAndBalance = new ScoreCubeAndBalance(0,0,0.6);
-  private final Command m_scoreConeAndCube = new ScoreConeAndCube(0.55);
+  private final Command m_scoreConeAndBalance = new ScoreConeAndBalance(0,0,0.6);
+  private final Command m_scoreConeAndCube = new ScoreConeAndCube(0.55, 0.4);
 
   private final Command m_scoreCone = new ScoreCone();
   private final Command m_scoreCube = new ScoreCube();
@@ -76,6 +80,9 @@ public class RobotContainer {
     m_hand = Hand.getInstance();
     m_hand.setDefaultCommand(new HandOperatorPowerControl());
 
+    m_intake = Intake.getInstance();
+    m_intake.setDefaultCommand(new IntakePowerControl());
+
     m_controllerMode = ControllerMode.getInstance();
     m_controllerMode.setDefaultCommand(OI.getInstance().getMode1());
 
@@ -87,6 +94,7 @@ public class RobotContainer {
     m_chooser.addOption("Cube And Park", m_scoreCubeAndPark);
     m_chooser.addOption("Cube", m_scoreCube);
     m_chooser.addOption("Cube And Balance", m_scoreCubeAndBalance);
+    m_chooser.addOption("Cone and Balance", m_scoreConeAndBalance);
     m_chooser.addOption("Cone and Cube", m_scoreConeAndCube);
     // Configure the trigger bindings
     configureBindings();
@@ -139,7 +147,6 @@ public class RobotContainer {
 
     // Vision
     TurnToTarget.registerWithTestingDashboard();
-    SetDetectionMode.registerWithTestingDashboard();
 
     // Create Testing Dashboard
     TestingDashboard.getInstance().createTestingDashboard();

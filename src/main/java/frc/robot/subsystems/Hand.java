@@ -24,7 +24,7 @@ public class Hand extends SubsystemBase {
   private static Hand m_hand;
 
   ArrayList<Double> m_hand_motor_current_values;
-  public static final int HAND_MOTOR_CURRENT_INITIAL_CAPACITY = 20; // This is 1000 miliseconds divided in 20 millisecond chunks
+  public static final int HAND_MOTOR_CURRENT_INITIAL_CAPACITY = 15; // This is 1000 miliseconds divided in 20 millisecond chunks
 
 
   /** Creates a new Claw. */

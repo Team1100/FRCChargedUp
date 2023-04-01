@@ -37,6 +37,7 @@ public final class Constants {
   public static final double D_AUTO_DRIVE_SPEED = 0.5;
   public static final double D_BRAKE_DELAY = 2;
   public static final boolean D_ENABLE_RAMP_RATE = true;
+  public static final boolean D_ENABLE_GYRO_BALANCE = true;
 
   // Defines Hand command constants
   public static final double DEFAULT_INTAKE_CUBE_POWER = 0.5;
@@ -46,6 +47,9 @@ public final class Constants {
 
   public static final double HAND_MAX_POWER = 0.7;
 
+  // Defines Intake command constants
+  public static final double INTAKE_MAX_POWER = 0.5;
+  public static final double WINCH_MAX_POWER = 0.2;
 
   // Defines Arm command constants
 
