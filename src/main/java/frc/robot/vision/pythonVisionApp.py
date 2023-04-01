@@ -120,7 +120,7 @@ class VisionApplication(object):
         self.aspectRatio = 0 # this is the aspectRatio of every contour that is seen by the camera (width/height)
         self.largestAspectRatio = 0 # this is the aspectRatio fo the target once it has been isolated
 
-        self.garea = 0
+        self.garea = 150
         self.contours = None
         self.targets = []
         self.tapeTargetList = []
@@ -264,8 +264,12 @@ class VisionApplication(object):
         
         idealYCoor = 100
         yCoorTolerance = 15
+
+        idealXCoor = self.camera.width/2
+        xCoorTolerance = 80
+
+        deltaAreaTolerance = 400
         # start off with a large tolerance, and if the ideal ratio is correct, lower the tolerance as needed. 
-        self.garea = 0
         self.targets = [] 
         
         self.tapeTargetDetected = False
@@ -280,14 +284,17 @@ class VisionApplication(object):
                     continue
                 if not (y < (idealYCoor + yCoorTolerance)) and (y > (idealYCoor - yCoorTolerance)):
                     continue
+                if not (x < (idealXCoor + xCoorTolerance)) and (x > (idealXCoor - xCoorTolerance)):
+                    continue
+                if not (boundingArea < (self.garea + deltaAreaTolerance)) and (boundingArea > (self.garea - deltaAreaTolerance/2)):
+                    continue
                 self.areaRatio = contourArea/boundingArea
                 self.aspectRatio = w/h
                 if self.areaRatio > idealAreaRatio - areaTolerance and self.areaRatio < idealAreaRatio + areaTolerance: # if the targets is within the right area ratio range, it is possibly the correct target
                     if self.aspectRatio > idealAspectRatio - aspectTolerance and self.aspectRatio < idealAspectRatio + aspectTolerance: # if the target is within the correct aspect ratio range aswell, it is definitely the right target
                         largest = contour
-                        area = boundingArea
                         self.tapeTargetDetected = True
-                        self.garea = area
+                        self.garea = boundingArea
                         self.targets.append(contour)
                         # Draw the contours
                         cv2.drawContours(self.imgResult, largest, -1, (255,0,0), 3)

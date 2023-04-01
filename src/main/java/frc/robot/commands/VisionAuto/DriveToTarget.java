@@ -26,7 +26,7 @@ public class DriveToTarget extends CommandBase {
 
   private Timer m_timer;
   double ENCODER_INITIAL_POSITION = 0;
-  private final double NUDGE_FACTOR = 0.03;
+  private final double NUDGE_FACTOR = 0.02;
   private static final double TARGET_TOLERANCE = 15;
   double defaultLeftPower;
   double defaultRightPower;
