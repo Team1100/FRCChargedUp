@@ -22,6 +22,7 @@ import frc.robot.commands.Arm.sequences.TurretToHighRight;
 import frc.robot.commands.Arm.sequences.TurretToLowLeft;
 import frc.robot.commands.Arm.sequences.TurretToLowRight;
 import frc.robot.commands.Drive.SwitchDriveIdleMode;
+import frc.robot.commands.Drive.SwitchDrivePIDMode;
 import frc.robot.commands.Drive.ToggleIdleMode;
 import frc.robot.commands.Hand.ExpelCube;
 import frc.robot.commands.Hand.IntakeCube;
@@ -95,7 +96,7 @@ public class OI {
     // Now Mapping Commands to XBox
     ////////////////////////////////////////////////////
     if (Constants.XBOX_CONTROLLER_DRIVER_ENABLE) {
-      DriverXboxController.getButtonBack().onTrue(new SwitchDriveIdleMode());
+      DriverXboxController.getButtonBack().onTrue(new SwitchDrivePIDMode());
       DriverXboxController.getButtonLeftBumper().onTrue(new ConeLight());
       DriverXboxController.getButtonRightBumper().onTrue(new CubeLight());
       DriverXboxController.getDPad().getLeft().onTrue(new BlinkLights());
