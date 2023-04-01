@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Vision;
 
 /**
@@ -48,6 +49,7 @@ public class Robot extends TimedRobot {
     m_arm.setElbowTargetAngle(0);
     m_arm.setWristTargetAngle(0); 
     Arm.getInstance().enableArmPid();
+    Intake.getInstance().setWinchBrake();
   }
 
   /**
@@ -69,7 +71,7 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    m_drive.setIdleMode(IdleMode.kCoast);
+    m_drive.setIdleMode(IdleMode.kBrake);
   }
 
   @Override

@@ -152,7 +152,7 @@ public class ScoreConeAndCube extends CommandBase {
         m_state = State.DRIVE_TO_CUBE;
         break;
       case DRIVE_TO_CUBE:
-        if (m_driveToCube.isPartiallyFinished(.48)) {
+        if (m_driveToCube.isPartiallyFinished(.43)) {
           m_state = State.SCHEDULE_PICK_UP_CUBE;
         }
         break;
