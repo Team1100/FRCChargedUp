@@ -29,7 +29,7 @@ public class ReversedFloorGrabSequenceCube extends SequentialCommandGroup {
     
     //TODO: figure out exactly what operators want and reprogram to match
     addCommands(
-        new ArmToPreset(0, -49, 28, -178, false, true, true, true)
+        new ArmToPreset(0, -49, 28, -175, false, true, true, true)
     );
   }
 

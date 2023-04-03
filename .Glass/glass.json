@@ -14,6 +14,12 @@
         "open": true
       },
       "Shuffleboard": {
+        "Drive": {
+          "Basic": {
+            "open": true
+          },
+          "open": true
+        },
         "Vision": {
           "open": true
         },
@@ -43,7 +49,9 @@
       "/Shuffleboard/ControllerMode/Modes/Mode1": "Command",
       "/Shuffleboard/ControllerMode/Modes/Mode2": "Command",
       "/Shuffleboard/Drive/Basic/ArcadeDrive": "Command",
+      "/Shuffleboard/Drive/Basic/DriveFixedSpeed": "Command",
       "/Shuffleboard/Drive/Basic/DriveToTarget": "Command",
+      "/Shuffleboard/Drive/Basic/SwitchDrivePIDMode": "Command",
       "/Shuffleboard/Drive/Basic/ToggleIdleMode": "Command",
       "/Shuffleboard/Hand/Basic/ExpelCone": "Command",
       "/Shuffleboard/Hand/Basic/ExpelCube": "Command",
