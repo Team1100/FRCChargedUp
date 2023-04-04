@@ -260,8 +260,7 @@ public class Drive extends SubsystemBase {
   public void togglePIDDriveMode() {
     if(m_driveMode == DriveMode.kPIDVelocity){
       setDriveMode(DriveMode.kPower);
-    }
-    else{
+    } else {
       setDriveMode(DriveMode.kPIDVelocity);
     }
   }
@@ -275,9 +274,7 @@ public class Drive extends SubsystemBase {
       setIdleMode(IdleMode.kCoast);
       m_currentIdleMode = IdleMode.kCoast;
       TestingDashboard.getInstance().updateString(m_drive, "DriveMode", "Power");
-    }
-    else if(mode == DriveMode.kPIDVelocity)
-    {
+    } else if (mode == DriveMode.kPIDVelocity) {
       setIdleMode(IdleMode.kBrake);
       m_currentIdleMode = IdleMode.kBrake;
       TestingDashboard.getInstance().updateString(m_drive, "DriveMode", "PIDVelocity");

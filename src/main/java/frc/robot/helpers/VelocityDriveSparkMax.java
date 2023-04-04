@@ -62,7 +62,6 @@ public class VelocityDriveSparkMax extends CANSparkMax
         if(m_driveMode == DriveMode.kPIDVelocity)
         {
             double rpm = speed * Constants.DRIVE_MAX_MOTOR_RPM;
-            System.out.println("Driving in Velocity PID mode at " + rpm + "rpm, from speed "+ speed + ", P:"+m_PidController.getP());
             m_PidController.setReference(rpm, ControlType.kVelocity);
         }
         else
