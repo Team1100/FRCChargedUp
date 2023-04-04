@@ -27,6 +27,7 @@ import frc.robot.commands.Auto.ScoreCube;
 import frc.robot.commands.Auto.ScoreCubeAndBalance;
 import frc.robot.commands.Auto.ScoreCubeAndDriveBack;
 import frc.robot.commands.Drive.ArcadeDrive;
+import frc.robot.commands.Drive.AutoBalanceCommand;
 import frc.robot.commands.Drive.DriveDistance;
 import frc.robot.commands.Drive.DriveFixedSpeed;
 import frc.robot.commands.Drive.SwitchDrivePIDMode;
@@ -128,6 +129,7 @@ public class RobotContainer {
     CancelArmMovement.registerWithTestingDashboard();
     SwitchDrivePIDMode.registerWithTestingDashboard();
     DriveFixedSpeed.registerWithTestingDashboard();
+    AutoBalanceCommand.registerWithTestingDashboard();
 
     // Hand
     // SpinIntake.registerWithTestingDashboard();
