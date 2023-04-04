@@ -31,7 +31,11 @@ public class VelocityDriveSparkMax extends CANSparkMax
         super.setClosedLoopRampRate(Constants.DRIVE_RAMP_RATE);
         m_PidController = super.getPIDController();
         m_PidController.setOutputRange(-Constants.DRIVE_CLOSED_LOOP_MAX_OUTPUT, Constants.DRIVE_CLOSED_LOOP_MAX_OUTPUT);
-        setPID(P, I, D);
+        m_P = 0;
+        m_I = 0;
+        m_D = 0;
+        m_FF = 0;
+        m_Iz = 0;
         m_driveMode = DriveMode.kPower;
     }
 
@@ -42,11 +46,11 @@ public class VelocityDriveSparkMax extends CANSparkMax
 
     public void setPID(double P, double I, double D, double FF, double Iz)
     {
-        if(P != m_PidController.getP()){m_P=P; m_PidController.setP(m_P);}
-        if(I != m_PidController.getI()){m_I=I; m_PidController.setI(m_I);}
-        if(D != m_PidController.getD()){m_D=D; m_PidController.setD(m_D);}
-        if(FF != m_PidController.getFF()){m_FF=FF; m_PidController.setFF(m_FF);}
-        if(Iz != m_PidController.getIZone()){m_Iz=Iz; m_PidController.setIZone(m_Iz);}
+        if(P != m_P){m_P=P; m_PidController.setP(m_P);}
+        if(I != m_I){m_I=I; m_PidController.setI(m_I);}
+        if(D != m_D){m_D=D; m_PidController.setD(m_D);}
+        if(FF != m_FF){m_FF=FF; m_PidController.setFF(m_FF);}
+        if(Iz != m_Iz){m_Iz=Iz; m_PidController.setIZone(m_Iz);}
     }
 
     public DriveMode getDriveMode(){return m_driveMode;}
@@ -62,7 +66,7 @@ public class VelocityDriveSparkMax extends CANSparkMax
         if(m_driveMode == DriveMode.kPIDVelocity)
         {
             double rpm = speed * Constants.DRIVE_MAX_MOTOR_RPM;
-            System.out.println("Driving in Velocity PID mode at " + rpm + "rpm, from speed "+ speed + ", P:"+m_PidController.getP());
+            // System.out.println("Driving in Velocity PID mode at " + rpm + "rpm, from speed "+ speed + ", P:"+m_PidController.getP());
             m_PidController.setReference(rpm, ControlType.kVelocity);
         }
         else
