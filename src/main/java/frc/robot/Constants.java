@@ -176,5 +176,9 @@ public final class Constants {
   public static final boolean ARM_PERIODIC_ENABLED = true;
   public static final boolean DRIVE_PERIODIC_ENABLED = true;
 
+  // Auto Constants
+  public static final int BALANCING_BACKWARD = 1;
+  public static final int BALANCING_FORWARD = -1;
+
 
 }
