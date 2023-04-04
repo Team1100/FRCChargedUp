@@ -59,7 +59,7 @@ public class Vision extends SubsystemBase {
       SmartDashboard.putNumber("Target AprilTag ID", 1);
       
       Shuffleboard.getTab("Vision")
-          .add("hueMin", 97)
+          .add("hueMin", 96)
           .withWidget(BuiltInWidgets.kNumberSlider)
           .withProperties(Map.of("min", 0, "max", 255)) // specify widget properties here
           .getEntry();

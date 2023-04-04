@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.ADIS16448_IMU.IMUAxis;
 import edu.wpi.first.wpilibj.ADXL345_I2C.Axes;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.drive.RobotDriveBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
@@ -21,6 +22,8 @@ import frc.robot.Constants;
 import frc.robot.RoboRioAccelerometerHelper;
 import frc.robot.RobotMap;
 import frc.robot.commands.Drive.AutoBalance;
+import frc.robot.helpers.VelocityDriveSparkMax;
+import frc.robot.helpers.VelocityDriveSparkMax.DriveMode;
 import frc.robot.testingdashboard.TestingDashboard;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -36,8 +39,8 @@ public class Drive extends SubsystemBase {
 
   private CANSparkMax m_backLeft;
   private CANSparkMax m_backRight;
-  private CANSparkMax m_frontLeft;
-  private CANSparkMax m_frontRight;
+  private VelocityDriveSparkMax m_frontLeft;
+  private VelocityDriveSparkMax m_frontRight;
   private RelativeEncoder m_backLeftEncoder;
   private RelativeEncoder m_backRightEncoder;
   private RelativeEncoder m_frontLeftEncoder;
@@ -50,6 +53,7 @@ public class Drive extends SubsystemBase {
   private boolean m_measureDistance;
   private double accelIntCount = 0;
   private IdleMode m_currentIdleMode;
+  private DriveMode m_driveMode;
 
   private AutoBalance bal;
 
@@ -86,8 +90,8 @@ public class Drive extends SubsystemBase {
 
     m_backLeft = new CANSparkMax(RobotMap.D_BACK_LEFT, MotorType.kBrushless);
     m_backRight = new CANSparkMax(RobotMap.D_BACK_RIGHT, MotorType.kBrushless);
-    m_frontLeft = new CANSparkMax(RobotMap.D_FRONT_LEFT, MotorType.kBrushless);
-    m_frontRight = new CANSparkMax(RobotMap.D_FRONT_RIGHT, MotorType.kBrushless);
+    m_frontLeft = new VelocityDriveSparkMax(RobotMap.D_FRONT_LEFT, MotorType.kBrushless, Constants.DRIVE_CLOSED_LOOP_P, Constants.DRIVE_CLOSED_LOOP_I, Constants.DRIVE_CLOSED_LOOP_D);
+    m_frontRight = new VelocityDriveSparkMax(RobotMap.D_FRONT_RIGHT, MotorType.kBrushless, Constants.DRIVE_CLOSED_LOOP_P, Constants.DRIVE_CLOSED_LOOP_I, Constants.DRIVE_CLOSED_LOOP_D);
 
     m_backLeftEncoder = m_backLeft.getEncoder();
     m_backRightEncoder = m_backRight.getEncoder();
@@ -111,6 +115,7 @@ public class Drive extends SubsystemBase {
 
     setIdleMode(IdleMode.kCoast);
     m_currentIdleMode = IdleMode.kCoast;
+    m_driveMode = DriveMode.kPower;
     setEncoderConversionFactor(CONVERSION_FACTOR);
 
     if(Constants.D_ENABLE_RAMP_RATE) {
@@ -229,6 +234,13 @@ public class Drive extends SubsystemBase {
       TestingDashboard.getInstance().registerNumber(m_drive, "Gyro", "Angle", 0);
       TestingDashboard.getInstance().registerNumber(m_drive, "Gyro", "AngleRateOfChange", 0);
 
+      TestingDashboard.getInstance().registerNumber(m_drive, "PIDValues", "driveP", Constants.DRIVE_CLOSED_LOOP_P);
+      TestingDashboard.getInstance().registerNumber(m_drive, "PIDValues", "driveI", Constants.DRIVE_CLOSED_LOOP_I);
+      TestingDashboard.getInstance().registerNumber(m_drive, "PIDValues", "driveD", Constants.DRIVE_CLOSED_LOOP_D);
+
+      TestingDashboard.getInstance().registerString(m_drive, "Basic", "DriveMode", "Power");
+      TestingDashboard.getInstance().registerNumber(m_drive, "Basic", "DriveSpeedRPM", 0);
+      
     }
     return m_drive;
   }
@@ -242,6 +254,30 @@ public class Drive extends SubsystemBase {
       setIdleMode(IdleMode.kCoast);
       m_currentIdleMode = IdleMode.kCoast;
       TestingDashboard.getInstance().updateString(m_drive, "DriveIdleMode", "Coast");
+    }
+  }
+
+  public void togglePIDDriveMode() {
+    if(m_driveMode == DriveMode.kPIDVelocity){
+      setDriveMode(DriveMode.kPower);
+    } else {
+      setDriveMode(DriveMode.kPIDVelocity);
+    }
+  }
+
+  public void setDriveMode(DriveMode mode){
+    m_frontLeft.setDriveMode(mode);
+    m_frontRight.setDriveMode(mode);
+    m_driveMode = mode;
+    if(mode == DriveMode.kPower)
+    {
+      setIdleMode(IdleMode.kCoast);
+      m_currentIdleMode = IdleMode.kCoast;
+      TestingDashboard.getInstance().updateString(m_drive, "DriveMode", "Power");
+    } else if (mode == DriveMode.kPIDVelocity) {
+      setIdleMode(IdleMode.kBrake);
+      m_currentIdleMode = IdleMode.kBrake;
+      TestingDashboard.getInstance().updateString(m_drive, "DriveMode", "PIDVelocity");
     }
   }
 
@@ -284,11 +320,23 @@ public class Drive extends SubsystemBase {
     drivetrain.arcadeDrive(fwd, -rot);
   }
 
+ 
+
   public void tankDrive(double leftSpeed, double rightSpeed) {
+    tankDrive(leftSpeed, rightSpeed, true);
+  }
+  public void tankDrive(double leftSpeed, double rightSpeed, boolean sqInputs){
     m_rightSpeed = rightSpeed;
     m_leftSpeed = leftSpeed;
-    drivetrain.tankDrive(m_leftSpeed, m_rightSpeed);
+    drivetrain.tankDrive(m_leftSpeed, m_rightSpeed, sqInputs);
     TestingDashboard.getInstance().updateNumber(m_drive, "SpeedOfTravel", leftSpeed);
+  }
+  public void tankDriveRPM(double leftRPM, double rightRPM)
+  {
+    double leftSpeed = leftRPM/Constants.DRIVE_MAX_MOTOR_RPM + RobotDriveBase.kDefaultDeadband;
+    double rightSpeed = leftRPM/Constants.DRIVE_MAX_MOTOR_RPM + RobotDriveBase.kDefaultDeadband;
+
+    tankDrive(leftSpeed, rightSpeed, false);
   }
 
   //Encoder Methods
@@ -402,7 +450,13 @@ public class Drive extends SubsystemBase {
         TestingDashboard.getInstance().updateNumber(m_drive, "instantAccelMagnitudeInchesPerSecondSquared", m_accelHelper.getAccelerometerMagnitudeInchesPerSecondSquared());
         TestingDashboard.getInstance().updateNumber(m_drive, "Angle", m_gyro.getAngle());
         TestingDashboard.getInstance().updateNumber(m_drive, "AngleRateOfChange", m_gyro.getRate());
-        
+
+        double driveP = TestingDashboard.getInstance().getNumber(m_drive, "driveP");
+        double driveI = TestingDashboard.getInstance().getNumber(m_drive, "driveI");
+        double driveD = TestingDashboard.getInstance().getNumber(m_drive, "driveD");
+
+        m_frontLeft.setPID(driveP, driveI, driveD);
+        m_frontRight.setPID(driveP, driveI, driveD);
       }
 
       //System.out.println("Avg Current: " + getInstantTotalMotorCurrent());
