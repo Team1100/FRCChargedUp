@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import frc.robot.Constants;
+import frc.robot.helpers.VelocityDriveSparkMax.DriveMode;
 import frc.robot.subsystems.Drive;
 
 public class AutoBalance {
@@ -15,6 +16,7 @@ public class AutoBalance {
     private BuiltInAccelerometer mRioAccel;
     private int state;
     private int debounceCount;
+    private boolean dropDetected;
     private double robotSpeedSlow;
     private double robotSpeedFast;
     private double onChargeStationDegree;
@@ -46,7 +48,7 @@ public class AutoBalance {
         // Speed the robot drives while balancing itself on the charge station.
         // Should be roughly half the fast speed, to make the robot more accurate,
         // default = 0.2
-        robotSpeedSlow = 0.3;
+        robotSpeedSlow = 0.4;
 
         // Angle where the robot knows it is on the charge station, default = 14.5
         onChargeStationDegree = 8;
@@ -129,20 +131,32 @@ public class AutoBalance {
                 if (debounceCount > secondsToTicks(debounceTime)) {
                     state = 1;
                     debounceCount = 0;
+                    Drive.getInstance().setDriveMode(DriveMode.kPIDVelocity);
                     return -robotSpeedSlow;
                 }
+                dropDetected = false;
                 return -robotSpeedFast;
             // driving up charge station, drive slower, stopping when level
             case 1:
-                if (Drive.m_gyro.getAngle() < levelDegree && Drive.m_gyro.getAngle() > -levelDegree) {
+                if (dropDetected) {
                     debounceCount++;
                 }
                 if (debounceCount > secondsToTicks(debounceTime)) {
-                    state = 2;
-                    debounceCount = 0;
-                    return 0;
+                    if(Drive.m_gyro.getAngle() < levelDegree && Drive.m_gyro.getAngle() > -levelDegree)
+                    {
+                        state = 2;
+                        debounceCount = 0;
+                        return 0;
+                    }
+                    else
+                    {
+                        debounceCount = 0;
+                        dropDetected = false;
+                        return -robotSpeedSlow;
+                    }
                 }
-                if (Drive.m_gyro.getRate() <= -11) {
+                if (Drive.m_gyro.getRate() <= -7) {
+                    dropDetected = true;
                     return 0;
                 }
                 return -robotSpeedSlow;
@@ -156,7 +170,7 @@ public class AutoBalance {
             }
                 //Shortcut to using the Gyro (if enabled):
             if(Constants.D_ENABLE_GYRO_BALANCE && USE_GYRO_ALL) {
-                if (Drive.m_gyro.getRate() <= -15) {
+                if (Drive.m_gyro.getRate() <= -9) {
                     debounceCount++;
                     return 0.1;
                 }
@@ -169,9 +183,9 @@ public class AutoBalance {
                 }
 
                 if (getTilt() >= levelDegree) {
-                    return -robotSpeedSlow * 0.8;
+                    return -robotSpeedSlow * 0.6;
                 } else if (getTilt() <= -levelDegree) {
-                    return robotSpeedSlow * 0.8;
+                    return robotSpeedSlow * 0.6;
                 }
             case 3:
                 return 0;

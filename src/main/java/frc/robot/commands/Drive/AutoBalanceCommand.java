@@ -5,7 +5,9 @@
 package frc.robot.commands.Drive;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.helpers.VelocityDriveSparkMax.DriveMode;
 import frc.robot.subsystems.Drive;
+import frc.robot.testingdashboard.TestingDashboard;
 
 public class AutoBalanceCommand extends CommandBase {
 
@@ -29,7 +31,13 @@ public class AutoBalanceCommand extends CommandBase {
   @Override
   public void execute() {
     double speed = m_autoBalance.autoBalanceRoutine();
+    m_drive.setDriveMode(DriveMode.kPower);
     m_drive.tankDrive(speed, speed);
+  }
+
+  public static void registerWithTestingDashboard(){
+    AutoBalanceCommand cmd = new AutoBalanceCommand();
+    TestingDashboard.getInstance().registerCommand(Drive.getInstance(), "Basic", cmd);
   }
 
   // Called once the command ends or is interrupted.
