@@ -86,6 +86,8 @@ public class DriveDistance extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_drive.tankDrive(0, 0);
+    m_leftEncoder.setPosition(ENCODER_INITIAL_POSITION);
+    m_rightEncoder.setPosition(ENCODER_INITIAL_POSITION);
   }
 
   // Returns true when the command should end.

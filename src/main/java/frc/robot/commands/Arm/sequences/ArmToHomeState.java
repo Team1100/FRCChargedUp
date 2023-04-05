@@ -33,6 +33,7 @@ public class ArmToHomeState extends CommandBase {
   private double m_shoulderStartingAngle;
 
   private boolean m_isFinished;
+  private boolean m_isPartiallyFinished;
   private State m_state;
   /** Creates a new ReachForNextBarStatefully. */
   public ArmToHomeState() {
@@ -54,6 +55,7 @@ public class ArmToHomeState extends CommandBase {
   public void initialize() {
     m_state = State.INIT;
     m_isFinished = false;
+    m_isPartiallyFinished = false;
     m_shoulderStartingAngle = Arm.getInstance().getShoulderAngle();
   }
 
@@ -72,6 +74,7 @@ public class ArmToHomeState extends CommandBase {
       case RETRACT_SHOULDER:
         if (Arm.getInstance().isShoulderHalfFinishedGoingIn(m_shoulderStartingAngle))
           m_state = State.SCHEDULE_RETRACT_ELBOW;
+          m_isPartiallyFinished = true;
           m_retractShoulder.end(true);
         break;
 
@@ -104,6 +107,10 @@ public class ArmToHomeState extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+  }
+
+  public boolean isPartiallyFinished() {
+    return m_isPartiallyFinished;
   }
 
   // Returns true when the command should end.

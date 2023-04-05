@@ -23,10 +23,13 @@ import frc.robot.commands.Auto.ScoreCone;
 import frc.robot.commands.Auto.ScoreConeAndBalance;
 import frc.robot.commands.Auto.ScoreConeAndCube;
 import frc.robot.commands.Auto.ScoreConeAndDriveBack;
+import frc.robot.commands.Auto.ScoreConeMobilityAndBalance;
 import frc.robot.commands.Auto.ScoreCube;
 import frc.robot.commands.Auto.ScoreCubeAndBalance;
 import frc.robot.commands.Auto.ScoreCubeAndDriveBack;
+import frc.robot.commands.Auto.ScoreCubeMobilityAndBalance;
 import frc.robot.commands.Drive.ArcadeDrive;
+import frc.robot.commands.Drive.AutoBalanceCommand;
 import frc.robot.commands.Drive.DriveDistance;
 import frc.robot.commands.Drive.DriveFixedSpeed;
 import frc.robot.commands.Drive.SwitchDrivePIDMode;
@@ -58,12 +61,12 @@ public class RobotContainer {
   private final ControllerMode m_controllerMode;
 
   private final Command m_scoreConeAndDriveBack = new ScoreConeAndDriveBack(-175,0,0.6);
-  private final Command m_scoreConeAndPark = new ScoreConeAndDriveBack(-45,-32,0.6);
   private final Command m_scoreCubeAndDriveBack = new ScoreCubeAndDriveBack(-175,0,0.6);
-  private final Command m_scoreCubeAndPark = new ScoreCubeAndDriveBack(-45,-32,0.6);
   private final Command m_scoreCubeAndBalance = new ScoreCubeAndBalance(0,0,0.6);
   private final Command m_scoreConeAndBalance = new ScoreConeAndBalance(0,0,0.6);
   private final Command m_scoreConeAndCube = new ScoreConeAndCube(0.55, 0.4);
+  private final Command m_scoreConeMobilityAndBalance = new ScoreConeMobilityAndBalance(-160, -70, .5);
+  private final Command m_scoreCubeMobilityAndBalance = new ScoreCubeMobilityAndBalance(-160, -70, .5);
 
   private final Command m_scoreCone = new ScoreCone();
   private final Command m_scoreCube = new ScoreCube();
@@ -88,20 +91,22 @@ public class RobotContainer {
 
     // Auto Routines: 
     m_chooser.setDefaultOption("Cone and Drive Back", m_scoreConeAndDriveBack);
-    m_chooser.addOption("Cone And Park", m_scoreConeAndPark);
+    m_chooser.addOption("Cone, Mobility, and Balance", m_scoreConeMobilityAndBalance);
+    m_chooser.addOption("Cube, Mobility, and Balance", m_scoreCubeMobilityAndBalance);
+    m_chooser.addOption("Cone and Balance", m_scoreConeAndBalance);
     m_chooser.addOption("Cone", m_scoreCone);
     m_chooser.addOption("Cube And Drive Back", m_scoreCubeAndDriveBack);
-    m_chooser.addOption("Cube And Park", m_scoreCubeAndPark);
     m_chooser.addOption("Cube", m_scoreCube);
     m_chooser.addOption("Cube And Balance", m_scoreCubeAndBalance);
-    m_chooser.addOption("Cone and Balance", m_scoreConeAndBalance);
     m_chooser.addOption("Cone and Cube", m_scoreConeAndCube);
+
     // Configure the trigger bindings
     configureBindings();
 
     // Register commands with TestingDashboard commands
 
     // Auto
+    ScoreConeMobilityAndBalance.registerWithTestingDashboard();
 
     // Drive
     ArcadeDrive.registerWithTestingDashboard();
@@ -128,6 +133,7 @@ public class RobotContainer {
     CancelArmMovement.registerWithTestingDashboard();
     SwitchDrivePIDMode.registerWithTestingDashboard();
     DriveFixedSpeed.registerWithTestingDashboard();
+    AutoBalanceCommand.registerWithTestingDashboard();
 
     // Hand
     // SpinIntake.registerWithTestingDashboard();

@@ -84,7 +84,7 @@ public class Drive extends SubsystemBase {
   /** Creates a new Drive. */
   private Drive() {
 
-    bal = new AutoBalance();
+    bal = new AutoBalance(Constants.BALANCING_BACKWARD);
 
     m_gyro = new ADIS16470_IMU();
 

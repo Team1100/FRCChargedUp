@@ -9,6 +9,7 @@ package frc.robot.commands.Auto;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.commands.Arm.presets.ArmToPreset;
 import frc.robot.commands.Arm.sequences.ArmToHomeState;
 import frc.robot.commands.Arm.sequences.HighPostCenterState;
@@ -65,7 +66,7 @@ public class ScoreConeAndBalance extends CommandBase {
     m_wait = new Wait(2.5, true);
     m_driveBack2 = new DriveDistance(secondBackDistance, power, power, 0, true);
 
-    m_autoBalance = new AutoBalanceCommand();
+    m_autoBalance = new AutoBalanceCommand(Constants.BALANCING_BACKWARD);
     m_drive = Drive.getInstance();
   }
 

@@ -34,6 +34,7 @@ public class ScoreConeAndCube extends CommandBase {
     // Part 2: pickup cube off the floor
     SCHEDULE_PICK_UP_CUBE,
     PICK_UP_CUBE,
+    WAIT_FOR_INTAKE,
 
     // Part 3: drive back, turn, score the cube
     SCHEDULE_DRIVE_BACK,
@@ -64,6 +65,8 @@ public class ScoreConeAndCube extends CommandBase {
   DriveToTarget m_driveToCube;
   DriveToTarget m_driveToTag;
 
+  Wait m_waitForIntake;
+
 
   private boolean m_isFinished;
   private State m_state;
@@ -84,9 +87,10 @@ public class ScoreConeAndCube extends CommandBase {
     m_smartIntakeCube = new SmartIntakeCube();
     // Part 3 of the sequence
     m_driveBack2 = new DriveDistance(50, slowPower, slowPower, 0, true);
-    m_driveToTag = new DriveToTarget(185, power, power, 0, true);
+    m_driveToTag = new DriveToTarget(180, power, power, 0, true);
 
     m_expelCubeTimed = new ExpelCubeTimed();
+    m_waitForIntake = new Wait(2, true);
 
   }
 
@@ -108,7 +112,7 @@ public class ScoreConeAndCube extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
+    // TODO: can try waiting for first driveBackDistance to finish and then use the non-state arm to home.
     switch (m_state) {
 
       // Part 1 of the sequence
@@ -137,7 +141,7 @@ public class ScoreConeAndCube extends CommandBase {
         break;
       
       case SCHEDULE_RETRACT_ARM_AND_DRIVE_BACK:
-        m_armToHome.schedule();
+        m_floorGrabSequence.schedule();
         m_driveBack.schedule();
         m_state = State.RETRACT_ARM_AND_DRIVE_BACK;
         break;
@@ -152,14 +156,13 @@ public class ScoreConeAndCube extends CommandBase {
         m_state = State.DRIVE_TO_CUBE;
         break;
       case DRIVE_TO_CUBE:
-        if (m_driveToCube.isPartiallyFinished(.40)) {
+        if (m_driveToCube.isPartiallyFinished(.6)) {
           m_state = State.SCHEDULE_PICK_UP_CUBE;
         }
         break;
 
       // Part 2 of the sequence, states to pick up cube
       case SCHEDULE_PICK_UP_CUBE:
-        m_floorGrabSequence.schedule();
         m_smartIntakeCube.schedule();
         m_state = State.PICK_UP_CUBE;
         break;
@@ -168,8 +171,17 @@ public class ScoreConeAndCube extends CommandBase {
           m_state = State.SCHEDULE_DRIVE_BACK;
         }
         if (m_driveToCube.isFinished() && !m_smartIntakeCube.isFinished()) {
-          m_state = State.DONE;
+          m_state = State.WAIT_FOR_INTAKE;
+          m_waitForIntake.schedule();
+        }
+        break;
+      case WAIT_FOR_INTAKE:
+        if (m_waitForIntake.isFinished()) {
           m_smartIntakeCube.cancel();
+          m_state = State.DONE;
+        }
+        if (m_smartIntakeCube.isFinished()) {
+          m_state = State.SCHEDULE_DRIVE_BACK;
         }
         break;
 

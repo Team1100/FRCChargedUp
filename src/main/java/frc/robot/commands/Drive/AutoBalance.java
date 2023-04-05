@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import frc.robot.Constants;
+import frc.robot.helpers.VelocityDriveSparkMax.DriveMode;
 import frc.robot.subsystems.Drive;
 
 public class AutoBalance {
@@ -15,6 +16,7 @@ public class AutoBalance {
     private BuiltInAccelerometer mRioAccel;
     private int state;
     private int debounceCount;
+    private boolean dropDetected;
     private double robotSpeedSlow;
     private double robotSpeedFast;
     private double onChargeStationDegree;
@@ -27,7 +29,12 @@ public class AutoBalance {
     boolean m_isFinished;
     final boolean USE_GYRO_ALL;
 
-    public AutoBalance() {
+
+    /**
+     * State Machine used to balance the robot on the charging station
+     * @param direction the direction that the robot is driving. 
+     */
+    public AutoBalance(int direction) {
         mRioAccel = new BuiltInAccelerometer();
 
         USE_GYRO_ALL = false;
@@ -41,20 +48,20 @@ public class AutoBalance {
          * CONFIG *
          **********/
         // Speed the robot drives while scoring/approaching station, default = 0.4
-        robotSpeedFast = 0.53;
+        robotSpeedFast = 0.53 * direction;
 
         // Speed the robot drives while balancing itself on the charge station.
         // Should be roughly half the fast speed, to make the robot more accurate,
         // default = 0.2
-        robotSpeedSlow = 0.3;
+        robotSpeedSlow = 0.4 * direction;
 
         // Angle where the robot knows it is on the charge station, default = 14.5
-        onChargeStationDegree = 8;
+        onChargeStationDegree = 8 * direction;
 
         // Angle where the robot can assume it is level on the charging station
         // Used for exiting the drive forward sequence as well as for auto balancing,
         // default = 10.0
-        levelDegree = 6;
+        levelDegree = 7;
 
         // Amount of time a sensor condition needs to be met before changing states in
         // seconds
@@ -79,7 +86,6 @@ public class AutoBalance {
         onPlatformROC = 0;
 
         m_isFinished = false;
-
     }
 
     public double getPitch() {
@@ -112,12 +118,13 @@ public class AutoBalance {
 
     public int secondsToTicks(double time) {
         return (int) (time * 50);
-    }
+    } 
 
     // routine for automatically driving onto and engaging the charge station.
     // returns a value from -1.0 to 1.0, which left and right motors should be set
     // to.
-    public double autoBalanceRoutine() {
+    public double backwardAutoBalanceRoutine() {
+
         Drive.getInstance().updateRioTiltAverages();
         System.out.println("Tilt: " + getTilt());
         switch (state) {
@@ -129,20 +136,32 @@ public class AutoBalance {
                 if (debounceCount > secondsToTicks(debounceTime)) {
                     state = 1;
                     debounceCount = 0;
+                    Drive.getInstance().setDriveMode(DriveMode.kPIDVelocity);
                     return -robotSpeedSlow;
                 }
+                dropDetected = false;
                 return -robotSpeedFast;
             // driving up charge station, drive slower, stopping when level
             case 1:
-                if (Drive.m_gyro.getAngle() < levelDegree && Drive.m_gyro.getAngle() > -levelDegree) {
+                if (dropDetected) {
                     debounceCount++;
                 }
                 if (debounceCount > secondsToTicks(debounceTime)) {
-                    state = 2;
-                    debounceCount = 0;
-                    return 0;
+                    if(Drive.m_gyro.getAngle() < levelDegree && Drive.m_gyro.getAngle() > -levelDegree)
+                    {
+                        state = 2;
+                        debounceCount = 0;
+                        return 0;
+                    }
+                    else
+                    {
+                        debounceCount = 0;
+                        dropDetected = false;
+                        return -robotSpeedSlow;
+                    }
                 }
-                if (Drive.m_gyro.getRate() <= -11) {
+                if (Drive.m_gyro.getRate() <= -7) {
+                    dropDetected = true;
                     return 0;
                 }
                 return -robotSpeedSlow;
@@ -156,9 +175,8 @@ public class AutoBalance {
             }
                 //Shortcut to using the Gyro (if enabled):
             if(Constants.D_ENABLE_GYRO_BALANCE && USE_GYRO_ALL) {
-                if (Drive.m_gyro.getRate() <= -15) {
+                if (Drive.m_gyro.getAngle() < levelDegree && Drive.m_gyro.getAngle() > -levelDegree) {
                     debounceCount++;
-                    return 0.1;
                 }
             }
                 if (debounceCount > secondsToTicks(debounceTime)) {
@@ -168,10 +186,10 @@ public class AutoBalance {
                     return 0;
                 }
 
-                if (getTilt() >= levelDegree) {
-                    return -robotSpeedSlow * 0.8;
-                } else if (getTilt() <= -levelDegree) {
-                    return robotSpeedSlow * 0.8;
+                if (Drive.getInstance().m_gyro.getAngle() >= levelDegree) {
+                    return -robotSpeedSlow * 0.6;
+                } else if (Drive.getInstance().m_gyro.getAngle() <= -levelDegree) {
+                    return robotSpeedSlow * 0.6;
                 }
             case 3:
                 return 0;
@@ -179,63 +197,77 @@ public class AutoBalance {
         return 0;
     }
 
-    // Same as auto balance above, but starts auto period by scoring
-    // a game piece on the back bumper of the robot
-    public double scoreAndBalance() {
+        // routine for automatically driving onto and engaging the charge station.
+    // returns a value from -1.0 to 1.0, which left and right motors should be set
+    // to.
+    public double forwardAutoBalanceRoutine() {
+        Drive.getInstance().updateRioTiltAverages();
+        System.out.println("Tilt: " + getTilt());
         switch (state) {
-            // drive back, then forwards, then back again to knock off and score game piece
+            // drive forwards to approach station, exit when tilt is detected
             case 0:
-                debounceCount++;
-                if (debounceCount < secondsToTicks(singleTapTime)) {
-                    return -robotSpeedFast;
-                } else if (debounceCount < secondsToTicks(singleTapTime + scoringBackUpTime)) {
-                    return robotSpeedFast;
-                } else if (debounceCount < secondsToTicks(singleTapTime + scoringBackUpTime + doubleTapTime)) {
-                    return -robotSpeedFast;
-                } else {
-                    debounceCount = 0;
-                    state = 1;
-                    return 0;
-                }
-                // drive forwards until on charge station
-            case 1:
-                if (getTilt() > onChargeStationDegree) {
+                if (Drive.getInstance().getTotalAverageRioAccel() < onChargeStationDegree) {
                     debounceCount++;
                 }
                 if (debounceCount > secondsToTicks(debounceTime)) {
-                    state = 2;
+                    state = 1;
                     debounceCount = 0;
-                    return robotSpeedSlow;
+                    Drive.getInstance().setDriveMode(DriveMode.kPIDVelocity);
+                    return -robotSpeedSlow;
                 }
-                return robotSpeedFast;
+                dropDetected = false;
+                return -robotSpeedFast;
             // driving up charge station, drive slower, stopping when level
-            case 2:
-                if (getTilt() < levelDegree) {
+            case 1:
+                if (dropDetected) {
                     debounceCount++;
                 }
+                if (debounceCount > secondsToTicks(debounceTime)) {
+                    if(Drive.m_gyro.getAngle() < levelDegree && Drive.m_gyro.getAngle() > -levelDegree)
+                    {
+                        state = 2;
+                        debounceCount = 0;
+                        return -0.2;
+                    }
+                    else
+                    {
+                        debounceCount = 0;
+                        dropDetected = false;
+                        return -robotSpeedSlow;
+                    }
+                }
+                if (Drive.m_gyro.getRate() >= 7) {
+                    dropDetected = true;
+                    return -0.2;
+                }
+                return -robotSpeedSlow;
+            // on charge station, stop motors and wait for end of auto
+            case 2:
+
+            if(!Constants.D_ENABLE_GYRO_BALANCE && !USE_GYRO_ALL) {
+                if (Math.abs(getTilt()) <= levelDegree / 2) {
+                    debounceCount++;
+                }
+            }
+                //Shortcut to using the Gyro (if enabled):
+            if(Constants.D_ENABLE_GYRO_BALANCE && USE_GYRO_ALL) {
+                if (Drive.m_gyro.getAngle() < levelDegree && Drive.m_gyro.getAngle() > -levelDegree) {
+                    debounceCount++;
+                }
+            }
                 if (debounceCount > secondsToTicks(debounceTime)) {
                     state = 3;
-                    debounceCount = 0;
-                    return 0;
-                }
-                return robotSpeedSlow;
-            // on charge station, ensure robot is flat, then end auto
-            case 3:
-                if (Math.abs(getTilt()) <= 2* levelDegree / 3) {
-                    debounceCount++;
-                }
-                if (debounceCount > secondsToTicks(debounceTime)) {
-                    state = 4;
                     debounceCount = 0;
                     m_isFinished = true;
                     return 0;
                 }
-                if (getTilt() >= levelDegree) {
-                    return robotSpeedSlow / 2;
-                } else if (getTilt() <= -levelDegree) {
-                    return -robotSpeedSlow / 2;
+
+                if (Drive.getInstance().m_gyro.getAngle() >= levelDegree) {
+                    return robotSpeedSlow * 0.75;
+                } else if (Drive.getInstance().m_gyro.getAngle() <= -levelDegree) {
+                    return -robotSpeedSlow * 0.75;
                 }
-            case 4:
+            case 3:
                 return 0;
         }
         return 0;
