@@ -65,7 +65,7 @@ public class ScoreConeMobilityAndBalance extends CommandBase {
   //Register with TestingDashboard
   public static void registerWithTestingDashboard() {
     Auto auto = Auto.getInstance();
-    ScoreConeMobilityAndBalance cmd = new ScoreConeMobilityAndBalance(0,0,0);
+    ScoreConeMobilityAndBalance cmd = new ScoreConeMobilityAndBalance(-100,-80,0.5);
     TestingDashboard.getInstance().registerCommand(auto, "Autos", cmd);
   }
 
@@ -123,7 +123,7 @@ public class ScoreConeMobilityAndBalance extends CommandBase {
         if (m_driveBack.isFinished()) {
           m_state = State.DONE;
         }
-        if (Drive.getInstance().m_gyro.getAngle() < -3) {
+        if (Drive.getInstance().m_gyro.getAngle() < -5) {
           m_driveBack.cancel();
           m_state = State.SCHEDULE_DRIVE_OFF_STATION;
         }
@@ -135,7 +135,7 @@ public class ScoreConeMobilityAndBalance extends CommandBase {
         break;
       
       case DRIVE_OFF_STATION:
-        if (m_driveBack.isFinished()) {
+        if (m_driveOffStation.isFinished()) {
           m_state = State.SCHEDULE_BALANCE;
         }
         break;
