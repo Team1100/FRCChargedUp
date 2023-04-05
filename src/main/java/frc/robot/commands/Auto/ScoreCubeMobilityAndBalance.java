@@ -11,11 +11,12 @@ import frc.robot.commands.Arm.sequences.HighPostCenterState;
 import frc.robot.commands.Drive.AutoBalanceCommand;
 import frc.robot.commands.Drive.DriveDistance;
 import frc.robot.commands.Hand.ExpelConeTimed;
+import frc.robot.commands.Hand.ExpelCubeTimed;
 import frc.robot.subsystems.Auto;
 import frc.robot.subsystems.Drive;
 import frc.robot.testingdashboard.TestingDashboard;
 
-public class ScoreConeMobilityAndBalance extends CommandBase {
+public class ScoreCubeMobilityAndBalance extends CommandBase {
   enum State {
     INIT,
     SCHEDULE_EXTEND_ARM,
@@ -36,7 +37,7 @@ public class ScoreConeMobilityAndBalance extends CommandBase {
   }
 
   HighPostCenterState m_highPostCenter;
-  ExpelConeTimed m_expelConeTimed;
+  ExpelCubeTimed m_expelCubeTimed;
   ArmToHomeState m_armToHome;
   DriveDistance m_driveBack;
   Wait m_wait;
@@ -48,13 +49,13 @@ public class ScoreConeMobilityAndBalance extends CommandBase {
   private boolean m_isFinished;
   private State m_state;
   /** Creates a new ReachForNextBarStatefully. */
-  public ScoreConeMobilityAndBalance(double driveBackDistance, double secondDriveBackDistance, double power) {
+  public ScoreCubeMobilityAndBalance(double driveBackDistance, double secondDriveBackDistance, double power) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_state = State.INIT;
     m_isFinished = false;
 
     m_highPostCenter = new HighPostCenterState();
-    m_expelConeTimed = new ExpelConeTimed(); 
+    m_expelCubeTimed = new ExpelCubeTimed(); 
     m_armToHome = new ArmToHomeState();
     m_driveBack = new DriveDistance(driveBackDistance, power, power, 0, true);
     m_wait = new Wait(.25, true);
@@ -67,7 +68,7 @@ public class ScoreConeMobilityAndBalance extends CommandBase {
   //Register with TestingDashboard
   public static void registerWithTestingDashboard() {
     Auto auto = Auto.getInstance();
-    ScoreConeMobilityAndBalance cmd = new ScoreConeMobilityAndBalance(-160,-50,0.5);
+    ScoreCubeMobilityAndBalance cmd = new ScoreCubeMobilityAndBalance(-160,-50,0.5);
     TestingDashboard.getInstance().registerCommand(auto, "Autos", cmd);
   }
 
@@ -97,12 +98,12 @@ public class ScoreConeMobilityAndBalance extends CommandBase {
         break;
 
       case SCHEDULE_SCORE:
-        m_expelConeTimed.schedule();
+        m_expelCubeTimed.schedule();
         m_state = State.SCORE;
         break;
 
       case SCORE:
-        if (m_expelConeTimed.isFinished())
+        if (m_expelCubeTimed.isFinished())
           m_state = State.SCHEDULE_RETRACT_ARM;
         break;
       

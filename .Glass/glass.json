@@ -1,8 +1,5 @@
 {
   "NetworkTables": {
-    "Persistent Values": {
-      "open": false
-    },
     "Retained Values": {
       "open": false
     },
@@ -16,6 +13,9 @@
       "Shuffleboard": {
         "Drive": {
           "Basic": {
+            "open": true
+          },
+          "Gyro": {
             "open": true
           },
           "open": true
@@ -46,9 +46,11 @@
       "/Shuffleboard/Arm/PidJointControl/EnableWristPid": "Command",
       "/Shuffleboard/Arm/PidMasterControl/DisableArmPid": "Command",
       "/Shuffleboard/Arm/PidMasterControl/EnableArmPid": "Command",
+      "/Shuffleboard/Auto/Autos/ScoreConeMobilityAndBalance": "Command",
       "/Shuffleboard/ControllerMode/Modes/Mode1": "Command",
       "/Shuffleboard/ControllerMode/Modes/Mode2": "Command",
       "/Shuffleboard/Drive/Basic/ArcadeDrive": "Command",
+      "/Shuffleboard/Drive/Basic/AutoBalanceCommand": "Command",
       "/Shuffleboard/Drive/Basic/DriveFixedSpeed": "Command",
       "/Shuffleboard/Drive/Basic/DriveToTarget": "Command",
       "/Shuffleboard/Drive/Basic/SwitchDrivePIDMode": "Command",
@@ -66,6 +68,16 @@
       "/SmartDashboard/SendableChooser[0]": "String Chooser"
     },
     "windows": {
+      "/Shuffleboard/Auto/Autos/ScoreConeMobilityAndBalance": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/Shuffleboard/Drive/Basic/AutoBalanceCommand": {
+        "window": {
+          "visible": true
+        }
+      },
       "/Shuffleboard/Drive/Basic/DriveToTarget": {
         "window": {
           "visible": true
@@ -80,5 +92,53 @@
   },
   "NetworkTables Settings": {
     "mode": "Client (NT3)"
+  },
+  "Plots": {
+    "Plot <0>": {
+      "plots": [
+        {
+          "axis": [
+            {
+              "autoFit": true
+            }
+          ],
+          "height": 332,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/Shuffleboard/Drive/Gyro/Angle"
+            }
+          ]
+        }
+      ]
+    },
+    "Plot <1>": {
+      "plots": [
+        {
+          "axis": [
+            {
+              "autoFit": true
+            }
+          ],
+          "height": 332,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/Shuffleboard/Drive/Gyro/AngleRateOfChange"
+            }
+          ]
+        }
+      ]
+    }
   }
 }

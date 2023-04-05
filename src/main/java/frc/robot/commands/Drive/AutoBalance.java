@@ -61,7 +61,7 @@ public class AutoBalance {
         // Angle where the robot can assume it is level on the charging station
         // Used for exiting the drive forward sequence as well as for auto balancing,
         // default = 10.0
-        levelDegree = 6;
+        levelDegree = 7;
 
         // Amount of time a sensor condition needs to be met before changing states in
         // seconds
@@ -227,7 +227,7 @@ public class AutoBalance {
                     {
                         state = 2;
                         debounceCount = 0;
-                        return 0;
+                        return -0.2;
                     }
                     else
                     {
@@ -238,7 +238,7 @@ public class AutoBalance {
                 }
                 if (Drive.m_gyro.getRate() >= 7) {
                     dropDetected = true;
-                    return 0;
+                    return -0.2;
                 }
                 return -robotSpeedSlow;
             // on charge station, stop motors and wait for end of auto
@@ -263,9 +263,9 @@ public class AutoBalance {
                 }
 
                 if (Drive.getInstance().m_gyro.getAngle() >= levelDegree) {
-                    return -robotSpeedSlow * 0.6;
+                    return robotSpeedSlow * 0.75;
                 } else if (Drive.getInstance().m_gyro.getAngle() <= -levelDegree) {
-                    return robotSpeedSlow * 0.6;
+                    return -robotSpeedSlow * 0.75;
                 }
             case 3:
                 return 0;
