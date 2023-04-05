@@ -64,7 +64,7 @@ public class RobotContainer {
   private final Command m_scoreCubeAndDriveBack = new ScoreCubeAndDriveBack(-175,0,0.6);
   private final Command m_scoreCubeAndBalance = new ScoreCubeAndBalance(0,0,0.6);
   private final Command m_scoreConeAndBalance = new ScoreConeAndBalance(0,0,0.6);
-  private final Command m_scoreConeAndCube = new ScoreConeAndCube(0.55, 0.4);
+  private final Command m_scoreConeAndCube = new ScoreConeAndCube(0.55, 0.5);
   private final Command m_scoreConeMobilityAndBalance = new ScoreConeMobilityAndBalance(-160, -70, .5);
   private final Command m_scoreCubeMobilityAndBalance = new ScoreCubeMobilityAndBalance(-160, -70, .5);
 

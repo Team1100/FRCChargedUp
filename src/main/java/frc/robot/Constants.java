@@ -157,7 +157,8 @@ public final class Constants {
   // Subsystem periodic loops
   public static final boolean DRIVE_PERIODIC_ENABLE = true;
   public static final double DRIVE_RAMP_RATE = 0.5; // Limit changes in power to require 2 secons to go from zero to full
-  public static final double DRIVE_SENSITIVITY = 0.85;
+
+  public static final double DRIVE_SENSITIVITY = 0.72;
   public static final double DRIVE_MAX_MOTOR_RPM = 5500;
   public static final double DRIVE_CLOSED_LOOP_MAX_OUTPUT = 0.8;
   public static final double DRIVE_CLOSED_LOOP_P = 0.0003;

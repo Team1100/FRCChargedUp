@@ -8,6 +8,7 @@ package frc.robot.commands.Auto;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.commands.Arm.ReversedSequences.ReversedFloorGrabSequenceCube;
 import frc.robot.commands.Arm.sequences.ArmToHomeState;
+import frc.robot.commands.Arm.sequences.AutoHighPostCenterState;
 import frc.robot.commands.Arm.sequences.HighPostCenterState;
 import frc.robot.commands.Drive.DriveDistance;
 import frc.robot.commands.Hand.ExpelConeTimed;
@@ -51,7 +52,7 @@ public class ScoreConeAndCube extends CommandBase {
     DONE
   }
 
-  HighPostCenterState m_highPostCenter;
+  AutoHighPostCenterState m_highPostCenter;
   ExpelConeTimed m_expelConeTimed;
   ArmToHomeState m_armToHome;
   DriveDistance m_driveBack;
@@ -77,17 +78,17 @@ public class ScoreConeAndCube extends CommandBase {
     m_isFinished = false;
 
     // Part 1 of the sequence
-    m_highPostCenter = new HighPostCenterState();
+    m_highPostCenter = new AutoHighPostCenterState();
     m_expelConeTimed = new ExpelConeTimed(); 
     m_armToHome = new ArmToHomeState();
     m_driveBack = new DriveDistance(-12, slowPower, slowPower, 0, true);
-    m_driveToCube = new DriveToTarget(-215, power, power, 0, true);
+    m_driveToCube = new DriveToTarget(-225, power, power, 0, true);
     // Part 2 of the sequence
     m_floorGrabSequence = new ReversedFloorGrabSequenceCube();
     m_smartIntakeCube = new SmartIntakeCube();
     // Part 3 of the sequence
-    m_driveBack2 = new DriveDistance(50, slowPower, slowPower, 0, true);
-    m_driveToTag = new DriveToTarget(180, power, power, 0, true);
+    m_driveBack2 = new DriveDistance(30, slowPower, slowPower, 0, true);
+    m_driveToTag = new DriveToTarget(200, power, power, 0, true);
 
     m_expelCubeTimed = new ExpelCubeTimed();
     m_waitForIntake = new Wait(2, true);
@@ -141,7 +142,7 @@ public class ScoreConeAndCube extends CommandBase {
         break;
       
       case SCHEDULE_RETRACT_ARM_AND_DRIVE_BACK:
-        m_floorGrabSequence.schedule();
+        m_armToHome.schedule();
         m_driveBack.schedule();
         m_state = State.RETRACT_ARM_AND_DRIVE_BACK;
         break;
@@ -156,7 +157,9 @@ public class ScoreConeAndCube extends CommandBase {
         m_state = State.DRIVE_TO_CUBE;
         break;
       case DRIVE_TO_CUBE:
-        if (m_driveToCube.isPartiallyFinished(.6)) {
+        if (m_driveToCube.isPartiallyFinished(.48)) {
+          m_armToHome.cancel();
+          m_floorGrabSequence.schedule();
           m_state = State.SCHEDULE_PICK_UP_CUBE;
         }
         break;

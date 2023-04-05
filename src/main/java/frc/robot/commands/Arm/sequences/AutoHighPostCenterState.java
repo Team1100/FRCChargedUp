@@ -14,7 +14,7 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drive;
 import frc.robot.testingdashboard.TestingDashboard;
 
-public class HighPostCenterState extends CommandBase {
+public class AutoHighPostCenterState extends CommandBase {
   enum State {
     INIT,
     SCHEDULE_EXTEND_ELBOW,
@@ -24,13 +24,13 @@ public class HighPostCenterState extends CommandBase {
     DONE
   }
 
-  ArmToPreset m_extendElbow = new ArmToPreset(0, 0, -107, 0, false, false, true, false);
-  ArmToPreset m_extendArm = new ArmToPreset(0, 42.5, -107, -143, false, true, true, true);
+  ArmToPreset m_extendElbow = new ArmToPreset(0, 0, -112, 0, false, false, true, false);
+  ArmToPreset m_extendArm = new ArmToPreset(0, 42.5, -112, -113, false, true, true, true);
 
   private boolean m_isFinished;
   private State m_state;
   /** Creates a new ReachForNextBarStatefully. */
-  public HighPostCenterState() {
+  public AutoHighPostCenterState() {
     // Use addRequirements() here to declare subsystem dependencies.
     
 
@@ -41,7 +41,7 @@ public class HighPostCenterState extends CommandBase {
   //Register with TestingDashboard
   public static void registerWithTestingDashboard() {
     Arm climber = Arm.getInstance();
-    HighPostCenterState cmd = new HighPostCenterState();
+    AutoHighPostCenterState cmd = new AutoHighPostCenterState();
     TestingDashboard.getInstance().registerCommand(climber, "TestCommands", cmd);
   }
 
