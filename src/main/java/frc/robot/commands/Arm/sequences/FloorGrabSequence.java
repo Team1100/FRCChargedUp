@@ -24,8 +24,7 @@ public class FloorGrabSequence extends CommandBase {
     DONE
   }
 
-  ArmToPreset m_extendElbow = new ArmToPreset(0, 0, -25.8, 0, false, false, true, false);
-  ArmToPreset m_extendArm = new ArmToPreset(0, 58.3, -25.8, -191, false, true, true, true);
+  ArmToPreset m_extendArm = new ArmToPreset(0, 48.5, 0, 141, false, true, true, true);
 
   private boolean m_isFinished;
   private State m_state;
@@ -57,16 +56,7 @@ public class FloorGrabSequence extends CommandBase {
   public void execute() {
     switch (m_state) {
       case INIT:
-        m_state = State.SCHEDULE_EXTEND_ELBOW;
-        break;
-      case SCHEDULE_EXTEND_ELBOW:
-        m_extendElbow.schedule();
-        m_state = State.EXTEND_ELBOW;
-        break;
-      case EXTEND_ELBOW:
-        if (Arm.getInstance().isElbowHalfFinishedGoingOut())
-          m_state = State.SCHEDULE_EXTEND_SHOULDER;
-          m_extendElbow.end(true);
+        m_state = State.SCHEDULE_EXTEND_SHOULDER;
         break;
       case SCHEDULE_EXTEND_SHOULDER:
         m_extendArm.schedule();

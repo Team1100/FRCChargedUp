@@ -1,5 +1,8 @@
 {
   "NetworkTables": {
+    "Persistent Values": {
+      "open": false
+    },
     "Retained Values": {
       "open": false
     },
@@ -11,11 +14,14 @@
         "open": true
       },
       "Shuffleboard": {
-        "Drive": {
-          "Basic": {
+        "Arm": {
+          "JointAngles": {
             "open": true
           },
-          "Gyro": {
+          "open": true
+        },
+        "Hand": {
+          "MotorOutput": {
             "open": true
           },
           "open": true
@@ -68,16 +74,6 @@
       "/SmartDashboard/SendableChooser[0]": "String Chooser"
     },
     "windows": {
-      "/Shuffleboard/Auto/Autos/ScoreConeMobilityAndBalance": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/Shuffleboard/Drive/Basic/AutoBalanceCommand": {
-        "window": {
-          "visible": true
-        }
-      },
       "/Shuffleboard/Drive/Basic/DriveToTarget": {
         "window": {
           "visible": true
@@ -102,7 +98,7 @@
               "autoFit": true
             }
           ],
-          "height": 332,
+          "height": 338,
           "series": [
             {
               "color": [
@@ -111,30 +107,7 @@
                 0.6901960968971252,
                 1.0
               ],
-              "id": "NT:/Shuffleboard/Drive/Gyro/Angle"
-            }
-          ]
-        }
-      ]
-    },
-    "Plot <1>": {
-      "plots": [
-        {
-          "axis": [
-            {
-              "autoFit": true
-            }
-          ],
-          "height": 332,
-          "series": [
-            {
-              "color": [
-                0.2980392277240753,
-                0.44705885648727417,
-                0.6901960968971252,
-                1.0
-              ],
-              "id": "NT:/Shuffleboard/Drive/Gyro/AngleRateOfChange"
+              "id": "NT:/Shuffleboard/Hand/MotorOutput/HandOutputCurrent"
             }
           ]
         }
