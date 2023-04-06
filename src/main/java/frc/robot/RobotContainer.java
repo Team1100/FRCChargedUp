@@ -65,8 +65,8 @@ public class RobotContainer {
   private final Command m_scoreCubeAndBalance = new ScoreCubeAndBalance(0,0,0.6);
   private final Command m_scoreConeAndBalance = new ScoreConeAndBalance(0,0,0.6);
   private final Command m_scoreConeAndCube = new ScoreConeAndCube(0.55, 0.5);
-  private final Command m_scoreConeMobilityAndBalance = new ScoreConeMobilityAndBalance(-160, -70, .5);
-  private final Command m_scoreCubeMobilityAndBalance = new ScoreCubeMobilityAndBalance(-160, -70, .5);
+  private final Command m_scoreConeMobilityAndBalance = new ScoreConeMobilityAndBalance(-140, -70, .5);
+  private final Command m_scoreCubeMobilityAndBalance = new ScoreCubeMobilityAndBalance(-140, -70, .5);
 
   private final Command m_scoreCone = new ScoreCone();
   private final Command m_scoreCube = new ScoreCube();
@@ -92,12 +92,14 @@ public class RobotContainer {
     // Auto Routines: 
     m_chooser.setDefaultOption("Cone and Drive Back", m_scoreConeAndDriveBack);
     m_chooser.addOption("Cone, Mobility, and Balance", m_scoreConeMobilityAndBalance);
-    m_chooser.addOption("Cube, Mobility, and Balance", m_scoreCubeMobilityAndBalance);
     m_chooser.addOption("Cone and Balance", m_scoreConeAndBalance);
     m_chooser.addOption("Cone", m_scoreCone);
+
     m_chooser.addOption("Cube And Drive Back", m_scoreCubeAndDriveBack);
-    m_chooser.addOption("Cube", m_scoreCube);
+    m_chooser.addOption("Cube, Mobility, and Balance", m_scoreCubeMobilityAndBalance);
     m_chooser.addOption("Cube And Balance", m_scoreCubeAndBalance);
+    m_chooser.addOption("Cube", m_scoreCube);
+
     m_chooser.addOption("Cone and Cube", m_scoreConeAndCube);
 
     // Configure the trigger bindings
