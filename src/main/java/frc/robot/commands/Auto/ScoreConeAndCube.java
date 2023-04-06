@@ -10,6 +10,7 @@ import frc.robot.commands.Arm.ReversedSequences.ReversedFloorGrabSequenceCube;
 import frc.robot.commands.Arm.sequences.ArmToHomeState;
 import frc.robot.commands.Arm.sequences.AutoHighPostCenterState;
 import frc.robot.commands.Arm.sequences.HighPostCenterState;
+import frc.robot.commands.Auto.ScoreConeAndPickupCubeAndBalance.State;
 import frc.robot.commands.Drive.DriveDistance;
 import frc.robot.commands.Hand.ExpelConeTimed;
 import frc.robot.commands.Hand.ExpelCubeTimed;
@@ -36,6 +37,8 @@ public class ScoreConeAndCube extends CommandBase {
     SCHEDULE_PICK_UP_CUBE,
     PICK_UP_CUBE,
     WAIT_FOR_INTAKE,
+    SCHEDULE_WAIT_FOR_WEELEE,
+    WAIT_FOR_WEELEE,
 
     // Part 3: drive back, turn, score the cube
     SCHEDULE_DRIVE_BACK,
@@ -67,6 +70,7 @@ public class ScoreConeAndCube extends CommandBase {
   DriveToTarget m_driveToTag;
 
   Wait m_waitForIntake;
+  Wait m_waitForWeelee;
 
 
   private boolean m_isFinished;
@@ -89,7 +93,7 @@ public class ScoreConeAndCube extends CommandBase {
     // Part 3 of the sequence
     m_driveBack2 = new DriveDistance(20, slowPower, slowPower, 0, true);
     m_driveToTag = new DriveToTarget(220, power, power, 0, true);
-
+    m_waitForWeelee = new Wait(.25, true);
     m_expelCubeTimed = new ExpelCubeTimed();
     m_waitForIntake = new Wait(2, true);
 
@@ -184,9 +188,17 @@ public class ScoreConeAndCube extends CommandBase {
           m_state = State.DONE;
         }
         if (m_smartIntakeCube.isFinished()) {
-          m_state = State.SCHEDULE_DRIVE_BACK;
+          m_state = State.SCHEDULE_WAIT_FOR_WEELEE;
         }
         break;
+      case SCHEDULE_WAIT_FOR_WEELEE:
+        m_waitForWeelee.schedule();
+        m_state = State.WAIT_FOR_WEELEE;
+        break;
+      case WAIT_FOR_WEELEE:
+        if (m_waitForWeelee.isFinished()) {
+          m_state = State.SCHEDULE_DRIVE_BACK;
+        }
 
       // Part 3 of the sequence, states to drive back and score
       case SCHEDULE_DRIVE_BACK:

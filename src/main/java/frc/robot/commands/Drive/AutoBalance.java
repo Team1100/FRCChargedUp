@@ -126,7 +126,6 @@ public class AutoBalance {
     public double backwardAutoBalanceRoutine() {
 
         Drive.getInstance().updateRioTiltAverages();
-        System.out.println("Tilt: " + getTilt());
         switch (state) {
             // drive forwards to approach station, exit when tilt is detected
             case 0:
@@ -160,7 +159,7 @@ public class AutoBalance {
                         return -robotSpeedSlow;
                     }
                 }
-                if (Drive.m_gyro.getRate() <= -7) {
+                if (Drive.m_gyro.getRate() <= -6) {
                     dropDetected = true;
                     return 0;
                 }
@@ -187,9 +186,9 @@ public class AutoBalance {
                 }
 
                 if (Drive.getInstance().m_gyro.getAngle() >= levelDegree) {
-                    return -robotSpeedSlow * 0.6;
+                    return -robotSpeedSlow * 0.75;
                 } else if (Drive.getInstance().m_gyro.getAngle() <= -levelDegree) {
-                    return robotSpeedSlow * 0.6;
+                    return robotSpeedSlow * 0.75;
                 }
             case 3:
                 return 0;
@@ -202,7 +201,6 @@ public class AutoBalance {
     // to.
     public double forwardAutoBalanceRoutine() {
         Drive.getInstance().updateRioTiltAverages();
-        System.out.println("Tilt: " + getTilt());
         switch (state) {
             // drive forwards to approach station, exit when tilt is detected
             case 0:
@@ -236,7 +234,7 @@ public class AutoBalance {
                         return -robotSpeedSlow;
                     }
                 }      // Was usually 7deg/s  \/
-                if (Drive.m_gyro.getRate() >= 6.5) {
+                if (Drive.m_gyro.getRate() >= 6) {
                     dropDetected = true;
                     return -0.2;
                 }
