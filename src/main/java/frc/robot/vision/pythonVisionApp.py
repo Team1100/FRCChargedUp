@@ -257,16 +257,16 @@ class VisionApplication(object):
         return contours
 
     def isolateTarget(self, contours):
-        aspectTolerance = .2
-        idealAreaRatio = 0.7 # this is the ideal ratio for the area ratio value.
-        idealAspectRatio = 1.1 # this is the ideal aspect ratio based off of the diagram but can be changed as needed.
+        aspectTolerance = .23
+        idealAreaRatio = 0.6 # this is the ideal ratio for the area ratio value.
+        idealAspectRatio = 1.2 # this is the ideal aspect ratio based off of the diagram but can be changed as needed.
         areaTolerance = .2 # this is the tolerance for finding the target with the right aspect ratio
         
         idealYCoor = 100
-        yCoorTolerance = 15
+        yCoorTolerance = 20
 
         idealXCoor = self.camera.width/2
-        xCoorTolerance = 80
+        xCoorTolerance = 70
 
         deltaAreaTolerance = 400
         # start off with a large tolerance, and if the ideal ratio is correct, lower the tolerance as needed. 
@@ -282,11 +282,9 @@ class VisionApplication(object):
                 boundingArea = w * h
                 if (boundingArea < 100):
                     continue
-                if not (y < (idealYCoor + yCoorTolerance)) and (y > (idealYCoor - yCoorTolerance)):
+                if not ((y < (idealYCoor + yCoorTolerance)) and (y > (idealYCoor - yCoorTolerance))):
                     continue
-                if not (x < (idealXCoor + xCoorTolerance)) and (x > (idealXCoor - xCoorTolerance)):
-                    continue
-                if not (boundingArea < (self.garea + deltaAreaTolerance)) and (boundingArea > (self.garea - deltaAreaTolerance/2)):
+                if not ((x < (idealXCoor + xCoorTolerance)) and (x > (idealXCoor - xCoorTolerance))):
                     continue
                 self.areaRatio = contourArea/boundingArea
                 self.aspectRatio = w/h

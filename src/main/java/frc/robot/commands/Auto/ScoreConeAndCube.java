@@ -82,7 +82,7 @@ public class ScoreConeAndCube extends CommandBase {
     m_expelConeTimed = new ExpelConeTimed(); 
     m_armToHome = new ArmToHomeState();
     m_driveBack = new DriveDistance(-12, power, power, 0, true);
-    m_driveToCube = new DriveToTarget(-225, power, power, 0, true);
+    m_driveToCube = new DriveToTarget(-220, power, power, 0, true);
     // Part 2 of the sequence
     m_floorGrabSequence = new ReversedFloorGrabSequenceCube();
     m_smartIntakeCube = new SmartIntakeCube();
