@@ -44,14 +44,10 @@ public class HandOperatorPowerControl extends CommandBase {
     double h_power = 0;
 
     if(m_xbox.getButtonRightBumper().getAsBoolean()) {
-      if (Math.abs(m_hand.getTotalAverageHandCurrent()) < Constants.HAND_MOTOR_CURRENT_LIMIT) {
-        h_power = Constants.HAND_MAX_POWER;
-      }
+      h_power = Constants.HAND_MAX_POWER;
     }
     if(m_xbox.getButtonLeftBumper().getAsBoolean()) {
-      if (Math.abs(m_hand.getTotalAverageHandCurrent()) < Constants.HAND_MOTOR_CURRENT_LIMIT) {
-        h_power = -Constants.HAND_MAX_POWER;
-      }
+      h_power = -Constants.HAND_MAX_POWER;
     }
 
     if(Math.abs(m_hand.getTotalAverageHandCurrent()) > Constants.HAND_MOTOR_CURRENT_LIMIT) {

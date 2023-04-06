@@ -23,6 +23,7 @@ import frc.robot.commands.Auto.ScoreCone;
 import frc.robot.commands.Auto.ScoreConeAndBalance;
 import frc.robot.commands.Auto.ScoreConeAndCube;
 import frc.robot.commands.Auto.ScoreConeAndDriveBack;
+import frc.robot.commands.Auto.ScoreConeAndPickupCubeAndBalance;
 import frc.robot.commands.Auto.ScoreConeMobilityAndBalance;
 import frc.robot.commands.Auto.ScoreCube;
 import frc.robot.commands.Auto.ScoreCubeAndBalance;
@@ -64,9 +65,10 @@ public class RobotContainer {
   private final Command m_scoreCubeAndDriveBack = new ScoreCubeAndDriveBack(-175,0,0.6);
   private final Command m_scoreCubeAndBalance = new ScoreCubeAndBalance(0,0,0.6);
   private final Command m_scoreConeAndBalance = new ScoreConeAndBalance(0,0,0.6);
-  private final Command m_scoreConeAndCube = new ScoreConeAndCube(0.55, 0.5);
+  private final Command m_scoreConeAndCube = new ScoreConeAndCube(0.55, 0.4);
   private final Command m_scoreConeMobilityAndBalance = new ScoreConeMobilityAndBalance(-140, -70, .5);
   private final Command m_scoreCubeMobilityAndBalance = new ScoreCubeMobilityAndBalance(-140, -70, .5);
+  private final Command m_scoreConeAndPickupCubeAndBalance = new ScoreConeAndPickupCubeAndBalance(-140, -90, .5);
 
   private final Command m_scoreCone = new ScoreCone();
   private final Command m_scoreCube = new ScoreCube();
@@ -101,6 +103,8 @@ public class RobotContainer {
     m_chooser.addOption("Cube", m_scoreCube);
 
     m_chooser.addOption("Cone and Cube", m_scoreConeAndCube);
+
+    m_chooser.addOption("Cone and Cube and Balance", m_scoreConeAndPickupCubeAndBalance);
 
     // Configure the trigger bindings
     configureBindings();

@@ -65,6 +65,21 @@ public class DriveDistance extends CommandBase {
     m_finished = false;
   }
 
+  public boolean isPartiallyFinished(double percentComplete) {
+    boolean isPartiallyFinished = false;
+    double partialDistance = m_distance * percentComplete;
+    if (partialDistance >= 0) {
+      if (m_leftEncoder.getPosition() >= partialDistance || m_rightEncoder.getPosition() >= partialDistance) {
+        isPartiallyFinished = true;
+      }
+    } else if (partialDistance < 0) {
+      if (m_leftEncoder.getPosition() <= partialDistance || m_rightEncoder.getPosition() <= partialDistance) {
+        isPartiallyFinished = true;
+      }
+    }
+    return isPartiallyFinished;
+  }
+
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {

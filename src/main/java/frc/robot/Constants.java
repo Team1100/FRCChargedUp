@@ -163,7 +163,7 @@ public final class Constants {
   public static final double DRIVE_CLOSED_LOOP_MAX_OUTPUT = 0.8;
   public static final double DRIVE_CLOSED_LOOP_P = 0.0003;
   public static final double DRIVE_CLOSED_LOOP_I = 0;
-  public static final double DRIVE_CLOSED_LOOP_D = 0.00001;
+  public static final double DRIVE_CLOSED_LOOP_D = 0.000014;
 
   // Motor current limits
   public static final double TURRET_MOTOR_CURRENT_LIMIT = 10;

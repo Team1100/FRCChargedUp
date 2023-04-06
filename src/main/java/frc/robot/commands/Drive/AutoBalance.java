@@ -235,8 +235,8 @@ public class AutoBalance {
                         dropDetected = false;
                         return -robotSpeedSlow;
                     }
-                }
-                if (Drive.m_gyro.getRate() >= 7) {
+                }      // Was usually 7deg/s  \/
+                if (Drive.m_gyro.getRate() >= 6.5) {
                     dropDetected = true;
                     return -0.2;
                 }
