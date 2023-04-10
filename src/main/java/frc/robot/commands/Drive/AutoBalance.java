@@ -47,13 +47,13 @@ public class AutoBalance {
         /**********
          * CONFIG *
          **********/
-        // Speed the robot drives while scoring/approaching station, default = 0.4
-        robotSpeedFast = 0.53 * direction;
+        // Speed the robot drives while scoring/approaching station, default = 0.4 or 0.53
+        robotSpeedFast = 0.47 * direction;
 
         // Speed the robot drives while balancing itself on the charge station.
         // Should be roughly half the fast speed, to make the robot more accurate,
-        // default = 0.2
-        robotSpeedSlow = 0.4 * direction;
+        // default = 0.2 or 0.4
+        robotSpeedSlow = 0.375 * direction;
 
         // Angle where the robot knows it is on the charge station, default = 14.5
         onChargeStationDegree = 8 * direction;
@@ -159,7 +159,7 @@ public class AutoBalance {
                         return -robotSpeedSlow;
                     }
                 }
-                if (Drive.m_gyro.getRate() <= -6) {
+                if (Drive.m_gyro.getRate() <= -6.5) {
                     dropDetected = true;
                     return 0;
                 }
@@ -234,7 +234,7 @@ public class AutoBalance {
                         return -robotSpeedSlow;
                     }
                 }      // Was usually 7deg/s  \/
-                if (Drive.m_gyro.getRate() >= 6) {
+                if (Drive.m_gyro.getRate() >= 6.5) {
                     dropDetected = true;
                     return -0.2;
                 }
