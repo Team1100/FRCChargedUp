@@ -83,12 +83,6 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-    m_arm.zeroEncoders();
-    m_arm.setTurretTargetAngle(0);
-    m_arm.setShoulderTargetAngle(0);
-    m_arm.setElbowTargetAngle(0);
-    m_arm.setWristTargetAngle(0); 
-
     m_drive.setIdleMode(IdleMode.kBrake);
 
     // schedule the autonomous command (example)
