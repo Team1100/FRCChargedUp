@@ -7,38 +7,20 @@
 
 package frc.robot;
 
-import java.sql.Driver;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.commands.Arm.ArmToPositionXY;
 import frc.robot.commands.Arm.ZeroArmEncoders;
 import frc.robot.commands.Arm.ReversedSequences.ReversedFloorGrabSequenceCone;
 import frc.robot.commands.Arm.ReversedSequences.ReversedFloorGrabSequenceCube;
 import frc.robot.commands.Arm.presets.ArmToPreset;
 import frc.robot.commands.Arm.sequences.FloorGrabSequence;
-import frc.robot.commands.Arm.sequences.TurretToHighLeft;
-import frc.robot.commands.Arm.sequences.TurretToHighRight;
-import frc.robot.commands.Arm.sequences.TurretToLowLeft;
-import frc.robot.commands.Arm.sequences.TurretToLowRight;
-import frc.robot.commands.Drive.SwitchDriveIdleMode;
 import frc.robot.commands.Drive.SwitchDrivePIDMode;
-import frc.robot.commands.Drive.ToggleIdleMode;
-import frc.robot.commands.Hand.ExpelCube;
-import frc.robot.commands.Hand.IntakeCube;
-import frc.robot.commands.Hand.SpinIntake;
 import frc.robot.commands.Lights.BlinkLights;
 import frc.robot.commands.Lights.ConeLight;
 import frc.robot.commands.Lights.CubeLight;
-import frc.robot.commands.Lights.DisableLights;
-import frc.robot.commands.Lights.EnableLights;
 import frc.robot.commands.VisionAuto.TrackTarget;
 import frc.robot.input.ControllerModes.*;
-import frc.robot.input.XboxController.XboxAxis;
 import frc.robot.input.AttackThree;
 import frc.robot.input.ButtonBox;
 import frc.robot.input.XboxController;
-import frc.robot.testingdashboard.TestingDashboard;
 import frc.robot.input.KeyboardBox;
 
 /**

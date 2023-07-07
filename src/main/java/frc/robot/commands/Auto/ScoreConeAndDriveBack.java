@@ -6,20 +6,13 @@ package frc.robot.commands.Auto;
 
 
 
-import com.revrobotics.CANSparkMax.IdleMode;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.commands.Arm.presets.ArmToPreset;
 import frc.robot.commands.Arm.sequences.ArmToHomeState;
 import frc.robot.commands.Arm.sequences.HighPostCenterState;
-import frc.robot.commands.Arm.sequences.HighPostCenterState;
 import frc.robot.commands.Drive.DriveDistance;
-import frc.robot.commands.Hand.ExpelCone;
 import frc.robot.commands.Hand.ExpelConeTimed;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Drive;
 import frc.robot.testingdashboard.TestingDashboard;
-import frc.robot.commands.Auto.Wait;
 
 public class ScoreConeAndDriveBack extends CommandBase {
   enum State {

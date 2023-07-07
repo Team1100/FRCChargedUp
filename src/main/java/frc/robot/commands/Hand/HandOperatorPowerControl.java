@@ -5,7 +5,6 @@
 package frc.robot.commands.Hand;
 
 import frc.robot.input.XboxController;
-import frc.robot.input.XboxController.XboxAxis;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.OI;

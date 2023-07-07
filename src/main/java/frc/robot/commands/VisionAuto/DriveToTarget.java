@@ -5,13 +5,10 @@
 package frc.robot.commands.VisionAuto;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkMax.IdleMode;
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.testingdashboard.TestingDashboard;
 import frc.robot.Constants;
-import frc.robot.subsystems.Auto;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Vision;
 

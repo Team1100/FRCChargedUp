@@ -6,17 +6,11 @@ package frc.robot.commands.Auto;
 
 
 
-import com.revrobotics.CANSparkMax.IdleMode;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.commands.Arm.presets.ArmToPreset;
 import frc.robot.commands.Arm.sequences.ArmToHomeState;
 import frc.robot.commands.Arm.sequences.HighPostCenterState;
-import frc.robot.commands.Arm.sequences.HighPostCenterState;
-import frc.robot.commands.Hand.ExpelCone;
 import frc.robot.commands.Hand.ExpelCubeTimed;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Drive;
 import frc.robot.testingdashboard.TestingDashboard;
 
 public class ScoreCube extends CommandBase {

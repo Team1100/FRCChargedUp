@@ -4,8 +4,6 @@
 
 package frc.robot.commands.Drive;
 
-import edu.wpi.first.wpilibj.ADIS16470_IMU;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import frc.robot.Constants;
 import frc.robot.helpers.VelocityDriveSparkMax.DriveMode;

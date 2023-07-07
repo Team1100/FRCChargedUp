@@ -9,8 +9,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.commands.Arm.ReversedSequences.ReversedFloorGrabSequenceCube;
 import frc.robot.commands.Arm.sequences.ArmToHomeState;
 import frc.robot.commands.Arm.sequences.AutoHighPostCenterState;
-import frc.robot.commands.Arm.sequences.HighPostCenterState;
-import frc.robot.commands.Auto.ScoreConeAndPickupCubeAndBalance.State;
 import frc.robot.commands.Drive.DriveDistance;
 import frc.robot.commands.Hand.ExpelConeTimed;
 import frc.robot.commands.Hand.ExpelCubeTimed;

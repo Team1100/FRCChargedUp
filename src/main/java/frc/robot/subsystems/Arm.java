@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import frc.robot.RobotMap;
-import frc.robot.Vector;
 import frc.robot.helpers.ArmSegmentHelper;
 
 import com.revrobotics.CANSparkMax;
@@ -16,16 +15,9 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.OI;
-import frc.robot.RobotMap;
 import frc.robot.testingdashboard.TestingDashboard;
-
-import java.awt.geom.Point2D;
-
-import org.opencv.features2d.KAZE;
 
 public class Arm extends SubsystemBase {
 

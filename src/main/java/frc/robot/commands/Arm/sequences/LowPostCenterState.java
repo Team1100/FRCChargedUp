@@ -6,12 +6,10 @@ package frc.robot.commands.Arm.sequences;
 
 
 
-import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.commands.Arm.presets.ArmToPreset;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Drive;
 import frc.robot.testingdashboard.TestingDashboard;
 
 public class LowPostCenterState extends CommandBase {

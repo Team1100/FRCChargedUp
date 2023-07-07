@@ -4,7 +4,6 @@
 
 package frc.robot.commands.Hand;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
