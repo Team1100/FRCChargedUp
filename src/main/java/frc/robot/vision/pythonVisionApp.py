@@ -24,6 +24,7 @@ class CameraView(object):
         self.cameraCenter = self.width/2
         self.radiusFromAxisOfRotation = 14/12 # measured in feet
 
+# A class used to describe AprilTag targets. 
 class AprilTagTarget(object):
     def __init__(self, camera, coor, id):
         self.id = id
@@ -38,7 +39,7 @@ class AprilTagTarget(object):
     def calculateAdjustedYaw(self, radiusFromAxisOfRotation):
         return self.yaw * (radiusFromAxisOfRotation/(self.distanceToTarget+radiusFromAxisOfRotation))
         
-
+# A class used to describe an object detected by its color (hsv) values.
 class TapeTarget(object):
     def __init__(self, imageResult, approx, tapeTargetDetected, camera, areaR):
         self.tapeTargetDetected = tapeTargetDetected
@@ -103,6 +104,7 @@ class VisionApplication(object):
         self.mask = None
 
         self.cameraInUse = 1
+        self.numberOfCameras = 2
 
         self.aprilTagTargetID = 1
 
@@ -120,6 +122,7 @@ class VisionApplication(object):
         self.aspectRatio = 0 # this is the aspectRatio of every contour that is seen by the camera (width/height)
         self.largestAspectRatio = 0 # this is the aspectRatio fo the target once it has been isolated
 
+        self.colorDetectConstants = []
         self.garea = 150
         self.contours = None
         self.targets = []
@@ -143,7 +146,8 @@ class VisionApplication(object):
         
 
         self.camera = CameraView(self.config['cameras'][0], vertFOV, horizFOV, elevationOfTarget, elevationOfCamera, angleFromHoriz)
-        self.camera2 = CameraView(self.config['cameras'][1], vertFOV, horizFOV, elevationOfTarget, elevationOfCamera, angleFromHoriz)
+        if numberOfCameras == 2:
+            self.camera2 = CameraView(self.config['cameras'][1], vertFOV, horizFOV, elevationOfTarget, elevationOfCamera, angleFromHoriz)
 
 
         # Initialize Camera Server
@@ -163,8 +167,9 @@ class VisionApplication(object):
         camera1 = cserver.startAutomaticCapture(name="cam1", path='/dev/v4l/by-id/usb-046d_HD_Pro_Webcam_C920_AE5D327F-video-index0')
         camera1.setResolution(self.camera.width,self.camera.height)
 
-        camera2 = cserver.startAutomaticCapture(name="cam2", path='/dev/v4l/by-id/usb-Ingenic_Semiconductor_CO.__LTD._HD_Web_Camera_Ucamera001-video-index0')
-        camera2.setResolution(self.camera2.width,self.camera2.height)
+        if numberOfCameras == 2:
+            camera2 = cserver.startAutomaticCapture(name="cam2", path='/dev/v4l/by-id/usb-Ingenic_Semiconductor_CO.__LTD._HD_Web_Camera_Ucamera001-video-index0')
+            camera2.setResolution(self.camera2.width,self.camera2.height)
 
         
 
@@ -173,7 +178,8 @@ class VisionApplication(object):
         self.cvmask = cserver.putVideo("maskCam", self.camera.width, self.camera.height)
         
         self.sink = cserver.getVideo(name="cam1")
-        self.sink2 = cserver.getVideo(name="cam2")
+        if numberOfCameras == 2:
+            self.sink2 = cserver.getVideo(name="cam2")
 
     def initializeNetworkTables(self):
         # Table for vision output information
@@ -229,20 +235,26 @@ class VisionApplication(object):
     def getAprilTagTargetID(self):
         self.aprilTagTargetID = self.vision_nt.getNumber('aprilTagTargetID',1)
 
+    def getColorDetectConst(self):
+        self.colorDetectConstants = self.vision_nt.getNumberArray('colorDetectConst',[1, 1, 1, 1, 90, 100, -1, 75])
+
     def getDetectionMode(self):
         detectionMode = self.vision_nt.getNumber('detectionMode',0)
         if detectionMode == 0:
             self.processingForColor = False
             self.processingForAprilTags = False
-            self.cameraInUse = 0
+            #self.cameraInUse = 0
         elif detectionMode == 1:
             self.processingForColor = True
             self.processingForAprilTags = False
-            self.cameraInUse = 1
+            #self.cameraInUse = 1
         elif detectionMode == 2:
             self.processingForColor = False
             self.processingForAprilTags = True
             self.cameraInUse = 2
+    
+    def getCameraInUse(self):
+        self.cameraInUse = self.vision_nt.getNumber('cameraInUse',0)
 
     def getImageMask(self, img, myColors):
         imgHSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  
@@ -257,18 +269,29 @@ class VisionApplication(object):
         return contours
 
     def isolateTarget(self, contours):
-        aspectTolerance = .23
-        idealAreaRatio = 0.6 # this is the ideal ratio for the area ratio value.
-        idealAspectRatio = 1.2 # this is the ideal aspect ratio based off of the diagram but can be changed as needed.
-        areaTolerance = .2 # this is the tolerance for finding the target with the right aspect ratio
+        idealAreaRatio = self.colorDetectConstants[0] # this is the ideal ratio for the area ratio value
+        areaTolerance = self.colorDetectConstants[1] # this is the tolerance for finding the target with the right aspect ratio
         
-        idealYCoor = 100
-        yCoorTolerance = 20
+        idealAspectRatio = self.colorDetectConstants[2] # this is the ideal aspect ratio based off of the diagram but can be changed as needed.
+        aspectTolerance = self.colorDetectConstants[3]
 
-        idealXCoor = self.camera.width/2
-        xCoorTolerance = 70
+        
 
-        deltaAreaTolerance = 400
+        # idealYCoor is the Y coordinate where the target should usually be
+        idealYCoor = self.colorDetectConstants[4]
+        # yCoorTolerance is added and subtracted from the ideal coordinate to create a range on the y axis where the target should be.
+        # Any target detected outside that range is ignored
+        yCoorTolerance = self.colorDetectConstants[5]
+
+        # idealXCoor is the X coordinate where the target should usually be
+        if self.colorDetectConstants[6] == -1:
+            idealXCoor = self.camera.width/2
+        else:
+            idealXCoor = self.colorDetectConstants[6]
+        # xCoorTolerance is added and subtracted from the ideal coordinate to create a range on the x axis where the target should be.
+        # Any target detected outside that range is ignored
+        xCoorTolerance = self.colorDetectConstants[7]
+
         # start off with a large tolerance, and if the ideal ratio is correct, lower the tolerance as needed. 
         self.targets = [] 
         
@@ -280,8 +303,10 @@ class VisionApplication(object):
                 contourArea = cv2.contourArea(contour) #area of the particle
                 x, y, w, h, = cv2.boundingRect(contour)
                 boundingArea = w * h
-                if (boundingArea < 100):
+                # ignores targets that are too small
+                if (boundingArea < 110):
                     continue
+                #ignores targets that are outside a predetermined range
                 if not ((y < (idealYCoor + yCoorTolerance)) and (y > (idealYCoor - yCoorTolerance))):
                     continue
                 if not ((x < (idealXCoor + xCoorTolerance)) and (x > (idealXCoor - xCoorTolerance))):
@@ -325,10 +350,11 @@ class VisionApplication(object):
         targetDetTol = 1.0 
         t1 = 0
         t2 = 0
+        self.getColorDetectConst():
         while True:
             self.getDetectionMode()
-            print(self.cameraInUse)
-            if self.cameraInUse == 1:
+            self.getCameraInUse()
+            if self.cameraInUse == 1 or numberOfCameras == 1:
                 frame_time1, input_img1 = self.sink.grabFrame(input_img1)
                 input_img1 = cv2.resize(input_img1, (self.camera.width,self.camera.height), interpolation = cv2.INTER_AREA)
             else:
@@ -385,6 +411,7 @@ class VisionApplication(object):
                 t2 = time.clock_gettime(time.CLOCK_MONOTONIC) # gets the current "time"
                 timeDiff = t2-t1 # difference between the most recent time and the time recorded when the target was last seen
                 if self.tapeTargetDetected:
+                    print("Target Detected")
                     self.tapeTargetList.sort(key=lambda target: target.boundingArea)
                     self.vision_nt.putNumber('offset',self.tapeTargetList[len(self.tapeTargetList)-1].offset)
                     self.tapeTargetList[len(self.tapeTargetList)-1].drawRectangle()

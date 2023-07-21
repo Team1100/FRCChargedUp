@@ -20,27 +20,44 @@ public class Vision extends SubsystemBase {
   private static Vision m_vision;
   private static int aprilTagTarget;
   private static int detectionMode;
+  private static double[] defaultHSV;
 
   NetworkTable m_Ntable;
 
   PowerDistribution m_pDBoard;
   GenericEntry detectionEntry;
   GenericEntry tagNumEntry;
-
+  GenericEntry camInUseEntry;
+  GenericEntry colorDetectionConstSub;
+  
   public static final int DETECTING_NOTHING = 0;
   public static final int DETECTING_COLOR = 1;
   public static final int DETECTING_APRILTAG = 2;
+
+  public static final int CAMERA_1 = 1;
+  public static final int CAMERA_2 = 2;
 
   /**
    * Creates a new Vision.
    */
   private Vision() {
     m_Ntable = NetworkTableInstance.getDefault().getTable("Shuffleboard/Vision");
+
+    // Array of constants used to identify the target using color detection.
+    // {idealAreaRatio, areaTolerance, idealApectRatio, aspectTolerance, idealYCoor, yCoorTolerance, idealXCoor, xCoorTolerance}
+    double[] colorDetectConstants = {0.66, 0.2, 1.21, 0.26, 90, 50, -1, 75};
+    // {hueMin, hueMax, satMin, satMax, valMin, valMax}
+    defaultHSV = new double[] {109.92, 153, 103, 255, 103, 255};
+
+
     m_pDBoard =  new PowerDistribution();
     aprilTagTarget = 0;
     detectionMode = 0;
     detectionEntry = Shuffleboard.getTab("Vision").add("detectionMode", 1).getEntry();
+    camInUseEntry = Shuffleboard.getTab("Vision").add("cameraInUse", 1).getEntry();
     tagNumEntry = Shuffleboard.getTab("Vision").add("aprilTagTargetID", 1).getEntry();
+    colorDetectionConstSub = Shuffleboard.getTab("Vision").add("colorDetectConst", colorDetectConstants).getEntry();
+
   }
 
   public static Vision getInstance() {
@@ -48,39 +65,35 @@ public class Vision extends SubsystemBase {
       m_vision = new Vision();
       TestingDashboard.getInstance().registerSubsystem(m_vision, "Vision");
 
-      
-      
-      
-
       SmartDashboard.putNumber("Target AprilTag ID", 1);
       
       Shuffleboard.getTab("Vision")
-          .add("hueMin", 109.92)
+          .add("hueMin", defaultHSV[0])
           .withWidget(BuiltInWidgets.kNumberSlider)
           .withProperties(Map.of("min", 0, "max", 255)) // specify widget properties here
           .getEntry();
       Shuffleboard.getTab("Vision")
-          .add("hueMax", 153)
+          .add("hueMax", defaultHSV[1])
           .withWidget(BuiltInWidgets.kNumberSlider)
           .withProperties(Map.of("min", 0, "max", 255)) // specify widget properties here
           .getEntry();
       Shuffleboard.getTab("Vision")
-          .add("satMin", 103)
+          .add("satMin", defaultHSV[2])
           .withWidget(BuiltInWidgets.kNumberSlider)
           .withProperties(Map.of("min", 0, "max", 255)) // specify widget properties here
           .getEntry();
       Shuffleboard.getTab("Vision")
-          .add("satMax", 255)
+          .add("satMax", defaultHSV[3])
           .withWidget(BuiltInWidgets.kNumberSlider)
           .withProperties(Map.of("min", 0, "max", 255)) // specify widget properties here
           .getEntry();
       Shuffleboard.getTab("Vision")
-          .add("valMin", 103)
+          .add("valMin", defaultHSV[4])
           .withWidget(BuiltInWidgets.kNumberSlider)
           .withProperties(Map.of("min", 0, "max", 255)) // specify widget properties here
           .getEntry();
       Shuffleboard.getTab("Vision")
-          .add("valMax", 255)
+          .add("valMax", defaultHSV[5])
           .withWidget(BuiltInWidgets.kNumberSlider)
           .withProperties(Map.of("min", 0, "max", 255)) // specify widget properties here
           .getEntry();
@@ -116,12 +129,23 @@ public class Vision extends SubsystemBase {
 
   /**
    * 
-   * @param detectMode
+   * @param detectMode Determines the method of detection. Options are detecting nothing, detecting objects based on color, or detecting apriltags.
+   * Can input parameters with Vision constants.
    */
   public void setDetectionMode(int detectMode) {
     detectionMode = detectMode;
     detectionEntry.setInteger(detectMode);
   }
+
+  /**
+   * 
+   * @param camInUse Determines which camera to use, if multiple cameras are needed on the robot. This allows for switching between cameras.
+   * Can input parameters with Vision constants.
+   */
+  public void setCamera(int camInUse) {
+    camInUseEntry.setInteger(camInUse);
+  }
+
 
   public int getTargetAprilTag() {
     return aprilTagTarget;
