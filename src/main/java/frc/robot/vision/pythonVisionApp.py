@@ -104,7 +104,7 @@ class VisionApplication(object):
         self.mask = None
 
         self.cameraInUse = 1
-        self.numberOfCameras = 2
+        self.numberOfCameras = 1
 
         self.aprilTagTargetID = 1
 
@@ -146,10 +146,10 @@ class VisionApplication(object):
         
 
         self.camera = CameraView(self.config['cameras'][0], vertFOV, horizFOV, elevationOfTarget, elevationOfCamera, angleFromHoriz)
-        if numberOfCameras == 2:
+        if self.numberOfCameras == 2:
             self.camera2 = CameraView(self.config['cameras'][1], vertFOV, horizFOV, elevationOfTarget, elevationOfCamera, angleFromHoriz)
 
-
+        self.currentCamera = self.camera
         # Initialize Camera Server
         self.initializeCameraServer()
 
@@ -164,10 +164,12 @@ class VisionApplication(object):
 
     def initializeCameraServer(self):
         cserver = CameraServer.getInstance()
-        camera1 = cserver.startAutomaticCapture(name="cam1", path='/dev/v4l/by-id/usb-046d_HD_Pro_Webcam_C920_AE5D327F-video-index0')
+        camera1 = cserver.startAutomaticCapture(name="cam1", path='/dev/v4l/by-id/usb-Ingenic_Semiconductor_CO.__LTD._HD_Web_Camera_Ucamera001-video-index0')
+        #camera1 = cserver.startAutomaticCapture(name="cam1", path='/dev/v4l/by-id/usb-046d_HD_Pro_Webcam_C920_AE5D327F-video-index0')
+
         camera1.setResolution(self.camera.width,self.camera.height)
 
-        if numberOfCameras == 2:
+        if self.numberOfCameras == 2:
             camera2 = cserver.startAutomaticCapture(name="cam2", path='/dev/v4l/by-id/usb-Ingenic_Semiconductor_CO.__LTD._HD_Web_Camera_Ucamera001-video-index0')
             camera2.setResolution(self.camera2.width,self.camera2.height)
 
@@ -178,7 +180,7 @@ class VisionApplication(object):
         self.cvmask = cserver.putVideo("maskCam", self.camera.width, self.camera.height)
         
         self.sink = cserver.getVideo(name="cam1")
-        if numberOfCameras == 2:
+        if self.numberOfCameras == 2:
             self.sink2 = cserver.getVideo(name="cam2")
 
     def initializeNetworkTables(self):
@@ -239,7 +241,8 @@ class VisionApplication(object):
         self.colorDetectConstants = self.vision_nt.getNumberArray('colorDetectConst',[1, 1, 1, 1, 90, 100, -1, 75])
 
     def getDetectionMode(self):
-        detectionMode = self.vision_nt.getNumber('detectionMode',0)
+        #detectionMode = self.vision_nt.getNumber('detectionMode',0)
+        detectionMode = 2
         if detectionMode == 0:
             self.processingForColor = False
             self.processingForAprilTags = False
@@ -251,10 +254,14 @@ class VisionApplication(object):
         elif detectionMode == 2:
             self.processingForColor = False
             self.processingForAprilTags = True
-            self.cameraInUse = 2
+            #self.cameraInUse = 2
     
     def getCameraInUse(self):
         self.cameraInUse = self.vision_nt.getNumber('cameraInUse',0)
+        if self.cameraInUse == 1:
+            self.currentCamera = camera
+        if self.cameraInUse == 2:
+            self.currentCamera = camera2
 
     def getImageMask(self, img, myColors):
         imgHSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  
@@ -350,11 +357,11 @@ class VisionApplication(object):
         targetDetTol = 1.0 
         t1 = 0
         t2 = 0
-        self.getColorDetectConst():
+        self.getColorDetectConst()
         while True:
             self.getDetectionMode()
-            self.getCameraInUse()
-            if self.cameraInUse == 1 or numberOfCameras == 1:
+            #self.getCameraInUse()
+            if self.cameraInUse == 1 or self.numberOfCameras == 1:
                 frame_time1, input_img1 = self.sink.grabFrame(input_img1)
                 input_img1 = cv2.resize(input_img1, (self.camera.width,self.camera.height), interpolation = cv2.INTER_AREA)
             else:
@@ -369,7 +376,7 @@ class VisionApplication(object):
                 continue
             
             if self.processingForAprilTags:
-                self.getAprilTagTargetID()
+                #self.getAprilTagTargetID()
                 try:
                     greys = cv2.cvtColor(input_img1, cv2.COLOR_BGR2GRAY)
                     dets = self.detector.detect(greys)
@@ -384,7 +391,7 @@ class VisionApplication(object):
                         cv2.polylines(self.imgResult, [rect], True, self.RED, 2)
                         ident = str(det["id"])
                         pos = det["center"].astype(int) + (-10,10)
-                        aprilTagTargets.update({det["id"]:AprilTagTarget(self.camera2,pos,det["id"])})
+                        aprilTagTargets.update({det["id"]:AprilTagTarget(self.currentCamera,pos,det["id"])})
                         cv2.putText(self.imgResult, ident, tuple(pos), self.FONT, 1, self.RED, 2)
 
                 if not aprilTagTargets: 
