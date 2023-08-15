@@ -22,7 +22,7 @@ class CameraView(object):
         self.elevationOfCamera = elevationOfCamera
         self.angleFromHoriz = angleFromHoriz
         self.cameraCenter = self.width/2
-        self.radiusFromAxisOfRotation = 14/12 # measured in feet
+        self.radiusFromAxisOfRotation = 14/12 # measured in feet (distance from camera to the axis of rotation of the robot)
 
 # A class used to describe AprilTag targets. 
 class AprilTagTarget(object):
@@ -56,6 +56,7 @@ class TapeTarget(object):
         self.offset = self.x + self.w/2 - camera.cameraCenter
         self.aspectRatio = self.w/self.h
         self.areaRatio = areaR
+        self.boundingArea = self.w * self.h
         #(height of target [feet] - height of camera [feet])/tan(pitch [degrees] + angle of camera [degrees])
         self.distanceToTarget = (camera.elevationOfTarget - camera.elevationOfCamera) / math.tan(math.radians(self.pitch + camera.angleFromHoriz))
 
@@ -104,8 +105,10 @@ class VisionApplication(object):
         self.mask = None
 
         self.cameraInUse = 1
-        self.numberOfCameras = 1
 
+        ##### ****************** ##
+        self.numberOfCameras = 1 ##
+        ##### ****************** ##
         self.aprilTagTargetID = 1
 
         self.hueMin = 76
@@ -128,26 +131,26 @@ class VisionApplication(object):
         self.targets = []
         self.tapeTargetList = []
 
-        #TODO: Fill out values below if distance calculation is desired
+        #TODO: Fill out values below if distance calculation is desired. The first value is for camera #1, the second is for camera #2. If no second camera exists, set all the second values to 1.
         #Vertical Field of View (Degrees)
-        vertFOV = 48.94175846
+        vertFOV = [48.94175846, 1]
 
         #Horizontal Field of View (Degrees)
-        horizFOV = 134.3449419
+        horizFOV = [134.3449419, 1]
 
         #Height of the target off the ground (feet)
-        elevationOfTarget = 18.25/12
+        elevationOfTarget = [1.5, 1]
 
         #Height of the Camera off the ground (feet)
-        elevationOfCamera = 11.5/12
+        elevationOfCamera = [0.9, 1] 
 
         #Angle the camera makes relative to the horizontal (degrees)
-        angleFromHoriz = 1
-        
+        angleFromHoriz = [30, 1]
 
-        self.camera = CameraView(self.config['cameras'][0], vertFOV, horizFOV, elevationOfTarget, elevationOfCamera, angleFromHoriz)
+
+        self.camera = CameraView(self.config['cameras'][0], vertFOV[0], horizFOV[0], elevationOfTarget[0], elevationOfCamera[0], angleFromHoriz[0])
         if self.numberOfCameras == 2:
-            self.camera2 = CameraView(self.config['cameras'][1], vertFOV, horizFOV, elevationOfTarget, elevationOfCamera, angleFromHoriz)
+            self.camera2 = CameraView(self.config['cameras'][1], vertFOV[1], horizFOV[1], elevationOfTarget[1], elevationOfCamera[1], angleFromHoriz[1])
 
         self.currentCamera = self.camera
         # Initialize Camera Server
@@ -165,12 +168,10 @@ class VisionApplication(object):
     def initializeCameraServer(self):
         cserver = CameraServer.getInstance()
         camera1 = cserver.startAutomaticCapture(name="cam1", path='/dev/v4l/by-id/usb-Ingenic_Semiconductor_CO.__LTD._HD_Web_Camera_Ucamera001-video-index0')
-        #camera1 = cserver.startAutomaticCapture(name="cam1", path='/dev/v4l/by-id/usb-046d_HD_Pro_Webcam_C920_AE5D327F-video-index0')
-
         camera1.setResolution(self.camera.width,self.camera.height)
 
         if self.numberOfCameras == 2:
-            camera2 = cserver.startAutomaticCapture(name="cam2", path='/dev/v4l/by-id/usb-Ingenic_Semiconductor_CO.__LTD._HD_Web_Camera_Ucamera001-video-index0')
+            camera2 = cserver.startAutomaticCapture(name="cam2", path='/dev/v4l/by-id/usb-046d_HD_Pro_Webcam_C920_AE5D327F-video-index0')
             camera2.setResolution(self.camera2.width,self.camera2.height)
 
         
@@ -285,7 +286,10 @@ class VisionApplication(object):
         
 
         # idealYCoor is the Y coordinate where the target should usually be
-        idealYCoor = self.colorDetectConstants[4]
+        if self.colorDetectConstants[4] == -1:
+            idealYCoor = self.camera.height/2
+        else:
+            idealYCoor = self.colorDetectConstants[4]
         # yCoorTolerance is added and subtracted from the ideal coordinate to create a range on the y axis where the target should be.
         # Any target detected outside that range is ignored
         yCoorTolerance = self.colorDetectConstants[5]
@@ -311,7 +315,7 @@ class VisionApplication(object):
                 x, y, w, h, = cv2.boundingRect(contour)
                 boundingArea = w * h
                 # ignores targets that are too small
-                if (boundingArea < 110):
+                if (boundingArea < self.colorDetectConstants[8]):
                     continue
                 #ignores targets that are outside a predetermined range
                 if not ((y < (idealYCoor + yCoorTolerance)) and (y > (idealYCoor - yCoorTolerance))):
@@ -320,7 +324,7 @@ class VisionApplication(object):
                     continue
                 self.areaRatio = contourArea/boundingArea
                 self.aspectRatio = w/h
-                if self.areaRatio > idealAreaRatio - areaTolerance and self.areaRatio < idealAreaRatio + areaTolerance: # if the targets is within the right area ratio range, it is possibly the correct target
+                if self.areaRatio > idealAreaRatio - areaTolerance and self.areaRatio < idealAreaRatio + areaTolerance: # if the target is within the right area ratio range, it is possibly the correct target
                     if self.aspectRatio > idealAspectRatio - aspectTolerance and self.aspectRatio < idealAspectRatio + aspectTolerance: # if the target is within the correct aspect ratio range aswell, it is definitely the right target
                         largest = contour
                         self.tapeTargetDetected = True
@@ -404,9 +408,9 @@ class VisionApplication(object):
                         # Publishes data to Network Tables
                         self.vision_nt.putNumber('offset',aprilTagTargets[self.aprilTagTargetID].offset)
                         self.vision_nt.putNumber('targetX',aprilTagTargets[self.aprilTagTargetID].normalizedX)
-                        #self.vision_nt.putNumber('robotYaw',aprilTagTargets[self.aprilTagTargetID].calculateAdjustedYaw(self.camera.radiusFromAxisOfRotation))
-                        # If you want to calculate distance, make sure to fill out the appropriate variables starting on line 59
-                        #self.vision_nt.putNumber('distanceToTarget',aprilTagTargets[self.aprilTagTargetID].distanceToTarget)
+                        # If you want to calculate yaw and distance, make sure to fill out the appropriate variables starting on line 59
+                        self.vision_nt.putNumber('robotYaw',aprilTagTargets[self.aprilTagTargetID].yaw))
+                        self.vision_nt.putNumber('distanceToTarget',aprilTagTargets[self.aprilTagTargetID].distanceToTarget)
                         NetworkTables.flush()
                     
 
@@ -419,13 +423,18 @@ class VisionApplication(object):
                 timeDiff = t2-t1 # difference between the most recent time and the time recorded when the target was last seen
                 if self.tapeTargetDetected:
                     print("Target Detected")
-                    self.tapeTargetList.sort(key=lambda target: target.boundingArea)
-                    self.vision_nt.putNumber('offset',self.tapeTargetList[len(self.tapeTargetList)-1].offset)
-                    self.tapeTargetList[len(self.tapeTargetList)-1].drawRectangle()
-                    self.vision_nt.putNumber('ycoor',self.tapeTargetList[len(self.tapeTargetList)-1].y)
-                    self.vision_nt.putNumber('areaRatio',self.tapeTargetList[len(self.tapeTargetList)-1].areaRatio)
-                    self.vision_nt.putNumber('aspectRatio',self.tapeTargetList[len(self.tapeTargetList)-1].aspectRatio)
+                    self.tapeTargetList.sort(key=lambda target: target.boundingArea) # Sorts the targets smallest to largest.
+                    targetID = len(self.tapeTargetList)-1
+                    self.tapeTargetList[targetID].drawRectangle()
+                    self.vision_nt.putNumber('offset',self.tapeTargetList[targetID].offset)
+                    self.vision_nt.putNumber('ycoor',self.tapeTargetList[targetID].y)
+                    self.vision_nt.putNumber('areaRatio',self.tapeTargetList[targetID].areaRatio)
+                    self.vision_nt.putNumber('aspectRatio',self.tapeTargetList[targetID].aspectRatio)
 
+                    # If you want to calculate yaw and distance, make sure to fill out the appropriate variables starting on line 59
+                    self.vision_nt.putNumber('robotYaw',self.tapeTargetList[targetID].yaw)
+                    self.vision_nt.putNumber('distanceToTarget',self.tapeTargetList[targetID].distanceToTarget)
+                    
                     t1 = t2
                     self.vision_nt.putNumber('tapeTargetDetected',1)
                     self.vision_nt.putNumber('BoundingArea',self.garea)

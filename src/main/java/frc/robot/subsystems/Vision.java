@@ -44,8 +44,8 @@ public class Vision extends SubsystemBase {
     m_Ntable = NetworkTableInstance.getDefault().getTable("Shuffleboard/Vision");
 
     // Array of constants used to identify the target using color detection.
-    // {idealAreaRatio, areaTolerance, idealApectRatio, aspectTolerance, idealYCoor, yCoorTolerance, idealXCoor, xCoorTolerance}
-    double[] colorDetectConstants = {0.66, 0.2, 1.21, 0.26, 90, 50, -1, 75};
+    // {idealAreaRatio, areaTolerance, idealApectRatio, aspectTolerance, idealYCoor, yCoorTolerance, idealXCoor, xCoorTolerance, minBoundingArea}
+    double[] colorDetectConstants = {1, 1, 1.21, 0.5, 90, 100, -1, 75, 110};
     // {hueMin, hueMax, satMin, satMax, valMin, valMax}
     defaultHSV = new double[] {109.92, 153, 103, 255, 103, 255};
 
@@ -53,8 +53,8 @@ public class Vision extends SubsystemBase {
     m_pDBoard =  new PowerDistribution();
     aprilTagTarget = 0;
     detectionMode = 0;
-    detectionEntry = Shuffleboard.getTab("Vision").add("detectionMode", 1).getEntry();
-    camInUseEntry = Shuffleboard.getTab("Vision").add("cameraInUse", 1).getEntry();
+    detectionEntry = Shuffleboard.getTab("Vision").add("detectionMode", DETECTING_COLOR).getEntry();
+    camInUseEntry = Shuffleboard.getTab("Vision").add("cameraInUse", CAMERA_1).getEntry();
     tagNumEntry = Shuffleboard.getTab("Vision").add("aprilTagTargetID", 1).getEntry();
     colorDetectionConstSub = Shuffleboard.getTab("Vision").add("colorDetectConst", colorDetectConstants).getEntry();
 
@@ -107,6 +107,10 @@ public class Vision extends SubsystemBase {
     return offset;
   }
 
+  /**
+   * This only returns a valid 
+   * @return The angle of the target with respect to the central axis of the camera
+   */
   public double getTargetYaw() {
     return m_Ntable.getEntry("robotYaw").getDouble(0);
   }
