@@ -43,9 +43,10 @@ public class Vision extends SubsystemBase {
   private Vision() {
     m_Ntable = NetworkTableInstance.getDefault().getTable("Shuffleboard/Vision");
 
-    // Array of constants used to identify the target using color detection.
+    // Array of constants used to identify the target using color detection (Color Detection Constants)
     // {idealAreaRatio, areaTolerance, idealApectRatio, aspectTolerance, idealYCoor, yCoorTolerance, idealXCoor, xCoorTolerance, minBoundingArea}
-    double[] colorDetectConstants = {1, 1, 1.21, 0.5, 90, 100, -1, 75, 110};
+    double[] colorDetectConstants = {1, 1, 2, 3, -1, 200, -1, 200, 110};
+    // HSV Constants
     // {hueMin, hueMax, satMin, satMax, valMin, valMax}
     defaultHSV = new double[] {109.92, 153, 103, 255, 103, 255};
 

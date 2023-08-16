@@ -106,10 +106,13 @@ class VisionApplication(object):
 
         self.cameraInUse = 1
 
+        # Set Number of Cameras
         ##### ****************** ##
-        self.numberOfCameras = 1 ##
+        self.numberOfCameras = 2 ##
         ##### ****************** ##
+
         self.aprilTagTargetID = 1
+        self.detectionMode = 0
 
         self.hueMin = 76
         self.hueMax = 127
@@ -132,6 +135,7 @@ class VisionApplication(object):
         self.tapeTargetList = []
 
         #TODO: Fill out values below if distance calculation is desired. The first value is for camera #1, the second is for camera #2. If no second camera exists, set all the second values to 1.
+        # Distance Calculation Constants
         #Vertical Field of View (Degrees)
         vertFOV = [48.94175846, 1]
 
@@ -167,11 +171,12 @@ class VisionApplication(object):
 
     def initializeCameraServer(self):
         cserver = CameraServer.getInstance()
+        # Starting Automatic Capture
         camera1 = cserver.startAutomaticCapture(name="cam1", path='/dev/v4l/by-id/usb-Ingenic_Semiconductor_CO.__LTD._HD_Web_Camera_Ucamera001-video-index0')
         camera1.setResolution(self.camera.width,self.camera.height)
 
         if self.numberOfCameras == 2:
-            camera2 = cserver.startAutomaticCapture(name="cam2", path='/dev/v4l/by-id/usb-046d_HD_Pro_Webcam_C920_AE5D327F-video-index0')
+            camera2 = cserver.startAutomaticCapture(name="cam2", path='/dev/v4l/by-id/usb-046d_HD_Pro_Webcam_C920_9B6E80AF-video-index0')
             camera2.setResolution(self.camera2.width,self.camera2.height)
 
         
@@ -242,27 +247,23 @@ class VisionApplication(object):
         self.colorDetectConstants = self.vision_nt.getNumberArray('colorDetectConst',[1, 1, 1, 1, 90, 100, -1, 75])
 
     def getDetectionMode(self):
-        #detectionMode = self.vision_nt.getNumber('detectionMode',0)
-        detectionMode = 2
-        if detectionMode == 0:
+        self.detectionMode = self.vision_nt.getNumber('detectionMode',0)
+        if self.detectionMode == 0:
             self.processingForColor = False
             self.processingForAprilTags = False
-            #self.cameraInUse = 0
-        elif detectionMode == 1:
+        elif self.detectionMode == 1:
             self.processingForColor = True
             self.processingForAprilTags = False
-            #self.cameraInUse = 1
-        elif detectionMode == 2:
+        elif self.detectionMode == 2:
             self.processingForColor = False
             self.processingForAprilTags = True
-            #self.cameraInUse = 2
     
     def getCameraInUse(self):
         self.cameraInUse = self.vision_nt.getNumber('cameraInUse',0)
         if self.cameraInUse == 1:
-            self.currentCamera = camera
-        if self.cameraInUse == 2:
-            self.currentCamera = camera2
+            self.currentCamera = self.camera
+        if self.cameraInUse == 2 and self.numberOfCameras == 2:
+            self.currentCamera = self.camera2
 
     def getImageMask(self, img, myColors):
         imgHSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  
@@ -287,7 +288,7 @@ class VisionApplication(object):
 
         # idealYCoor is the Y coordinate where the target should usually be
         if self.colorDetectConstants[4] == -1:
-            idealYCoor = self.camera.height/2
+            idealYCoor = self.currentCamera.height/2
         else:
             idealYCoor = self.colorDetectConstants[4]
         # yCoorTolerance is added and subtracted from the ideal coordinate to create a range on the y axis where the target should be.
@@ -296,7 +297,7 @@ class VisionApplication(object):
 
         # idealXCoor is the X coordinate where the target should usually be
         if self.colorDetectConstants[6] == -1:
-            idealXCoor = self.camera.width/2
+            idealXCoor = self.currentCamera.width/2
         else:
             idealXCoor = self.colorDetectConstants[6]
         # xCoorTolerance is added and subtracted from the ideal coordinate to create a range on the x axis where the target should be.
@@ -319,12 +320,14 @@ class VisionApplication(object):
                     continue
                 #ignores targets that are outside a predetermined range
                 if not ((y < (idealYCoor + yCoorTolerance)) and (y > (idealYCoor - yCoorTolerance))):
+                    print("Target Outside of Y-Coor Range")
                     continue
                 if not ((x < (idealXCoor + xCoorTolerance)) and (x > (idealXCoor - xCoorTolerance))):
+                    print("Target Outside of X-Coor Range")
                     continue
                 self.areaRatio = contourArea/boundingArea
                 self.aspectRatio = w/h
-                if self.areaRatio > idealAreaRatio - areaTolerance and self.areaRatio < idealAreaRatio + areaTolerance: # if the target is within the right area ratio range, it is possibly the correct target
+                if self.areaRatio > idealAreaRatio - areaTolerance and self.areaRatio < idealAreaRatio + areaTolerance: # if the targets are within the right area ratio range, they is possibly the correct target
                     if self.aspectRatio > idealAspectRatio - aspectTolerance and self.aspectRatio < idealAspectRatio + aspectTolerance: # if the target is within the correct aspect ratio range aswell, it is definitely the right target
                         largest = contour
                         self.tapeTargetDetected = True
@@ -364,7 +367,7 @@ class VisionApplication(object):
         self.getColorDetectConst()
         while True:
             self.getDetectionMode()
-            #self.getCameraInUse()
+            self.getCameraInUse()
             if self.cameraInUse == 1 or self.numberOfCameras == 1:
                 frame_time1, input_img1 = self.sink.grabFrame(input_img1)
                 input_img1 = cv2.resize(input_img1, (self.camera.width,self.camera.height), interpolation = cv2.INTER_AREA)
@@ -376,16 +379,16 @@ class VisionApplication(object):
             # Notify output of error and skip iteration
             if frame_time1 == 0:
                 self.cvsrc.notifyError(self.sink.getError())
-                print("Error on line 135 with grabbing frame")
+                print("Error on line 368 or 371 with grabbing frame")
                 continue
             
             if self.processingForAprilTags:
-                #self.getAprilTagTargetID()
+                self.getAprilTagTargetID()
                 try:
                     greys = cv2.cvtColor(input_img1, cv2.COLOR_BGR2GRAY)
                     dets = self.detector.detect(greys)
                 except RuntimeError:
-                    print("RuntimeError with detector")
+                    print("No Apriltag in View")
                     continue
                 aprilTagTargets = dict()
             
@@ -394,27 +397,32 @@ class VisionApplication(object):
                         rect = det["lb-rb-rt-lt"].astype(int).reshape((-1,1,2))
                         cv2.polylines(self.imgResult, [rect], True, self.RED, 2)
                         ident = str(det["id"])
-                        pos = det["center"].astype(int) + (-10,10)
+                        pos = det["center"].astype(int) + (0,0)
                         aprilTagTargets.update({det["id"]:AprilTagTarget(self.currentCamera,pos,det["id"])})
                         cv2.putText(self.imgResult, ident, tuple(pos), self.FONT, 1, self.RED, 2)
 
                 if not aprilTagTargets: 
                     # If no apriltags are detected, targetDetected is set to false
+                    
                     self.vision_nt.putNumber('aprilTagTargetDetected',0)
                 else:
                     if self.aprilTagTargetID in aprilTagTargets:
+                        # Data published for Apriltags
                         # If AprilTags are detected, targetDetected is set to true 
                         self.vision_nt.putNumber('aprilTagTargetDetected',1)
                         # Publishes data to Network Tables
                         self.vision_nt.putNumber('offset',aprilTagTargets[self.aprilTagTargetID].offset)
                         self.vision_nt.putNumber('targetX',aprilTagTargets[self.aprilTagTargetID].normalizedX)
                         # If you want to calculate yaw and distance, make sure to fill out the appropriate variables starting on line 59
-                        self.vision_nt.putNumber('robotYaw',aprilTagTargets[self.aprilTagTargetID].yaw))
+                        self.vision_nt.putNumber('robotYaw',aprilTagTargets[self.aprilTagTargetID].yaw)
                         self.vision_nt.putNumber('distanceToTarget',aprilTagTargets[self.aprilTagTargetID].distanceToTarget)
                         NetworkTables.flush()
+                    else:
+                        self.vision_nt.putNumber('aprilTagTargetDetected',0)
                     
 
             if self.processingForColor:
+                self.getColorDetectConst()
                 self.tapeTargetList = []
                 self.targets = []
                 self.processImgForTape(input_img1)
@@ -422,10 +430,10 @@ class VisionApplication(object):
                 t2 = time.clock_gettime(time.CLOCK_MONOTONIC) # gets the current "time"
                 timeDiff = t2-t1 # difference between the most recent time and the time recorded when the target was last seen
                 if self.tapeTargetDetected:
-                    print("Target Detected")
                     self.tapeTargetList.sort(key=lambda target: target.boundingArea) # Sorts the targets smallest to largest.
                     targetID = len(self.tapeTargetList)-1
                     self.tapeTargetList[targetID].drawRectangle()
+                    # Data published for Color
                     self.vision_nt.putNumber('offset',self.tapeTargetList[targetID].offset)
                     self.vision_nt.putNumber('ycoor',self.tapeTargetList[targetID].y)
                     self.vision_nt.putNumber('areaRatio',self.tapeTargetList[targetID].areaRatio)
@@ -443,8 +451,8 @@ class VisionApplication(object):
                     if timeDiff > targetDetTol:
                         self.vision_nt.putNumber('tapeTargetDetected',0)
                 self.cvmask.putFrame(self.mask)
-
-            self.cvsrc.putFrame(self.imgResult)
+            if not self.detectionMode == 0:
+                self.cvsrc.putFrame(self.imgResult)
 
 def main():
     visionApp = VisionApplication()
